@@ -68,14 +68,21 @@ STYLE BRIEF (apply to all panels):
 
 ### Decomposition Heuristics
 
-Decide how many panels based on content density:
+**If the user specifies a panel count** (e.g., "make a 3-panel infographic",
+"split this into 5 panels"), use that count directly. Skip the heuristic table.
+The user's explicit count overrides the density-based default, up to the maximum
+of 6 panels.
+
+**If the user does not specify**, decide how many panels based on content density:
 
 | Data points / concepts | Panels | Rationale |
 |------------------------|--------|-----------|
 | 1-3 items | 1 (no decomposition) | Single panel handles this well |
 | 4-6 items | 2 | Split into logical groups |
 | 7-10 items | 3 | Group by theme or phase |
-| 10+ items | 4 (max) | More than 4 panels loses coherence |
+| 10-15 items | 4 | Group by theme or phase |
+| 15-20 items | 5 | Dense topics with distinct sections |
+| 20+ items | 6 (max) | More than 6 panels loses coherence |
 
 ### Content Map (No Duplication)
 
