@@ -46,6 +46,49 @@ Before returning a result, verify the prompt addresses:
 - [ ] Is the color direction specified?
 - [ ] Is the target medium considered (social, slides, print)?
 
+## Multi-Panel Composition
+
+When generating multiple panels for a single infographic:
+
+### Style Consistency Brief
+
+Before generating any panels, write a style brief that will be copied verbatim
+into every panel's generation prompt. The brief MUST specify:
+
+```
+STYLE BRIEF (apply to all panels):
+- Background: [exact description, e.g. "white background, #F5F5F5"]
+- Primary colors: [2-3 hex codes or color names]
+- Accent color: [1 hex code or color name]
+- Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
+- Icons: [style, e.g. "flat two-tone icons, matching primary palette"]
+- Border/separator: [e.g. "thin #E0E0E0 line at bottom of each panel"]
+- Aspect ratio: [same for all panels]
+```
+
+### Decomposition Heuristics
+
+Decide how many panels based on content density:
+
+| Data points / concepts | Panels | Rationale |
+|------------------------|--------|-----------|
+| 1-3 items | 1 (no decomposition) | Single panel handles this well |
+| 4-6 items | 2 | Split into logical groups |
+| 7-10 items | 3 | Group by theme or phase |
+| 10+ items | 4 (max) | More than 4 panels loses coherence |
+
+### Panel Naming Convention
+
+Output files follow this pattern:
+- `./infographic_panel_1.png`
+- `./infographic_panel_2.png`
+- etc.
+
+If the user specified a custom output path like `./sales.png`, adapt:
+- `./sales_panel_1.png`
+- `./sales_panel_2.png`
+- etc.
+
 ## Critic Evaluation Criteria
 
 Used by the critic loop when `critic: true`. After generating an image, analyze it

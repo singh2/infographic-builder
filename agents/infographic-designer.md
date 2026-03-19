@@ -63,13 +63,15 @@ design decisions, generated image(s), and a brief rationale -- in a single respo
 ## Workflow
 
 1. Parse the request: subject matter, data to include, tone, target medium
-2. Plan: layout type (vertical flow, comparison, timeline, process, stats),
+2. **If multi-panel mode is enabled** -- decompose into panels (see Multi-Panel Mode below)
+3. Plan: layout type (vertical flow, comparison, timeline, process, stats),
    color palette, typography direction, visual metaphors
-3. Consult the system prompt for infographic-specific style guidance
-4. Construct a detailed image generation prompt
+4. Construct a detailed image generation prompt (one per panel, or one for single-panel)
 5. Call `nano-banana` with `operation: "generate"`, the prompt, and an `output_path`
-6. **If critic mode is enabled** -- run the critic loop (see below)
-7. Return the image path with a design rationale
+   - Single-panel: one `generate` call
+   - Multi-panel: one `generate` call per panel, sequential
+6. **If critic mode is enabled** -- run the critic loop on each generated image (see below)
+7. Return the image path(s) with a design rationale
 
 ## Critic Mode
 
@@ -114,6 +116,67 @@ Skip directly from step 5 to step 7. Single-pass generation, no analysis.
 Critic mode adds 1 `analyze` call and potentially 1 additional `generate` call.
 Worst case: 2x generation time + 1 analysis. Best case: 1x generation + 1 analysis
 (no refinement needed).
+
+## Multi-Panel Mode
+
+Multi-panel mode decomposes a complex infographic into separate, focused panels
+that are generated individually with consistent style. It is **off by default**
+and activated when the delegation instruction includes `multi_panel: true`.
+
+### When multi-panel mode is ON
+
+Replace step 4-5 of the workflow with this panel pipeline:
+
+1. **Decompose** the request into 2-4 logical panels. Each panel should be a
+   self-contained visual section. Common decompositions:
+
+   | Request Type | Panel Breakdown |
+   |--------------|-----------------|
+   | Process + stats | Panel 1: process flow, Panel 2: key metrics |
+   | Before/after + explanation | Panel 1: before state, Panel 2: after state, Panel 3: what changed |
+   | Multi-topic overview | One panel per topic (max 4) |
+   | Timeline + detail | Panel 1: timeline overview, Panel 2-3: detail sections |
+
+2. **Establish a shared style brief** for all panels:
+   - Same color palette (specify exact colors)
+   - Same typography direction (e.g. "bold sans-serif headers, light body text")
+   - Same background treatment (e.g. "white background, light gray section dividers")
+   - Same icon style (e.g. "flat, two-tone icons")
+   - Same aspect ratio for all panels
+
+3. **Generate each panel** sequentially. For each panel:
+   - Include the shared style brief in the prompt (copy it verbatim into each prompt)
+   - Add panel-specific content (data, layout, text)
+   - Add a panel label in the prompt: "Panel 1 of 3: [section title]"
+   - Use a numbered output path: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
+
+4. **If critic mode is also enabled**, run the critic loop on each panel individually
+   after it is generated (before moving to the next panel). This catches issues
+   early -- a bad Panel 1 style would propagate to all subsequent panels.
+
+### When multi-panel mode is OFF
+
+Generate a single image as usual (steps 4-5 of the standard workflow).
+
+### Output for multi-panel
+
+Return ALL panel paths with assembly instructions:
+
+```
+Generated 3 panels:
+1. ./infographic_panel_1.png -- [section title / description]
+2. ./infographic_panel_2.png -- [section title / description]
+3. ./infographic_panel_3.png -- [section title / description]
+
+Assembly order: top to bottom (vertical stack) / left to right (horizontal)
+Shared style: [brief description of the consistent style used]
+```
+
+### Latency note
+
+Multi-panel generates N images instead of 1. With critic mode also enabled,
+worst case is N * (2 generates + 1 analyze). For a 3-panel infographic with
+critic: up to 9 tool calls vs 1 for basic single-panel.
 
 ## Using nano-banana generate
 
