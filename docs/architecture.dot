@@ -37,7 +37,7 @@ digraph infographic_builder {
             ]
 
             agent_wire [
-                label="agents: infographic-designer"
+                label="agents: infographic-builder"
                 shape=component
                 fillcolor="#d4edda"
                 color="#28a745"
@@ -85,7 +85,7 @@ digraph infographic_builder {
         ]
 
         agent [
-            label="infographic-designer\nagent"
+            label="infographic-builder\nagent"
             shape=doubleoctagon
             fillcolor="#d4edda"
             color="#28a745"
