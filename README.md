@@ -22,6 +22,11 @@ includes:
 
 ## Architecture
 
+![Architecture diagram](docs/architecture.png)
+
+<details>
+<summary>Mermaid version (click to expand)</summary>
+
 ```mermaid
 flowchart TB
     subgraph bundle ["infographic-builder (bundle)"]
@@ -64,6 +69,8 @@ flowchart TB
     SP -.->|"design guidance"| DE
     flags -.->|"env vars"| RS
 ```
+
+</details>
 
 ## How it works
 
