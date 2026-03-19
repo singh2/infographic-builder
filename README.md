@@ -1,4 +1,4 @@
-# infographic-designer
+# infographic-builder
 
 Amplifier bundle for AI-powered infographic design and generation.
 
@@ -9,7 +9,7 @@ Say "create an infographic about X" in any Amplifier session. The `infographic-d
 ## Quick start
 
 ```bash
-amplifier bundle add git+https://github.com/singh2/infographic-designer@main --app
+amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
 ```
 
 Or compose into your own bundle:
@@ -17,7 +17,7 @@ Or compose into your own bundle:
 ```yaml
 includes:
   - bundle: foundation
-  - bundle: git+https://github.com/singh2/infographic-designer@main
+  - bundle: git+https://github.com/singh2/infographic-builder@main
 ```
 
 ## Architecture
@@ -89,7 +89,7 @@ flowchart TB
 ## Structure
 
 ```
-infographic-designer/
+infographic-builder/
 |-- bundle.md                        # thin root: foundation + nano-banana + behavior
 |-- behaviors/
 |   +-- infographic.yaml             # wires tool + agent + context
