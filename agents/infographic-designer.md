@@ -68,7 +68,52 @@ design decisions, generated image(s), and a brief rationale -- in a single respo
 3. Consult the system prompt for infographic-specific style guidance
 4. Construct a detailed image generation prompt
 5. Call `nano-banana` with `operation: "generate"`, the prompt, and an `output_path`
-6. Return the image path with a design rationale
+6. **If critic mode is enabled** -- run the critic loop (see below)
+7. Return the image path with a design rationale
+
+## Critic Mode
+
+Critic mode adds a self-evaluation pass after generation. It is **off by default**
+and activated when the delegation instruction includes `critic: true`.
+
+### When critic mode is ON
+
+After step 5 (initial generation), run this loop (max 1 refinement):
+
+1. **Analyze** the generated image using nano-banana `analyze` operation:
+   - `operation: "analyze"`
+   - `image_path`: the generated image
+   - `prompt`: Use the evaluation prompt from the Critic Evaluation Criteria
+     section of the style guide. Include the original generation prompt for
+     comparison.
+
+2. **Score** the analysis against these dimensions:
+   - Content accuracy: are the requested data points / text / concepts present?
+   - Layout quality: is the structure clear and well-organized?
+   - Visual clarity: is it readable, with good contrast and hierarchy?
+   - Prompt fidelity: does the output match what was asked for?
+
+3. **Decide**:
+   - If the analysis identifies concrete issues (missing data, wrong layout,
+     poor readability) -- refine the generation prompt to address them and
+     call `generate` again with the refined prompt
+   - If the analysis is positive or only has minor cosmetic notes -- accept
+     the image as final
+
+4. **Report**: Include a brief critic summary in your response:
+   - What the critic found (1-2 sentences)
+   - Whether a refinement was triggered
+   - If refined: what changed in the prompt
+
+### When critic mode is OFF
+
+Skip directly from step 5 to step 7. Single-pass generation, no analysis.
+
+### Latency note
+
+Critic mode adds 1 `analyze` call and potentially 1 additional `generate` call.
+Worst case: 2x generation time + 1 analysis. Best case: 1x generation + 1 analysis
+(no refinement needed).
 
 ## Using nano-banana generate
 
@@ -96,12 +141,24 @@ When building the generation prompt, include:
 
 @infographic-builder:context/prompts/system-prompt.md
 
+## Using nano-banana analyze (for critic mode)
+
+The tool expects these parameters for analysis:
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `operation` | yes | Always `"analyze"` |
+| `prompt` | yes | Evaluation question or criteria to assess |
+| `image_path` | yes | Path to the image to evaluate |
+
 ## Output Contract
 
 Your response MUST include:
 - The generated image path (or a clear error if generation failed)
 - A brief design rationale (2-4 sentences: layout choice, palette, why it fits)
 - Suggested refinements the user could request
+- **If critic mode was enabled**: the critic summary (what was found, whether
+  refinement was triggered, what changed)
 
 ---
 
