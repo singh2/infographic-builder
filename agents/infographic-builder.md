@@ -122,13 +122,21 @@ After generating each image, run a self-evaluation:
 
 3. **Decide**:
    - Concrete issues found (missing data, wrong layout, poor readability) --
-     refine the prompt and regenerate
+     refine the prompt to address ONLY the specific issues identified and
+     regenerate. Do not rewrite the entire prompt.
    - Positive or only minor cosmetic notes -- accept as final
 
-4. **Report** in your response:
+4. **Max 1 refinement.** If the second generation still has issues, return it
+   as-is with the review notes. Do not enter a retry loop. The user can steer
+   from there -- they have the image, the rationale, and a clear description
+   of what's still off.
+
+5. **Report** in your response:
    - What the review found (1-2 sentences)
    - Whether refinement was triggered
-   - If refined: what changed
+   - If refined: what changed in the prompt
+   - If still imperfect after refinement: what remains and how the user can
+     adjust their request to address it
 
 **Skip the quality review only if the user explicitly asks** ("skip the review",
 "no critic", "just generate it fast").
@@ -136,7 +144,8 @@ After generating each image, run a self-evaluation:
 ### Latency note
 
 Quality review adds 1 `analyze` call and up to 1 additional `generate` call per
-image. For multi-panel with review: up to N * (2 generates + 1 analyze) calls.
+image. Worst case per image: 2 generates + 1 analyze. For a 3-panel infographic:
+up to 9 tool calls total.
 
 ## Multi-Panel Composition
 

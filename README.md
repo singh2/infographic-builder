@@ -140,19 +140,6 @@ infographic-builder/
         +-- system-prompt.md         # infographic generation style guide
 ```
 
-## Advanced: environment overrides
-
-For persistent preferences, you can opt out of defaults with environment variables:
-
-| Env Var | Default | Effect |
-|---------|---------|--------|
-| `INFOGRAPHIC_CRITIC=false` | on | Skip quality review (faster, but no self-correction) |
-| `INFOGRAPHIC_MULTI_PANEL=false` | auto | Force single panel even for complex topics |
-
-These are opt-**out** overrides. By default, the agent decides everything automatically.
-Most users will never need these -- use natural language instead ("skip the review",
-"single panel only").
-
 ## Testing
 
 ### Local development setup

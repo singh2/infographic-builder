@@ -137,10 +137,10 @@ If the user specified a custom output path like `./sales.png`, adapt:
 - `./sales_panel_2.png`
 - etc.
 
-## Critic Evaluation Criteria
+## Quality Review Criteria
 
-Used by the critic loop when `critic: true`. After generating an image, analyze it
-with nano-banana `analyze` using this evaluation prompt template:
+After generating each image, analyze it with nano-banana `analyze` using this
+evaluation prompt template:
 
 ```
 Evaluate this infographic against the following criteria. For each dimension,
