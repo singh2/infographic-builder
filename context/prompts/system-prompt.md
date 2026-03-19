@@ -77,6 +77,38 @@ Decide how many panels based on content density:
 | 7-10 items | 3 | Group by theme or phase |
 | 10+ items | 4 (max) | More than 4 panels loses coherence |
 
+### Content Map (No Duplication)
+
+Before writing any panel prompts, build a content map that assigns every concept
+to exactly one panel:
+
+```
+CONTENT MAP:
+Panel 1 -- [title]: [concepts/data ONLY in this panel]
+Panel 2 -- [title]: [concepts/data ONLY in this panel]
+...
+Shared across panels: [series title, panel numbering, style brief only]
+```
+
+Rules:
+- Each concept, statistic, or visual element appears in exactly ONE panel
+- No panel recaps or summarizes another panel's content
+- The only repeated elements: series title, panel number, and style brief
+- Each panel prompt includes a scoping line: "This panel covers ONLY: [X].
+  Do NOT include: [Y, Z]." where Y and Z are other panels' content
+
+### Reference Image Chaining (Visual Consistency)
+
+Panel 1 is the style anchor. All subsequent panels reference it:
+
+- **Panel 1**: Generate without `reference_image_path` -- establishes the exact
+  typography, spacing, icon rendering, and color treatment
+- **Panels 2-N**: Generate with `reference_image_path` set to Panel 1's output
+  path -- gives Gemini a visual target, not just a text description
+
+Panel 1 MUST be generated first and alone. Panels 2-N may be generated in
+parallel since they all reference Panel 1, not each other.
+
 ### Panel Naming Convention
 
 Output files follow this pattern:
