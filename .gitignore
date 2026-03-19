@@ -1,7 +1,10 @@
-# Generated infographic images
-*.png
-*.jpg
+# Generated infographic images (in working directory)
+/infographic*.png
+/infographic*.jpg
 *.jpeg
+
+# Keep docs images
+!docs/*.png
 
 # OS files
 .DS_Store
