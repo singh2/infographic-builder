@@ -1,0 +1,7 @@
+# Generated infographic images
+*.png
+*.jpg
+*.jpeg
+
+# OS files
+.DS_Store
