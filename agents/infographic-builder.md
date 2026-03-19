@@ -127,14 +127,22 @@ and activated when the delegation instruction includes `multi_panel: true`.
 
 Replace step 4-5 of the workflow with this panel pipeline:
 
-1. **Decompose** the request into 2-4 logical panels. Each panel should be a
-   self-contained visual section. Common decompositions:
+1. **Determine panel count and decompose.**
+
+   **If the user specifies a panel count** (e.g., "make a 3-panel infographic",
+   "split this into 5 panels"), use that count directly. The user's explicit
+   count overrides the density-based default, up to the maximum of 6 panels.
+
+   **If the user does not specify**, choose based on content density (see the
+   Decomposition Heuristics in the style guide).
+
+   Then decompose into self-contained visual sections. Common decompositions:
 
    | Request Type | Panel Breakdown |
    |--------------|-----------------|
    | Process + stats | Panel 1: process flow, Panel 2: key metrics |
    | Before/after + explanation | Panel 1: before state, Panel 2: after state, Panel 3: what changed |
-   | Multi-topic overview | One panel per topic (max 4) |
+   | Multi-topic overview | One panel per topic (max 6) |
    | Timeline + detail | Panel 1: timeline overview, Panel 2-3: detail sections |
 
 2. **Build a content map** before writing any prompts. The content map assigns
