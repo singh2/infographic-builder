@@ -4,7 +4,7 @@ Amplifier bundle for AI-powered infographic design and generation.
 
 ## What it does
 
-Say "create an infographic about X" in any Amplifier session. The `infographic-designer` agent constructs a detailed visual prompt and calls nano-banana's `generate` operation to produce an image.
+Say "create an infographic about X" in any Amplifier session. The `infographic-builder` agent constructs a detailed visual prompt and calls nano-banana's `generate` operation to produce an image.
 
 ## Quick start
 
@@ -35,7 +35,7 @@ flowchart TB
         BH["behaviors/infographic.yaml<br/><i>wires tool + agent + context</i>"]
         AW["context/infographic-awareness.md<br/><i>loaded every session</i>"]
         SP["context/prompts/system-prompt.md<br/><i>style guide</i>"]
-        AG["agents/infographic-designer.md<br/><i>loaded only when spawned</i>"]
+        AG["agents/infographic-builder.md<br/><i>loaded only when spawned</i>"]
         B --> BH
         BH --> AW
         BH --> AG
@@ -46,7 +46,7 @@ flowchart TB
         direction TB
         U["User<br/>'create an infographic about X'"]
         RS["Root Session<br/><i>reads awareness context</i>"]
-        DE["infographic-designer agent<br/><i>design + prompt construction</i>"]
+        DE["infographic-builder agent<br/><i>design + prompt construction</i>"]
         NB["nano-banana tool<br/><i>Gemini image generation</i>"]
         IMG["Generated image<br/><i>./infographic.png</i>"]
 
@@ -76,7 +76,7 @@ flowchart TB
 
 ```
 1. User provides data or topic
-2. Root session delegates to infographic-designer agent
+2. Root session delegates to infographic-builder agent
 3. Agent constructs a detailed visual prompt (layout, palette, hierarchy)
 4. Agent calls nano-banana tool with operation: "generate"
 5. Image saved to disk, path returned to user
@@ -94,7 +94,7 @@ infographic-builder/
 |-- behaviors/
 |   +-- infographic.yaml             # wires tool + agent + context
 |-- agents/
-|   +-- infographic-designer.md      # the expert agent (context sink)
+|   +-- infographic-builder.md      # the expert agent (context sink)
 +-- context/
     |-- infographic-awareness.md     # thin pointer loaded every session
     +-- prompts/
@@ -187,7 +187,7 @@ INFOGRAPHIC_CRITIC=true INFOGRAPHIC_MULTI_PANEL=true amplifier run
 
 | Check | What to look for |
 |-------|------------------|
-| Delegation | Root session delegates to `infographic-designer` (not handling it directly) |
+| Delegation | Root session delegates to `infographic-builder` (not handling it directly) |
 | Image output | `.png` file saved to disk at the reported path |
 | Design rationale | Agent explains layout choice, palette, and reasoning |
 | Critic summary | (when flag on) Reports what the critic found and whether it refined |
