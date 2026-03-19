@@ -45,3 +45,43 @@ Before returning a result, verify the prompt addresses:
 - [ ] Is the layout type appropriate for the content?
 - [ ] Is the color direction specified?
 - [ ] Is the target medium considered (social, slides, print)?
+
+## Critic Evaluation Criteria
+
+Used by the critic loop when `critic: true`. After generating an image, analyze it
+with nano-banana `analyze` using this evaluation prompt template:
+
+```
+Evaluate this infographic against the following criteria. For each dimension,
+give a rating (PASS / NEEDS_WORK) and a brief explanation.
+
+ORIGINAL REQUEST: {original_user_request}
+GENERATION PROMPT: {the_prompt_you_sent_to_generate}
+
+Dimensions:
+
+1. CONTENT ACCURACY: Are the requested data points, labels, text, or concepts
+   visibly present in the image? Is anything missing or incorrect?
+
+2. LAYOUT QUALITY: Is the structure clear and well-organized? Can a viewer
+   follow the information flow? Are sections visually distinct?
+
+3. VISUAL CLARITY: Is the text readable? Is there sufficient contrast between
+   foreground and background? Is whitespace used effectively?
+
+4. PROMPT FIDELITY: Does the output match the style, layout type, and color
+   direction specified in the generation prompt?
+
+Summary: Overall PASS or NEEDS_REFINEMENT. If NEEDS_REFINEMENT, list the
+specific changes that would fix the issues (be concrete -- these will be
+used to refine the generation prompt).
+```
+
+### Refinement rules
+
+- Only refine if the analysis says `NEEDS_REFINEMENT`
+- When refining, update the generation prompt to address ONLY the specific issues
+  identified -- do not rewrite the entire prompt
+- Max 1 refinement pass. If the second generation still has issues, return it
+  with the critic notes and let the user decide
+- Always report what the critic found, even if no refinement was needed
