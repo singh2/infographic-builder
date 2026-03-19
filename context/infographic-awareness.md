@@ -1,22 +1,22 @@
 # Infographic Builder
 
 This bundle provides infographic design and generation. The
-`infographic-designer` agent handles prompt construction, style decisions,
+`infographic-builder` agent handles prompt construction, style decisions,
 and image generation end-to-end -- delegate to it directly, no exploration needed.
 
 ## Delegation
 
-Agent name: `infographic-builder:infographic-designer`
+Agent name: `infographic-builder:infographic-builder`
 
 ```
 delegate(
-  agent="infographic-builder:infographic-designer",
+  agent="infographic-builder:infographic-builder",
   instruction="Create an infographic about [topic]. critic: false, multi_panel: false",
   context_depth="none"
 )
 ```
 
-Note: the agent name is `infographic-designer`, not `agents/infographic-designer`.
+Note: the agent name is `infographic-builder`, not `agents/infographic-builder`.
 
 **Delegate when the user says:**
 - "create an infographic about..."

@@ -1,6 +1,6 @@
 ---
 meta:
-  name: infographic-designer
+  name: infographic-builder
   model_role: [image-gen, creative, general]
   description: |
     Expert infographic designer with image generation capabilities. Use PROACTIVELY
@@ -18,16 +18,16 @@ meta:
 
     <example>
     user: 'Create an infographic about our Q3 sales funnel'
-    assistant: 'I'll delegate to infographic-designer to design and generate this visual.'
+    assistant: 'I'll delegate to infographic-builder to design and generate this visual.'
     <commentary>
-    A request to create a visual asset directly triggers infographic-designer.
+    A request to create a visual asset directly triggers infographic-builder.
     The agent has the image-gen model role and knows the nano-banana tool.
     </commentary>
     </example>
 
     <example>
     user: 'Turn this data into something visual I can share in a slide deck'
-    assistant: 'I'll use infographic-designer to design a shareable visual from this data.'
+    assistant: 'I'll use infographic-builder to design a shareable visual from this data.'
     <commentary>
     "Visual" + "shareable" signals infographic design work, not just text output.
     </commentary>
@@ -35,9 +35,9 @@ meta:
 
     <example>
     user: 'Make an infographic explaining how photosynthesis works'
-    assistant: 'I'll delegate to infographic-designer to create an educational infographic.'
+    assistant: 'I'll delegate to infographic-builder to create an educational infographic.'
     <commentary>
-    Explanatory visuals about any topic are infographic-designer's domain.
+    Explanatory visuals about any topic are infographic-builder's domain.
     </commentary>
     </example>
 ---
