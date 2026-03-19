@@ -1,23 +1,83 @@
 # infographic-builder
 
-Amplifier bundle for AI-powered infographic design and generation.
+AI-powered infographic design and generation for Amplifier.
 
-## What it does
+Say "create an infographic about X" and get a finished `.png` -- the agent handles
+layout, color, typography, and composition automatically.
 
-Say "create an infographic about X" in any Amplifier session. The `infographic-builder` agent constructs a detailed visual prompt and calls nano-banana's `generate` operation to produce an image.
+## What you can create
 
-## Quick start
+| Say this | You get |
+|----------|---------|
+| "Create an infographic about the water cycle" | Single-panel infographic with auto-selected layout |
+| "Make an infographic about the history of the internet" | Multi-panel series (auto-splits when content is dense) |
+| "Create a comparison infographic: React vs Vue" | Side-by-side comparison layout |
+| "Visualize our Q3 sales funnel with key metrics" | Statistics layout with large numbers and icons |
+| "Make a 3-panel infographic about climate change" | Exactly 3 panels (your count, your call) |
+| "Create a timeline of the space race" | Horizontal/vertical timeline layout |
+
+The agent automatically:
+- **Picks the best layout** for your content -- process flow, comparison, timeline, hierarchy, cycle, or statistics
+- **Splits complex topics** into multiple panels when there's too much for one image
+- **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
+- **Keeps multi-panel sets visually consistent** using reference image chaining
+
+You steer with plain English:
+- "make it bold and colorful" / "keep it minimal and corporate" -- style direction
+- "use a timeline layout" -- override the automatic layout choice
+- "single panel only" -- force one image even for dense topics
+- "make it a 4-panel infographic" -- set an explicit panel count (up to 6)
+- "skip the review" -- faster generation, skip the quality check
+
+## Get started
+
+**1. Install**
 
 ```bash
 amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
 ```
 
-Or compose into your own bundle:
+Or add to an existing bundle:
 
 ```yaml
 includes:
   - bundle: foundation
   - bundle: git+https://github.com/singh2/infographic-builder@main
+```
+
+**2. Set your Google API key** (required for Gemini image generation)
+
+```bash
+export GOOGLE_API_KEY=your-key-here
+```
+
+**3. Go**
+
+```bash
+amplifier run
+# Then say: "Create an infographic about [anything]"
+```
+
+## Pitfalls
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Generation fails or "API key" error | Missing Google API key | `export GOOGLE_API_KEY=your-key` -- this is the #1 first-run issue |
+| Wrong layout for your content | Agent's auto-detection missed | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
+| Too many panels (or too few) | Auto-split based on content density | Specify: "make it a 2-panel infographic" -- explicit count always wins |
+| Multi-panel styles don't match | Rare -- Panel 1 is used as style anchor | Ask the agent to regenerate; Panel 1 sets the style for all others |
+| Slow generation | Quality review adds ~10-20s per image | Say "skip the review" for faster output |
+| Image text is garbled or unreadable | Limitation of current image generation models | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
+
+## How it works
+
+```
+1. You describe what you want
+2. Agent analyzes content density --> picks single or multi-panel
+3. Agent designs layout, palette, typography, and visual hierarchy
+4. Agent generates image(s) via Gemini (nano-banana tool)
+5. Agent reviews output and refines if needed
+6. You get the .png file(s) + design rationale + suggestions
 ```
 
 ## Architecture
@@ -46,45 +106,24 @@ flowchart TB
         direction TB
         U["User<br/>'create an infographic about X'"]
         RS["Root Session<br/><i>reads awareness context</i>"]
-        DE["infographic-builder agent<br/><i>design + prompt construction</i>"]
+        DE["infographic-builder agent<br/><i>auto: layout + panels + review</i>"]
         NB["nano-banana tool<br/><i>Gemini image generation</i>"]
-        IMG["Generated image<br/><i>./infographic.png</i>"]
+        IMG["Generated image(s)<br/><i>./infographic.png</i>"]
 
         U --> RS
         RS -->|"delegate()"| DE
-        DE -->|"generate"| NB
+        DE -->|"generate + analyze"| NB
         NB --> IMG
         IMG --> DE
-        DE -->|"path + rationale"| RS
+        DE -->|"path + rationale + suggestions"| RS
         RS --> U
-    end
-
-    subgraph flags ["Feature Flags (optional)"]
-        direction TB
-        CR["INFOGRAPHIC_CRITIC=true<br/><i>generate → analyze → refine</i>"]
-        MP["INFOGRAPHIC_MULTI_PANEL=true<br/><i>decompose → N panels</i>"]
     end
 
     AW -.->|"routing signal"| RS
     SP -.->|"design guidance"| DE
-    flags -.->|"env vars"| RS
 ```
 
 </details>
-
-## How it works
-
-```
-1. User provides data or topic
-2. Root session delegates to infographic-builder agent
-3. Agent constructs a detailed visual prompt (layout, palette, hierarchy)
-4. Agent calls nano-banana tool with operation: "generate"
-5. Image saved to disk, path returned to user
-```
-
-## Prerequisites
-
-- `GOOGLE_API_KEY` environment variable (for Gemini image generation via nano-banana)
 
 ## Structure
 
@@ -94,50 +133,38 @@ infographic-builder/
 |-- behaviors/
 |   +-- infographic.yaml             # wires tool + agent + context
 |-- agents/
-|   +-- infographic-builder.md      # the expert agent (context sink)
+|   +-- infographic-builder.md       # the expert agent (context sink)
 +-- context/
     |-- infographic-awareness.md     # thin pointer loaded every session
     +-- prompts/
         +-- system-prompt.md         # infographic generation style guide
 ```
 
-## Feature flags
+## Advanced: environment overrides
 
-Optional capabilities you can toggle per-session via environment variables:
+For persistent preferences, you can opt out of defaults with environment variables:
 
-| Flag | Env Var | Default | What it does |
-|------|---------|---------|--------------|
-| Critic loop | `INFOGRAPHIC_CRITIC` | off | Self-evaluates the generated image and refines if issues found |
-| Multi-panel | `INFOGRAPHIC_MULTI_PANEL` | off | Decomposes complex infographics into 2-4 focused panels |
+| Env Var | Default | Effect |
+|---------|---------|--------|
+| `INFOGRAPHIC_CRITIC=false` | on | Skip quality review (faster, but no self-correction) |
+| `INFOGRAPHIC_MULTI_PANEL=false` | auto | Force single panel even for complex topics |
 
-```bash
-# Basic (single pass, no critique)
-amplifier run
-
-# With critic loop (measure latency delta)
-INFOGRAPHIC_CRITIC=true amplifier run
-
-# Multi-panel
-INFOGRAPHIC_MULTI_PANEL=true amplifier run
-
-# Both
-INFOGRAPHIC_CRITIC=true INFOGRAPHIC_MULTI_PANEL=true amplifier run
-```
-
-Users can also request these inline: "create a multi-panel infographic about X with critic review".
+These are opt-**out** overrides. By default, the agent decides everything automatically.
+Most users will never need these -- use natural language instead ("skip the review",
+"single panel only").
 
 ## Testing
 
-### 1. Local development setup
+### Local development setup
 
-Point your Amplifier settings at the local checkout instead of the git URL:
+Point Amplifier at the local checkout:
 
 ```yaml
-# .amplifier/settings.yaml  (in this repo, already gitignored)
+# .amplifier/settings.yaml (in this repo, already gitignored)
 default_bundle: file:///Users/YOU/path/to/infographic-builder
 ```
 
-Or use the source override pattern if you already have a default bundle:
+Or use source override if you already have a default bundle:
 
 ```yaml
 # ~/.amplifier/settings.yaml
@@ -145,68 +172,49 @@ sources:
   infographic-builder: file:///Users/YOU/path/to/infographic-builder
 ```
 
-### 2. Prerequisites check
+### Prerequisites check
 
 ```bash
-# Confirm you have a Google API key for Gemini image generation
 echo $GOOGLE_API_KEY   # should print your key
-
-# Confirm Amplifier is installed
 amplifier --version
 ```
 
-### 3. Smoke tests
-
-Run from the repo directory (so the local bundle resolves):
+### Smoke tests
 
 ```bash
 cd /path/to/infographic-builder
 
-# Test 1: Basic generation (single pass)
+# Test 1: Simple topic (should auto single-panel)
 amplifier run
-# Then say: "Create an infographic about the water cycle"
-# Expected: agent delegates, generates image, returns path + rationale
+# Say: "Create an infographic about the water cycle"
+# Expected: single panel, auto layout, quality review, design rationale
 
-# Test 2: Critic loop
-INFOGRAPHIC_CRITIC=true amplifier run
-# Then say: "Create an infographic about the water cycle"
-# Expected: generates image, analyzes it, optionally refines, returns critic summary
+# Test 2: Complex topic (should auto multi-panel)
+amplifier run
+# Say: "Create an infographic about the complete history of the internet"
+# Expected: agent auto-decomposes into multiple panels
 
-# Test 3: Multi-panel
-INFOGRAPHIC_MULTI_PANEL=true amplifier run
-# Then say: "Create an infographic about the history of the internet"
-# Expected: decomposes into panels, generates each, returns all paths with assembly order
+# Test 3: User override -- explicit panel count
+amplifier run
+# Say: "Create a 3-panel infographic about how DNS works"
+# Expected: exactly 3 panels
 
-# Test 4: Both flags
-INFOGRAPHIC_CRITIC=true INFOGRAPHIC_MULTI_PANEL=true amplifier run
-# Then say: "Create a multi-panel infographic about climate change impacts"
-# Expected: decomposes, generates each panel with critic loop, returns all paths
+# Test 4: User override -- force single panel
+amplifier run
+# Say: "Create a single-panel infographic about climate change impacts"
+# Expected: one image even though topic is dense
 ```
 
-### 4. What to check
+### What to check
 
 | Check | What to look for |
 |-------|------------------|
 | Delegation | Root session delegates to `infographic-builder` (not handling it directly) |
-| Image output | `.png` file saved to disk at the reported path |
+| Image output | `.png` file(s) saved to disk at the reported path |
 | Design rationale | Agent explains layout choice, palette, and reasoning |
-| Critic summary | (when flag on) Reports what the critic found and whether it refined |
-| Multi-panel output | (when flag on) Multiple numbered panel files with assembly instructions |
-| Style consistency | (multi-panel) All panels share the same color palette and typography |
-
-### 5. Latency benchmarking
-
-To measure the critic loop's latency impact:
-
-```bash
-# Run N basic generations, note wallclock time per generation
-amplifier run    # "create an infographic about X" — repeat with different topics
-
-# Run N critic generations, note wallclock time per generation
-INFOGRAPHIC_CRITIC=true amplifier run    # same topics
-
-# Compare: critic adds ~1 analyze + up to 1 extra generate
-```
+| Quality review | Agent reports what the review found and whether it refined |
+| Auto multi-panel | Dense topics get split into panels without being asked |
+| Style consistency | Multi-panel sets share the same color palette and typography |
 
 ## License
 
