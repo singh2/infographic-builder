@@ -167,15 +167,55 @@ When generating multiple panels:
    - Accent color: [1 color]
    - Typography: [font style direction]
    - Icons: [style]
+   - Header chrome: [series title treatment, panel indicator position/style]
+   - Footer chrome: [visual treatment -- font, alignment, decorative elements;
+     footer CONTENT may vary per panel but visual style must be identical]
    - Aspect ratio: [same for all]
    ```
 
-3. **Generate with reference image chaining**:
-   - Panel 1: no `reference_image_path` (establishes the style)
-   - Panels 2-N: `reference_image_path` set to Panel 1's output
+   **Header and footer are style, not content.** The style brief governs the
+   visual treatment of headers and footers (font, alignment, decorative elements).
+   Per-panel content (e.g. "Continued in Part 2" vs "See Part 1") goes in the
+   content map. But the *rendering* must be identical -- same font size, weight,
+   position, and decorative elements (arrows, dividers, etc.) across all panels.
 
-4. **If quality review finds issues with Panel 1**, refine it before generating
-   subsequent panels (since Panel 1 is the style anchor).
+3. **Generate Panel 1** (the style anchor):
+   - No `reference_image_path` -- this establishes the visual style
+   - Panel 1 MUST be generated first and alone
+
+4. **Post-Panel 1 style reconciliation** (REQUIRED before generating Panels 2-N):
+
+   After Panel 1 is generated, analyze it with nano-banana `analyze` to capture
+   what Gemini *actually rendered* vs what the text style brief *described*.
+   Use this analysis prompt:
+
+   ```
+   Describe the exact visual style of this infographic panel:
+   - Background: solid color, gradient, alternating bands, or textured? Describe the progression.
+   - Section backgrounds: how do they differ from top to bottom?
+   - Step number circles: color, size, border style
+   - Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
+   - Typography: header weight/size relative to body, color
+   - Separators: lines, arrows, spacing? Style and color
+   - Header area: layout, font treatment, any decorative elements
+   - Footer area: layout, font treatment, any decorative elements
+   Be specific -- these descriptions will be used to prompt-match subsequent panels.
+   ```
+
+   **Update the style brief** with the analysis results before writing Panels 2-N
+   prompts. Where the original brief and the actual render disagree, the render
+   wins -- Panels 2-N must match what Panel 1 *looks like*, not what you *asked
+   for*. Copy the updated brief verbatim into every subsequent panel prompt.
+
+5. **Generate Panels 2-N with reference image chaining**:
+   - `reference_image_path` set to Panel 1's output path
+   - Include the **updated** style brief (from step 4) in each prompt
+   - The combination of visual reference + accurate text brief gives Gemini
+     the best chance of style consistency
+
+6. **If quality review finds issues with Panel 1**, refine it before generating
+   subsequent panels (since Panel 1 is the style anchor). Re-run the style
+   reconciliation (step 4) on the refined Panel 1.
 
 ### Panel naming
 

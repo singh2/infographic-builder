@@ -63,6 +63,9 @@ STYLE BRIEF (apply to all panels):
 - Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
 - Icons: [style, e.g. "flat two-tone icons, matching primary palette"]
 - Border/separator: [e.g. "thin #E0E0E0 line at bottom of each panel"]
+- Header chrome: [series title treatment, panel indicator position and style]
+- Footer chrome: [visual treatment -- font, alignment, decorative elements;
+  footer CONTENT may vary per panel but visual style must be identical]
 - Aspect ratio: [same for all panels]
 ```
 
@@ -110,8 +113,14 @@ Panel 1 is the style anchor. All subsequent panels reference it:
 
 - **Panel 1**: Generate without `reference_image_path` -- establishes the exact
   typography, spacing, icon rendering, and color treatment
+- **Post-Panel 1 style reconciliation** (REQUIRED): After generating Panel 1,
+  analyze it to capture what Gemini *actually rendered*. Update the style brief
+  to match the real output before writing Panels 2-N prompts. Where the original
+  brief and the actual render disagree, **the render wins** -- Panels 2-N must
+  match what Panel 1 *looks like*, not what you originally *asked for*.
 - **Panels 2-N**: Generate with `reference_image_path` set to Panel 1's output
-  path -- gives Gemini a visual target, not just a text description
+  path AND the **updated** style brief. The combination of visual reference +
+  accurate text brief gives Gemini the best chance of style consistency.
 
 Panel 1 MUST be generated first and alone. Panels 2-N may be generated in
 parallel since they all reference Panel 1, not each other.
