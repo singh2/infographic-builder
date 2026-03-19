@@ -1,8 +1,9 @@
 # Infographic Builder
 
 This bundle provides infographic design and generation. The
-`infographic-builder` agent handles prompt construction, style decisions,
-and image generation end-to-end -- delegate to it directly, no exploration needed.
+`infographic-builder` agent handles everything automatically -- layout selection,
+style decisions, panel decomposition for complex topics, quality review, and
+image generation.
 
 ## Delegation
 
@@ -11,34 +12,28 @@ Agent name: `infographic-builder:infographic-builder`
 ```
 delegate(
   agent="infographic-builder:infographic-builder",
-  instruction="Create an infographic about [topic]. critic: false, multi_panel: false",
+  instruction="Create an infographic about [topic]",
   context_depth="none"
 )
 ```
 
-Note: the agent name is `infographic-builder`, not `agents/infographic-builder`.
+Just pass the user's request as-is. The agent automatically:
+- Picks the best layout for the content (timeline, comparison, hierarchy, etc.)
+- Splits complex topics into multiple panels when the content is dense enough
+- Reviews its own output and refines if it spots issues
+- Maintains visual consistency across multi-panel sets
+
+No flags or configuration needed. The user steers with natural language:
+- "make it a 3-panel infographic" -- sets an explicit panel count
+- "single panel only" -- forces one image even for complex topics
+- "skip the review" -- faster generation, skips the quality check
+- "use a timeline layout" -- overrides automatic layout selection
+- "bold and colorful" / "minimal and corporate" -- sets the style direction
 
 **Delegate when the user says:**
 - "create an infographic about..."
 - "make an infographic...", "visualize this data", "create a visual for..."
 - Any request for presentation graphics, explainer visuals, or data visualizations
-
-## Feature Flags
-
-Check env vars before delegating and pass them in the instruction:
-
-```bash
-echo $INFOGRAPHIC_CRITIC $INFOGRAPHIC_MULTI_PANEL
-```
-
-| Flag | Env Var | Default | Effect |
-|------|---------|---------|--------|
-| Critic loop | `INFOGRAPHIC_CRITIC` | `false` | Self-evaluates and refines the generated image |
-| Multi-panel | `INFOGRAPHIC_MULTI_PANEL` | `false` | Decomposes into 2-4 focused panels |
-
-The user can also request these inline:
-- "with critic review" --> `critic: true`
-- "multi-panel infographic" --> `multi_panel: true`
 
 ## Prerequisites
 
