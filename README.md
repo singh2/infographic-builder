@@ -20,6 +20,51 @@ includes:
   - bundle: git+https://github.com/singh2/infographic-designer@main
 ```
 
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph bundle ["infographic-builder (bundle)"]
+        direction TB
+        B["bundle.md<br/><i>thin root</i>"]
+        BH["behaviors/infographic.yaml<br/><i>wires tool + agent + context</i>"]
+        AW["context/infographic-awareness.md<br/><i>loaded every session</i>"]
+        SP["context/prompts/system-prompt.md<br/><i>style guide</i>"]
+        AG["agents/infographic-designer.md<br/><i>loaded only when spawned</i>"]
+        B --> BH
+        BH --> AW
+        BH --> AG
+        AG --> SP
+    end
+
+    subgraph runtime ["Runtime Flow"]
+        direction TB
+        U["User<br/>'create an infographic about X'"]
+        RS["Root Session<br/><i>reads awareness context</i>"]
+        DE["infographic-designer agent<br/><i>design + prompt construction</i>"]
+        NB["nano-banana tool<br/><i>Gemini image generation</i>"]
+        IMG["Generated image<br/><i>./infographic.png</i>"]
+
+        U --> RS
+        RS -->|"delegate()"| DE
+        DE -->|"generate"| NB
+        NB --> IMG
+        IMG --> DE
+        DE -->|"path + rationale"| RS
+        RS --> U
+    end
+
+    subgraph flags ["Feature Flags (optional)"]
+        direction TB
+        CR["INFOGRAPHIC_CRITIC=true<br/><i>generate → analyze → refine</i>"]
+        MP["INFOGRAPHIC_MULTI_PANEL=true<br/><i>decompose → N panels</i>"]
+    end
+
+    AW -.->|"routing signal"| RS
+    SP -.->|"design guidance"| DE
+    flags -.->|"env vars"| RS
+```
+
 ## How it works
 
 ```
