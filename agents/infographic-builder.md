@@ -137,20 +137,54 @@ Replace step 4-5 of the workflow with this panel pipeline:
    | Multi-topic overview | One panel per topic (max 4) |
    | Timeline + detail | Panel 1: timeline overview, Panel 2-3: detail sections |
 
-2. **Establish a shared style brief** for all panels:
+2. **Build a content map** before writing any prompts. The content map assigns
+   every concept, data point, and visual element to exactly one panel:
+
+   ```
+   CONTENT MAP:
+   Panel 1 -- [title]: [concepts/data ONLY in this panel]
+   Panel 2 -- [title]: [concepts/data ONLY in this panel]
+   Panel 3 -- [title]: [concepts/data ONLY in this panel]
+
+   Shared across panels: [series title, panel numbering, style brief only]
+   ```
+
+   **Content scoping rules:**
+   - Each concept, statistic, or visual element appears in exactly ONE panel
+   - No panel recaps or summarizes content from another panel
+   - The only repeated elements are: series title, panel number indicator, and
+     the style brief (colors, typography, background)
+   - If a concept bridges two panels, assign it to the panel where it is the
+     primary focus and reference it by name only (not explanation) in the other
+
+3. **Establish a shared style brief** for all panels:
    - Same color palette (specify exact colors)
    - Same typography direction (e.g. "bold sans-serif headers, light body text")
    - Same background treatment (e.g. "white background, light gray section dividers")
    - Same icon style (e.g. "flat, two-tone icons")
    - Same aspect ratio for all panels
 
-3. **Generate each panel** sequentially. For each panel:
-   - Include the shared style brief in the prompt (copy it verbatim into each prompt)
-   - Add panel-specific content (data, layout, text)
+4. **Generate panels using reference image chaining.** Panel 1 is the style
+   anchor -- all subsequent panels reference it visually:
+
+   - **Panel 1**: Generate WITHOUT a reference image. This establishes the
+     exact typography, spacing, icon rendering, and color treatment.
+   - **Panels 2-N**: Generate WITH `reference_image_path` set to the Panel 1
+     output path. This gives Gemini a visual target for style consistency
+     rather than relying solely on the text style brief.
+
+   For each panel:
+   - Include the shared style brief in the prompt (copy verbatim into each prompt)
+   - Add panel-specific content from the content map
+   - Add a scoping line: "This panel covers ONLY: [items from content map].
+     Do NOT include: [items assigned to other panels]."
    - Add a panel label in the prompt: "Panel 1 of 3: [section title]"
    - Use a numbered output path: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
 
-4. **If critic mode is also enabled**, run the critic loop on each panel individually
+   **Panel 1 MUST be generated first and alone.** Panels 2-N may be generated
+   in parallel (they all reference Panel 1, not each other).
+
+5. **If critic mode is also enabled**, run the critic loop on each panel individually
    after it is generated (before moving to the next panel). This catches issues
    early -- a bad Panel 1 style would propagate to all subsequent panels.
 
