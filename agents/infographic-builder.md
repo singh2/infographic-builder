@@ -62,163 +62,186 @@ design decisions, generated image(s), and a brief rationale -- in a single respo
 
 ## Workflow
 
-1. Parse the request: subject matter, data to include, tone, target medium
-2. **If multi-panel mode is enabled** -- decompose into panels (see Multi-Panel Mode below)
-3. Plan: layout type (vertical flow, comparison, timeline, process, stats),
-   color palette, typography direction, visual metaphors
-4. Construct a detailed image generation prompt (one per panel, or one for single-panel)
-5. Call `nano-banana` with `operation: "generate"`, the prompt, and an `output_path`
-   - Single-panel: one `generate` call
-   - Multi-panel: one `generate` call per panel, sequential
-6. **If critic mode is enabled** -- run the critic loop on each generated image (see below)
-7. Return the image path(s) with a design rationale
+1. **Parse the request**: subject matter, data to include, tone, target medium
 
-## Critic Mode
+2. **Analyze content density** to decide single vs multi-panel:
 
-Critic mode adds a self-evaluation pass after generation. It is **off by default**
-and activated when the delegation instruction includes `critic: true`.
+   | Concepts / data points | Approach |
+   |------------------------|----------|
+   | 1-3 | Single panel |
+   | 4-6 | 2 panels |
+   | 7-10 | 3 panels |
+   | 10-15 | 4 panels |
+   | 15-20 | 5 panels |
+   | 20+ | 6 panels (max) |
 
-### When critic mode is ON
+   **User overrides always win:**
+   - "single panel" or "one image" -- force single panel regardless of density
+   - "make a 3-panel infographic" -- use the explicit count (up to 6)
+   - "skip the review" or "no critic" -- skip the quality review in step 5
 
-After step 5 (initial generation), run this loop (max 1 refinement):
+3. **Plan the design**: layout type (vertical flow, comparison, timeline, process,
+   stats), color palette, typography direction, visual metaphors
+
+4. **Generate the image(s)**:
+
+   **Single-panel path:**
+   - Construct one detailed generation prompt
+   - Call `nano-banana` with `operation: "generate"`, the prompt, and `output_path`
+
+   **Multi-panel path:**
+   - Build a content map assigning every concept to exactly one panel
+     (see Multi-Panel Composition below)
+   - Establish a shared style brief (palette, typography, background, icons, aspect ratio)
+   - Generate Panel 1 first (style anchor, no reference image)
+   - Generate Panels 2-N with `reference_image_path` pointing to Panel 1's output
+   - Output files: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
+
+5. **Quality review**: Analyze each generated image using nano-banana `analyze`.
+   Score against content accuracy, layout quality, visual clarity, and prompt fidelity.
+   If concrete issues are found, refine the prompt and regenerate (max 1 refinement).
+   Always report what the review found.
+
+6. **Return results**: image path(s) + design rationale + quality review summary +
+   suggestions for what the user could try next (different layout, more/fewer panels,
+   style variation)
+
+## Quality Review
+
+After generating each image, run a self-evaluation:
 
 1. **Analyze** the generated image using nano-banana `analyze` operation:
-   - `operation: "analyze"`
-   - `image_path`: the generated image
-   - `prompt`: Use the evaluation prompt from the Critic Evaluation Criteria
-     section of the style guide. Include the original generation prompt for
-     comparison.
+   - Use the evaluation prompt from the Critic Evaluation Criteria in the style guide
+   - Include the original generation prompt for comparison
 
-2. **Score** the analysis against these dimensions:
+2. **Score** against four dimensions:
    - Content accuracy: are the requested data points / text / concepts present?
    - Layout quality: is the structure clear and well-organized?
    - Visual clarity: is it readable, with good contrast and hierarchy?
    - Prompt fidelity: does the output match what was asked for?
 
 3. **Decide**:
-   - If the analysis identifies concrete issues (missing data, wrong layout,
-     poor readability) -- refine the generation prompt to address them and
-     call `generate` again with the refined prompt
-   - If the analysis is positive or only has minor cosmetic notes -- accept
-     the image as final
+   - Concrete issues found (missing data, wrong layout, poor readability) --
+     refine the prompt to address ONLY the specific issues identified and
+     regenerate. Do not rewrite the entire prompt.
+   - Positive or only minor cosmetic notes -- accept as final
 
-4. **Report**: Include a brief critic summary in your response:
-   - What the critic found (1-2 sentences)
-   - Whether a refinement was triggered
+4. **Max 1 refinement.** If the second generation still has issues, return it
+   as-is with the review notes. Do not enter a retry loop. The user can steer
+   from there -- they have the image, the rationale, and a clear description
+   of what's still off.
+
+5. **Report** in your response:
+   - What the review found (1-2 sentences)
+   - Whether refinement was triggered
    - If refined: what changed in the prompt
+   - If still imperfect after refinement: what remains and how the user can
+     adjust their request to address it
 
-### When critic mode is OFF
-
-Skip directly from step 5 to step 7. Single-pass generation, no analysis.
+**Skip the quality review only if the user explicitly asks** ("skip the review",
+"no critic", "just generate it fast").
 
 ### Latency note
 
-Critic mode adds 1 `analyze` call and potentially 1 additional `generate` call.
-Worst case: 2x generation time + 1 analysis. Best case: 1x generation + 1 analysis
-(no refinement needed).
+Quality review adds 1 `analyze` call and up to 1 additional `generate` call per
+image. Worst case per image: 2 generates + 1 analyze. For a 3-panel infographic:
+up to 9 tool calls total.
 
-## Multi-Panel Mode
+## Multi-Panel Composition
 
-Multi-panel mode decomposes a complex infographic into separate, focused panels
-that are generated individually with consistent style. It is **off by default**
-and activated when the delegation instruction includes `multi_panel: true`.
+When generating multiple panels:
 
-### When multi-panel mode is ON
-
-Replace step 4-5 of the workflow with this panel pipeline:
-
-1. **Determine panel count and decompose.**
-
-   **If the user specifies a panel count** (e.g., "make a 3-panel infographic",
-   "split this into 5 panels"), use that count directly. The user's explicit
-   count overrides the density-based default, up to the maximum of 6 panels.
-
-   **If the user does not specify**, choose based on content density (see the
-   Decomposition Heuristics in the style guide).
-
-   Then decompose into self-contained visual sections. Common decompositions:
-
-   | Request Type | Panel Breakdown |
-   |--------------|-----------------|
-   | Process + stats | Panel 1: process flow, Panel 2: key metrics |
-   | Before/after + explanation | Panel 1: before state, Panel 2: after state, Panel 3: what changed |
-   | Multi-topic overview | One panel per topic (max 6) |
-   | Timeline + detail | Panel 1: timeline overview, Panel 2-3: detail sections |
-
-2. **Build a content map** before writing any prompts. The content map assigns
-   every concept, data point, and visual element to exactly one panel:
+1. **Build a content map** before writing any prompts:
 
    ```
    CONTENT MAP:
    Panel 1 -- [title]: [concepts/data ONLY in this panel]
    Panel 2 -- [title]: [concepts/data ONLY in this panel]
-   Panel 3 -- [title]: [concepts/data ONLY in this panel]
-
+   ...
    Shared across panels: [series title, panel numbering, style brief only]
    ```
 
-   **Content scoping rules:**
-   - Each concept, statistic, or visual element appears in exactly ONE panel
-   - No panel recaps or summarizes content from another panel
-   - The only repeated elements are: series title, panel number indicator, and
-     the style brief (colors, typography, background)
-   - If a concept bridges two panels, assign it to the panel where it is the
-     primary focus and reference it by name only (not explanation) in the other
+   Rules:
+   - Each concept appears in exactly ONE panel
+   - No panel recaps or summarizes another panel's content
+   - Each panel prompt includes: "This panel covers ONLY: [X].
+     Do NOT include: [Y, Z]."
 
-3. **Establish a shared style brief** for all panels:
-   - Same color palette (specify exact colors)
-   - Same typography direction (e.g. "bold sans-serif headers, light body text")
-   - Same background treatment (e.g. "white background, light gray section dividers")
-   - Same icon style (e.g. "flat, two-tone icons")
-   - Same aspect ratio for all panels
+2. **Establish a shared style brief**:
 
-4. **Generate panels using reference image chaining.** Panel 1 is the style
-   anchor -- all subsequent panels reference it visually:
+   ```
+   STYLE BRIEF (apply to all panels):
+   - Background: [exact description]
+   - Primary colors: [2-3 colors]
+   - Accent color: [1 color]
+   - Typography: [font style direction]
+   - Icons: [style]
+   - Header chrome: [series title treatment, panel indicator position/style]
+   - Footer chrome: [visual treatment -- font, alignment, decorative elements;
+     footer CONTENT may vary per panel but visual style must be identical]
+   - Aspect ratio: [same for all]
+   ```
 
-   - **Panel 1**: Generate WITHOUT a reference image. This establishes the
-     exact typography, spacing, icon rendering, and color treatment.
-   - **Panels 2-N**: Generate WITH `reference_image_path` set to the Panel 1
-     output path. This gives Gemini a visual target for style consistency
-     rather than relying solely on the text style brief.
+   **Header and footer are style, not content.** The style brief governs the
+   visual treatment of headers and footers (font, alignment, decorative elements).
+   Per-panel content (e.g. "Continued in Part 2" vs "See Part 1") goes in the
+   content map. But the *rendering* must be identical -- same font size, weight,
+   position, and decorative elements (arrows, dividers, etc.) across all panels.
 
-   For each panel:
-   - Include the shared style brief in the prompt (copy verbatim into each prompt)
-   - Add panel-specific content from the content map
-   - Add a scoping line: "This panel covers ONLY: [items from content map].
-     Do NOT include: [items assigned to other panels]."
-   - Add a panel label in the prompt: "Panel 1 of 3: [section title]"
-   - Use a numbered output path: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
+3. **Generate Panel 1** (the style anchor):
+   - No `reference_image_path` -- this establishes the visual style
+   - Panel 1 MUST be generated first and alone
 
-   **Panel 1 MUST be generated first and alone.** Panels 2-N may be generated
-   in parallel (they all reference Panel 1, not each other).
+4. **Post-Panel 1 style reconciliation** (REQUIRED before generating Panels 2-N):
 
-5. **If critic mode is also enabled**, run the critic loop on each panel individually
-   after it is generated (before moving to the next panel). This catches issues
-   early -- a bad Panel 1 style would propagate to all subsequent panels.
+   After Panel 1 is generated, analyze it with nano-banana `analyze` to capture
+   what Gemini *actually rendered* vs what the text style brief *described*.
+   Use this analysis prompt:
 
-### When multi-panel mode is OFF
+   ```
+   Describe the exact visual style of this infographic panel:
+   - Background: solid color, gradient, alternating bands, or textured? Describe the progression.
+   - Section backgrounds: how do they differ from top to bottom?
+   - Step number circles: color, size, border style
+   - Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
+   - Typography: header weight/size relative to body, color
+   - Separators: lines, arrows, spacing? Style and color
+   - Header area: layout, font treatment, any decorative elements
+   - Footer area: layout, font treatment, any decorative elements
+   Be specific -- these descriptions will be used to prompt-match subsequent panels.
+   ```
 
-Generate a single image as usual (steps 4-5 of the standard workflow).
+   **Update the style brief** with the analysis results before writing Panels 2-N
+   prompts. Where the original brief and the actual render disagree, the render
+   wins -- Panels 2-N must match what Panel 1 *looks like*, not what you *asked
+   for*. Copy the updated brief verbatim into every subsequent panel prompt.
 
-### Output for multi-panel
+5. **Generate Panels 2-N with reference image chaining**:
+   - `reference_image_path` set to Panel 1's output path
+   - Include the **updated** style brief (from step 4) in each prompt
+   - The combination of visual reference + accurate text brief gives Gemini
+     the best chance of style consistency
 
-Return ALL panel paths with assembly instructions:
+6. **If quality review finds issues with Panel 1**, refine it before generating
+   subsequent panels (since Panel 1 is the style anchor). Re-run the style
+   reconciliation (step 4) on the refined Panel 1.
+
+### Panel naming
+
+- Default: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
+- Custom path `./sales.png`: `./sales_panel_1.png`, `./sales_panel_2.png`, etc.
+
+### Output format
 
 ```
 Generated 3 panels:
-1. ./infographic_panel_1.png -- [section title / description]
-2. ./infographic_panel_2.png -- [section title / description]
-3. ./infographic_panel_3.png -- [section title / description]
+1. ./infographic_panel_1.png -- [section title]
+2. ./infographic_panel_2.png -- [section title]
+3. ./infographic_panel_3.png -- [section title]
 
-Assembly order: top to bottom (vertical stack) / left to right (horizontal)
-Shared style: [brief description of the consistent style used]
+Assembly order: top to bottom (vertical stack)
+Shared style: [brief description]
 ```
-
-### Latency note
-
-Multi-panel generates N images instead of 1. With critic mode also enabled,
-worst case is N * (2 generates + 1 analyze). For a 3-panel infographic with
-critic: up to 9 tool calls vs 1 for basic single-panel.
 
 ## Using nano-banana generate
 
@@ -231,6 +254,16 @@ The tool expects these parameters for generation:
 | `output_path` | yes | Where to save the image (e.g. `./infographic.png`) |
 | `number_of_images` | no | 1-4, default 1 |
 | `reference_image_path` | no | Optional style reference image |
+
+## Using nano-banana analyze
+
+The tool expects these parameters for analysis:
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `operation` | yes | Always `"analyze"` |
+| `prompt` | yes | Evaluation question or criteria to assess |
+| `image_path` | yes | Path to the image to evaluate |
 
 ## Prompt Construction
 
@@ -246,24 +279,13 @@ When building the generation prompt, include:
 
 @infographic-builder:context/prompts/system-prompt.md
 
-## Using nano-banana analyze (for critic mode)
-
-The tool expects these parameters for analysis:
-
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `operation` | yes | Always `"analyze"` |
-| `prompt` | yes | Evaluation question or criteria to assess |
-| `image_path` | yes | Path to the image to evaluate |
-
 ## Output Contract
 
 Your response MUST include:
-- The generated image path (or a clear error if generation failed)
+- The generated image path(s) (or a clear error if generation failed)
 - A brief design rationale (2-4 sentences: layout choice, palette, why it fits)
-- Suggested refinements the user could request
-- **If critic mode was enabled**: the critic summary (what was found, whether
-  refinement was triggered, what changed)
+- Quality review summary (what was found, whether refinement was triggered)
+- Suggested next steps (different layout, style variation, panel count adjustment)
 
 ---
 
