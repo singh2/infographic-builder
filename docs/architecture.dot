@@ -1,0 +1,192 @@
+digraph infographic_builder {
+    rankdir=TB
+    fontname="Helvetica"
+    fontsize=12
+    node [fontname="Helvetica" fontsize=10 style=filled]
+    edge [fontname="Helvetica" fontsize=9]
+    compound=true
+    newrank=true
+
+    // ── Bundle Composition ──────────────────────────────────
+
+    subgraph cluster_bundle {
+        label="infographic-builder bundle"
+        style="rounded,dashed"
+        color="#666666"
+        fontcolor="#666666"
+        bgcolor="#fafafa"
+
+        bundle_md [
+            label="bundle.md\n(thin root)"
+            shape=note
+            fillcolor="#e8f4fd"
+            color="#4a90d9"
+        ]
+
+        subgraph cluster_behavior {
+            label="behaviors/infographic.yaml"
+            style="rounded"
+            color="#b0b0b0"
+            bgcolor="#f5f5f5"
+
+            tool_wire [
+                label="tool: nano-banana\n(source: git+https://...)"
+                shape=component
+                fillcolor="#fff3cd"
+                color="#d4a017"
+            ]
+
+            agent_wire [
+                label="agents: infographic-designer"
+                shape=component
+                fillcolor="#d4edda"
+                color="#28a745"
+            ]
+
+            context_wire [
+                label="context: infographic-awareness.md"
+                shape=component
+                fillcolor="#e2d9f3"
+                color="#7b5ea7"
+            ]
+        }
+
+        foundation [
+            label="amplifier-foundation\n(inherited tools, hooks, session)"
+            shape=box3d
+            fillcolor="#f0f0f0"
+            color="#999999"
+        ]
+
+        bundle_md -> foundation [label="includes" style=dashed color="#999999"]
+        bundle_md -> tool_wire [label="includes" style=dashed color="#999999" lhead=cluster_behavior]
+    }
+
+    // ── Runtime Components ──────────────────────────────────
+
+    subgraph cluster_runtime {
+        label="Runtime Flow"
+        style="rounded"
+        color="#333333"
+        bgcolor="#ffffff"
+
+        user [
+            label="User\n\"create an infographic\nabout the water cycle\""
+            shape=oval
+            fillcolor="#dbeafe"
+            color="#2563eb"
+        ]
+
+        root_session [
+            label="Root Session\n(reads awareness context,\nchecks env vars)"
+            shape=box
+            fillcolor="#e8f4fd"
+            color="#4a90d9"
+        ]
+
+        agent [
+            label="infographic-designer\nagent"
+            shape=doubleoctagon
+            fillcolor="#d4edda"
+            color="#28a745"
+        ]
+
+        style_guide [
+            label="system-prompt.md\n(style guide +\ncritic criteria)"
+            shape=note
+            fillcolor="#e2d9f3"
+            color="#7b5ea7"
+        ]
+
+        nano_banana [
+            label="nano-banana\ntool"
+            shape=hexagon
+            fillcolor="#fff3cd"
+            color="#d4a017"
+        ]
+
+        gemini [
+            label="Gemini API\n(image generation)"
+            shape=cylinder
+            fillcolor="#fce4ec"
+            color="#c62828"
+        ]
+
+        image [
+            label="./infographic.png"
+            shape=folder
+            fillcolor="#e8f5e9"
+            color="#2e7d32"
+        ]
+    }
+
+    // ── Main Flow Edges ─────────────────────────────────────
+
+    user -> root_session [label="1. request" color="#2563eb" penwidth=1.5]
+    root_session -> agent [label="2. delegate()" color="#28a745" penwidth=1.5]
+    agent -> style_guide [label="3. load\nstyle guide" style=dashed color="#7b5ea7"]
+    agent -> nano_banana [label="4. generate" color="#d4a017" penwidth=1.5]
+    nano_banana -> gemini [label="API call" color="#c62828"]
+    gemini -> nano_banana [label="image data" color="#c62828" style=dashed]
+    nano_banana -> image [label="5. save" color="#2e7d32"]
+    agent -> root_session [label="6. path +\nrationale" color="#28a745" style=dashed]
+    root_session -> user [label="7. result" color="#2563eb" style=dashed]
+
+    // ── Feature Flags ───────────────────────────────────────
+
+    subgraph cluster_flags {
+        label="Feature Flags (env vars)"
+        style="rounded,dashed"
+        color="#ff6b00"
+        fontcolor="#ff6b00"
+        bgcolor="#fff8f0"
+
+        critic [
+            label="INFOGRAPHIC_CRITIC=true\n\ngenerate → analyze →\nscore → refine (max 1x)"
+            shape=box
+            fillcolor="#ffe0b2"
+            color="#ff6b00"
+        ]
+
+        multi_panel [
+            label="INFOGRAPHIC_MULTI_PANEL=true\n\ndecompose → style brief →\nN panels (2-4)"
+            shape=box
+            fillcolor="#ffe0b2"
+            color="#ff6b00"
+        ]
+    }
+
+    // ── Flag connections ────────────────────────────────────
+
+    critic -> agent [
+        label="analyze loop"
+        style=dashed
+        color="#ff6b00"
+    ]
+
+    multi_panel -> agent [
+        label="panel pipeline"
+        style=dashed
+        color="#ff6b00"
+    ]
+
+    // ── Wiring connections (bundle → runtime) ───────────────
+
+    context_wire -> root_session [
+        label="routing signal\n(loaded every session)"
+        style=dotted
+        color="#7b5ea7"
+    ]
+
+    agent_wire -> agent [
+        label="spawns"
+        style=dotted
+        color="#28a745"
+    ]
+
+    tool_wire -> nano_banana [
+        label="registers"
+        style=dotted
+        color="#d4a017"
+    ]
+}
