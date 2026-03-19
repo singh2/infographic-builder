@@ -1,0 +1,218 @@
+# =============================================================================
+# Generate Sample Gallery
+# =============================================================================
+#
+# Generates 12 sample infographics covering every panel count (1-6),
+# different layout types, and a mix of audiences (AI/tech, outdoors,
+# music, fun). Each scenario delegates to infographic-builder:infographic-builder,
+# which handles style briefs, content maps, reference image chaining, and
+# quality review internally.
+#
+# Usage:
+#   amplifier run "execute recipes/generate-sample-gallery.yaml"
+#
+# Output:
+#   ./samples/*.png — 12 infographic sets (30+ images total)
+#
+# =============================================================================
+# CHANGELOG
+# =============================================================================
+#
+# v1.0.0 (2026-03-19):
+#   - NEW FEATURE: Initial recipe — 12 scenarios across 1-6 panels
+#     * Bash step creates ./samples/ directory
+#     * Foreach iterates all 12 scenarios sequentially
+#     * Each iteration delegates to infographic-builder:infographic-builder
+#
+# =============================================================================
+
+name: "generate-sample-gallery"
+description: "Generate a gallery of 12 sample infographics covering panel counts 1-6, diverse layouts, and mixed audiences"
+version: "1.0.0"
+tags: ["infographic", "gallery", "samples", "batch"]
+
+context:
+  scenarios:
+    - name: "mechanical-keyboard"
+      prompt: >
+        Create a single-panel infographic about "The Anatomy of a Mechanical Keyboard".
+        Show the key switch mechanism (spring, stem, housing), keycap layers, PCB,
+        stabilizers, and plate mount. Use an exploded diagram layout. Dark background
+        with RGB color accents (red, green, blue, purple). Bold sans-serif headers,
+        9:16 aspect ratio. Save as ./samples/mechanical-keyboard.png
+
+    - name: "noise-canceling-headphones"
+      prompt: >
+        Create a single-panel infographic about "How Noise-Canceling Headphones Work".
+        Show ambient sound waves, microphone pickup, anti-phase wave generation, and
+        combined output (silence). Use a horizontal flow diagram showing the wave
+        cancellation process. Clean minimal style with a light gray background, blue
+        and dark gray palette. 9:16 aspect ratio.
+        Save as ./samples/noise-canceling-headphones.png
+
+    - name: "dns"
+      prompt: >
+        Create a 2-panel infographic about "How DNS Works".
+        Panel 1 "The Lookup Begins": browser request, DNS resolver, root nameserver,
+        TLD nameserver.
+        Panel 2 "The Answer Returns": authoritative nameserver, IP address return,
+        caching/TTL, browser connects.
+        Warm off-white editorial style with teal and charcoal palette, golden yellow
+        accents. 9:16 aspect ratio.
+        Save panels as ./samples/dns_panel_1.png, ./samples/dns_panel_2.png
+
+    - name: "campfire"
+      prompt: >
+        Create a 2-panel infographic about "The Science Behind a Perfect Campfire".
+        Panel 1 "The Fire Triangle": fuel, heat, oxygen — the three elements needed
+        for combustion, plus best wood types (hardwood vs softwood).
+        Panel 2 "Building Technique": tinder nest → kindling teepee → fuel logs,
+        airflow management, and common mistakes.
+        Warm illustrated style with deep orange, amber, and dark brown palette on a
+        cream background. 9:16 aspect ratio.
+        Save panels as ./samples/campfire_panel_1.png, ./samples/campfire_panel_2.png
+
+    - name: "agile-vs-waterfall"
+      prompt: >
+        Create a 2-panel comparison infographic about "Agile vs Waterfall".
+        Panel 1 "Waterfall": linear sequential phases (requirements → design →
+        implementation → testing → deployment), plan-driven, heavy documentation,
+        change is expensive.
+        Panel 2 "Agile": iterative sprints (plan → build → test → review → repeat),
+        adaptive, working software over documentation, embraces change.
+        Use a clean corporate style with blue tones for Waterfall and green tones for
+        Agile, light background. Side-by-side comparison layout within each panel.
+        9:16 aspect ratio.
+        Save panels as ./samples/agile-vs-waterfall_panel_1.png,
+        ./samples/agile-vs-waterfall_panel_2.png
+
+    - name: "neural-networks"
+      prompt: >
+        Create a 3-panel infographic about "How Neural Networks Learn".
+        Panel 1 "Forward Pass": input data flows through layers (input → hidden →
+        output), weights multiply signals, activation functions fire.
+        Panel 2 "Backpropagation": error calculated at output, gradients flow backwards
+        through the network, chain rule applies layer by layer.
+        Panel 3 "Gradient Descent": weights updated to minimize loss, learning rate
+        controls step size, training loop repeats until convergence.
+        Technical diagram style with gradient blues and purples on a dark background,
+        glowing node connections. 9:16 aspect ratio.
+        Save panels as ./samples/neural-networks_panel_1.png through _panel_3.png
+
+    - name: "surfing"
+      prompt: >
+        Create a 3-panel infographic about "What Happens When You Drop Into a Wave".
+        Panel 1 "The Paddle": reading the swell, positioning in the lineup, timing
+        the takeoff, catching the wave's energy.
+        Panel 2 "The Pop-Up": chest push, back foot plants, front foot slides forward,
+        low center of gravity, all in under 2 seconds.
+        Panel 3 "The Ride": trimming the face, bottom turns, cutbacks, how wave energy
+        propels the surfer.
+        Vibrant ocean style with deep blues, turquoise, and white foam accents on a
+        gradient blue background. Dynamic and action-oriented feel. 9:16 aspect ratio.
+        Save panels as ./samples/surfing_panel_1.png through _panel_3.png
+
+    - name: "llm-pipeline"
+      prompt: >
+        Create a 4-panel infographic about "The LLM Training Pipeline".
+        Panel 1 "Pre-training": next-token prediction on trillions of tokens,
+        self-supervised, thousands of GPUs, costs $2M-$100M+.
+        Panel 2 "Supervised Fine-Tuning": 10K-100K instruction-response pairs, human
+        expert annotators, task alignment.
+        Panel 3 "RLHF & Alignment": human preference ranking, reward model training,
+        PPO optimization loop, goal of helpful/harmless/honest.
+        Panel 4 "Evaluation & Deployment": benchmarks (MMLU, HumanEval), red-teaming,
+        API serving, monitoring, continuous feedback.
+        Dark navy neon style with electric blue, cyan, purple accents and amber
+        highlights. 9:16 aspect ratio.
+        Save panels as ./samples/llm-pipeline_panel_1.png through _panel_4.png
+
+    - name: "song-to-spotify"
+      prompt: >
+        Create a 4-panel infographic about "How a Song Goes from Idea to Spotify".
+        Panel 1 "Songwriting": melody creation, lyric writing, chord progressions,
+        demo recording.
+        Panel 2 "Recording": studio session, instrument tracking, vocal takes,
+        DAW editing.
+        Panel 3 "Mixing & Mastering": EQ balancing, compression, spatial effects,
+        loudness optimization for streaming.
+        Panel 4 "Distribution": digital aggregators (DistroKid, TuneCore), streaming
+        platform delivery, royalty splits, playlist placement.
+        Creative music style with warm purple and gold palette on a dark background,
+        vinyl/waveform visual motifs. 9:16 aspect ratio.
+        Save panels as ./samples/song-to-spotify_panel_1.png through _panel_4.png
+
+    - name: "ai-everyday-life"
+      prompt: >
+        Create a 5-panel infographic about "AI in Everyday Life".
+        Panel 1 "Recommendations": Netflix, Spotify, shopping algorithms —
+        collaborative filtering and content-based matching.
+        Panel 2 "Voice Assistants": speech recognition, natural language understanding,
+        intent classification, response generation.
+        Panel 3 "Navigation": real-time traffic prediction, route optimization, ETA
+        estimation, map data fusion.
+        Panel 4 "Healthcare": medical imaging analysis, drug discovery acceleration,
+        clinical decision support.
+        Panel 5 "Creative Tools": image generation, writing assistants, code
+        completion, music composition.
+        Friendly modern style with bright blues and greens on a white background,
+        rounded icons, approachable feel. 9:16 aspect ratio.
+        Save panels as ./samples/ai-everyday-life_panel_1.png through _panel_5.png
+
+    - name: "coffee-bean"
+      prompt: >
+        Create a 5-panel infographic about "The Life of a Coffee Bean".
+        Panel 1 "Growing": coffee belt regions, cherry development on the branch,
+        altitude and shade impact on flavor.
+        Panel 2 "Harvesting & Processing": hand-picking vs strip-picking, washed vs
+        natural vs honey processing methods.
+        Panel 3 "Roasting": green bean transformation, Maillard reaction, first crack,
+        roast profiles (light/medium/dark).
+        Panel 4 "Brewing": grind size spectrum, water temperature, extraction time,
+        brew methods (espresso, pour-over, French press).
+        Panel 5 "The Cup": flavor wheel, tasting notes (acidity, body, sweetness),
+        single-origin vs blend characteristics.
+        Warm earthy style with rich browns, cream, and forest greens on a light
+        parchment background, illustrated feel. 9:16 aspect ratio.
+        Save panels as ./samples/coffee-bean_panel_1.png through _panel_5.png
+
+    - name: "history-of-internet"
+      prompt: >
+        Create a 6-panel infographic about "History of the Internet".
+        Panel 1 "ARPANET (1960s-70s)": packet switching invention, first 4 nodes,
+        military origins.
+        Panel 2 "Protocols & Email (1980s)": TCP/IP standardization, SMTP email, DNS
+        introduced, NSFNet backbone.
+        Panel 3 "The World Wide Web (1990s)": Tim Berners-Lee, HTML/HTTP,
+        Mosaic/Netscape browsers, dotcom boom.
+        Panel 4 "Web 2.0 (2000s)": social media explosion, user-generated content,
+        Ajax/dynamic web, Google/Facebook/YouTube.
+        Panel 5 "Mobile & Cloud (2010s)": smartphone revolution, app economy,
+        AWS/cloud computing, streaming services.
+        Panel 6 "AI & Beyond (2020s)": large language models, edge computing, IoT,
+        decentralized web.
+        Timeline style with a retro-to-modern color progression — muted greens/ambers
+        in early panels transitioning to vibrant blues/purples in later panels.
+        9:16 aspect ratio.
+        Save panels as ./samples/history-of-internet_panel_1.png through _panel_6.png
+
+steps:
+  # -------------------------------------------------------------------------
+  # Step 1: Ensure the output directory exists
+  # -------------------------------------------------------------------------
+  - id: "create-samples-dir"
+    type: "bash"
+    command: "mkdir -p ./samples && echo 'samples directory ready'"
+    output: "dir_status"
+
+  # -------------------------------------------------------------------------
+  # Step 2: Iterate through all 12 scenarios and generate each infographic
+  # -------------------------------------------------------------------------
+  - id: "generate-infographics"
+    foreach: "{{scenarios}}"
+    as: "scenario"
+    agent: "infographic-builder:infographic-builder"
+    prompt: "{{scenario.prompt}}"
+    collect: "gallery_results"
+    timeout: 1800
+    on_error: "continue"
