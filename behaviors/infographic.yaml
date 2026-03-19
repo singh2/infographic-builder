@@ -1,0 +1,16 @@
+bundle:
+  name: infographic-behavior
+  version: 0.1.0
+  description: Infographic design capability -- image generation via nano-banana, designer agent, awareness context
+
+tools:
+  - module: tool-nano-banana
+    source: git+https://github.com/kenotron-ms/amplifier-module-tool-nano-banana@main
+
+agents:
+  include:
+    - infographic-builder:agents/infographic-designer
+
+context:
+  include:
+    - infographic-builder:context/infographic-awareness.md
