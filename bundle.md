@@ -11,8 +11,6 @@ includes:
 
 # Infographic Builder
 
-@infographic-builder:context/infographic-awareness.md
-
 ---
 
 @foundation:context/shared/common-system-base.md

@@ -9,7 +9,7 @@ tools:
 
 agents:
   include:
-    - infographic-builder:agents/infographic-builder
+    - infographic-builder:infographic-builder
 
 context:
   include:

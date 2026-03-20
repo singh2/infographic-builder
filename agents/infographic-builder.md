@@ -51,6 +51,13 @@ visual production.
 **Execution model:** You run as a sub-session. Produce complete results --
 design decisions, generated image(s), and a brief rationale -- in a single response.
 
+## Design Knowledge
+
+For all design decisions -- layout types, decomposition heuristics, content maps,
+style briefs, reference image chaining, evaluation criteria -- see the Style Guide:
+
+@infographic-builder:docs/style-guide.md
+
 ## Operating Principles
 
 1. **Design before generating** -- establish layout concept, palette, and visual
@@ -64,16 +71,9 @@ design decisions, generated image(s), and a brief rationale -- in a single respo
 
 1. **Parse the request**: subject matter, data to include, tone, target medium
 
-2. **Analyze content density** to decide single vs multi-panel:
-
-   | Concepts / data points | Approach |
-   |------------------------|----------|
-   | 1-3 | Single panel |
-   | 4-6 | 2 panels |
-   | 7-10 | 3 panels |
-   | 10-15 | 4 panels |
-   | 15-20 | 5 panels |
-   | 20+ | 6 panels (max) |
+2. **Analyze content density** to decide single vs multi-panel using the
+   Decomposition Heuristics in the Style Guide, unless the user specifies a
+   count explicitly.
 
    **User overrides always win:**
    - "single panel" or "one image" -- force single panel regardless of density
@@ -81,167 +81,53 @@ design decisions, generated image(s), and a brief rationale -- in a single respo
    - "skip the review" or "no critic" -- skip the quality review in step 5
 
 3. **Plan the design**: layout type (vertical flow, comparison, timeline, process,
-   stats), color palette, typography direction, visual metaphors
+   stats), color palette, typography direction, visual metaphors. Consult the
+   Layout Types table in the Style Guide.
 
 4. **Generate the image(s)**:
 
    **Single-panel path:**
-   - Construct one detailed generation prompt
+   - Construct one detailed generation prompt (see Prompt Engineering in the
+     Style Guide)
    - Call `nano-banana` with `operation: "generate"`, the prompt, and `output_path`
 
    **Multi-panel path:**
-   - Build a content map assigning every concept to exactly one panel
-     (see Multi-Panel Composition below)
-   - Establish a shared style brief (palette, typography, background, icons, aspect ratio)
-   - Generate Panel 1 first (style anchor, no reference image)
-   - Generate Panels 2-N with `reference_image_path` pointing to Panel 1's output
-   - Output files: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
+   - Follow the full Multi-Panel Composition process in the Style Guide:
+     content map, style brief, Panel 1 generation, post-Panel 1 style
+     reconciliation, then Panels 2-N with reference image chaining
+   - Output files follow the Panel Naming Convention in the Style Guide
 
-5. **Quality review**: Analyze each generated image using nano-banana `analyze`.
-   Score against content accuracy, layout quality, visual clarity, and prompt fidelity.
-   If concrete issues are found, refine the prompt and regenerate (max 1 refinement).
-   Always report what the review found.
+5. **Quality review**:
+
+   Analyze each generated image using nano-banana `analyze` with the evaluation
+   prompt from the Quality Review Criteria section of the Style Guide.
+
+   Score against four dimensions: content accuracy, layout quality, visual
+   clarity, and prompt fidelity.
+
+   - Concrete issues found -- refine the prompt to address ONLY the specific
+     issues and regenerate
+   - Positive or only minor cosmetic notes -- accept as final
+   - **Max 1 refinement.** If the second generation still has issues, return it
+     as-is with the review notes. The user can steer from there.
+   - Always report what the review found
+
+   For multi-panel infographics: if quality review finds issues with Panel 1,
+   refine it before generating subsequent panels (since Panel 1 is the style
+   anchor). Re-run the style reconciliation on the refined Panel 1.
+
+   **Skip the quality review only if the user explicitly asks** ("skip the review",
+   "no critic", "just generate it fast").
+
+   ### Latency note
+
+   Quality review adds 1 `analyze` call and up to 1 additional `generate` call per
+   image. Worst case per image: 2 generates + 1 analyze. For a 3-panel infographic:
+   up to 9 tool calls total.
 
 6. **Return results**: image path(s) + design rationale + quality review summary +
    suggestions for what the user could try next (different layout, more/fewer panels,
    style variation)
-
-## Quality Review
-
-After generating each image, run a self-evaluation:
-
-1. **Analyze** the generated image using nano-banana `analyze` operation:
-   - Use the evaluation prompt from the Critic Evaluation Criteria in the style guide
-   - Include the original generation prompt for comparison
-
-2. **Score** against four dimensions:
-   - Content accuracy: are the requested data points / text / concepts present?
-   - Layout quality: is the structure clear and well-organized?
-   - Visual clarity: is it readable, with good contrast and hierarchy?
-   - Prompt fidelity: does the output match what was asked for?
-
-3. **Decide**:
-   - Concrete issues found (missing data, wrong layout, poor readability) --
-     refine the prompt to address ONLY the specific issues identified and
-     regenerate. Do not rewrite the entire prompt.
-   - Positive or only minor cosmetic notes -- accept as final
-
-4. **Max 1 refinement.** If the second generation still has issues, return it
-   as-is with the review notes. Do not enter a retry loop. The user can steer
-   from there -- they have the image, the rationale, and a clear description
-   of what's still off.
-
-5. **Report** in your response:
-   - What the review found (1-2 sentences)
-   - Whether refinement was triggered
-   - If refined: what changed in the prompt
-   - If still imperfect after refinement: what remains and how the user can
-     adjust their request to address it
-
-**Skip the quality review only if the user explicitly asks** ("skip the review",
-"no critic", "just generate it fast").
-
-### Latency note
-
-Quality review adds 1 `analyze` call and up to 1 additional `generate` call per
-image. Worst case per image: 2 generates + 1 analyze. For a 3-panel infographic:
-up to 9 tool calls total.
-
-## Multi-Panel Composition
-
-When generating multiple panels:
-
-1. **Build a content map** before writing any prompts:
-
-   ```
-   CONTENT MAP:
-   Panel 1 -- [title]: [concepts/data ONLY in this panel]
-   Panel 2 -- [title]: [concepts/data ONLY in this panel]
-   ...
-   Shared across panels: [series title, panel numbering, style brief only]
-   ```
-
-   Rules:
-   - Each concept appears in exactly ONE panel
-   - No panel recaps or summarizes another panel's content
-   - Each panel prompt includes: "This panel covers ONLY: [X].
-     Do NOT include: [Y, Z]."
-
-2. **Establish a shared style brief**:
-
-   ```
-   STYLE BRIEF (apply to all panels):
-   - Background: [exact description]
-   - Primary colors: [2-3 colors]
-   - Accent color: [1 color]
-   - Typography: [font style direction]
-   - Icons: [style]
-   - Header chrome: [series title treatment, panel indicator position/style]
-   - Footer chrome: [visual treatment -- font, alignment, decorative elements;
-     footer CONTENT may vary per panel but visual style must be identical]
-   - Aspect ratio: [same for all]
-   ```
-
-   **Header and footer are style, not content.** The style brief governs the
-   visual treatment of headers and footers (font, alignment, decorative elements).
-   Per-panel content (e.g. "Continued in Part 2" vs "See Part 1") goes in the
-   content map. But the *rendering* must be identical -- same font size, weight,
-   position, and decorative elements (arrows, dividers, etc.) across all panels.
-
-3. **Generate Panel 1** (the style anchor):
-   - No `reference_image_path` -- this establishes the visual style
-   - Panel 1 MUST be generated first and alone
-
-4. **Post-Panel 1 style reconciliation** (REQUIRED before generating Panels 2-N):
-
-   After Panel 1 is generated, analyze it with nano-banana `analyze` to capture
-   what Gemini *actually rendered* vs what the text style brief *described*.
-   Use this analysis prompt:
-
-   ```
-   Describe the exact visual style of this infographic panel:
-   - Background: solid color, gradient, alternating bands, or textured? Describe the progression.
-   - Section backgrounds: how do they differ from top to bottom?
-   - Step number circles: color, size, border style
-   - Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
-   - Typography: header weight/size relative to body, color
-   - Separators: lines, arrows, spacing? Style and color
-   - Header area: layout, font treatment, any decorative elements
-   - Footer area: layout, font treatment, any decorative elements
-   Be specific -- these descriptions will be used to prompt-match subsequent panels.
-   ```
-
-   **Update the style brief** with the analysis results before writing Panels 2-N
-   prompts. Where the original brief and the actual render disagree, the render
-   wins -- Panels 2-N must match what Panel 1 *looks like*, not what you *asked
-   for*. Copy the updated brief verbatim into every subsequent panel prompt.
-
-5. **Generate Panels 2-N with reference image chaining**:
-   - `reference_image_path` set to Panel 1's output path
-   - Include the **updated** style brief (from step 4) in each prompt
-   - The combination of visual reference + accurate text brief gives Gemini
-     the best chance of style consistency
-
-6. **If quality review finds issues with Panel 1**, refine it before generating
-   subsequent panels (since Panel 1 is the style anchor). Re-run the style
-   reconciliation (step 4) on the refined Panel 1.
-
-### Panel naming
-
-- Default: `./infographic_panel_1.png`, `./infographic_panel_2.png`, etc.
-- Custom path `./sales.png`: `./sales_panel_1.png`, `./sales_panel_2.png`, etc.
-
-### Output format
-
-```
-Generated 3 panels:
-1. ./infographic_panel_1.png -- [section title]
-2. ./infographic_panel_2.png -- [section title]
-3. ./infographic_panel_3.png -- [section title]
-
-Assembly order: top to bottom (vertical stack)
-Shared style: [brief description]
-```
 
 ## Using nano-banana generate
 
@@ -265,20 +151,6 @@ The tool expects these parameters for analysis:
 | `prompt` | yes | Evaluation question or criteria to assess |
 | `image_path` | yes | Path to the image to evaluate |
 
-## Prompt Construction
-
-When building the generation prompt, include:
-- **Subject**: What the infographic is about
-- **Layout**: Vertical flow, side-by-side comparison, timeline, radial, etc.
-- **Data points**: Key facts, numbers, or steps to visualize
-- **Style**: Clean/minimal, bold/colorful, corporate, playful, etc.
-- **Typography cues**: Header hierarchy, label placement
-- **Color palette**: Specific colors or mood (warm, cool, monochrome, brand colors)
-
-## Style Guide
-
-@infographic-builder:context/prompts/system-prompt.md
-
 ## Output Contract
 
 Your response MUST include:
@@ -286,6 +158,18 @@ Your response MUST include:
 - A brief design rationale (2-4 sentences: layout choice, palette, why it fits)
 - Quality review summary (what was found, whether refinement was triggered)
 - Suggested next steps (different layout, style variation, panel count adjustment)
+
+### Multi-panel output format
+
+```
+Generated 3 panels:
+1. ./infographic_panel_1.png -- [section title]
+2. ./infographic_panel_2.png -- [section title]
+3. ./infographic_panel_3.png -- [section title]
+
+Assembly order: top to bottom (vertical stack)
+Shared style: [brief description]
+```
 
 ---
 
