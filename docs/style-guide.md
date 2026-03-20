@@ -1,4 +1,8 @@
-# Infographic Generation Style Guide
+# Infographic Design Style Guide
+
+The single source of truth for all design knowledge used by the infographic-builder
+agent. Workflow and procedural logic live in the agent definition -- this file covers
+what to design, not when to do it.
 
 ## Default Style
 
@@ -25,7 +29,7 @@ Match layout to content:
 | Hierarchy | Tree or pyramid | Org charts, taxonomies, priorities |
 | Cycle | Circular arrows | Recurring processes, feedback loops |
 
-## Prompt Engineering for Infographics
+## Prompt Engineering
 
 When constructing the generation prompt, always specify:
 
@@ -36,40 +40,7 @@ When constructing the generation prompt, always specify:
 5. **Style modifier** -- "clean and modern", "bold and colorful", "minimal corporate"
 6. **Aspect ratio hint** -- tall for vertical (9:16), wide for presentations (16:9)
 
-## Quality Checklist
-
-Before returning a result, verify the prompt addresses:
-
-- [ ] Is the topic clearly stated?
-- [ ] Are specific data points or text included in the prompt?
-- [ ] Is the layout type appropriate for the content?
-- [ ] Is the color direction specified?
-- [ ] Is the target medium considered (social, slides, print)?
-
-## Multi-Panel Composition
-
-When generating multiple panels for a single infographic:
-
-### Style Consistency Brief
-
-Before generating any panels, write a style brief that will be copied verbatim
-into every panel's generation prompt. The brief MUST specify:
-
-```
-STYLE BRIEF (apply to all panels):
-- Background: [exact description, e.g. "white background, #F5F5F5"]
-- Primary colors: [2-3 hex codes or color names]
-- Accent color: [1 hex code or color name]
-- Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
-- Icons: [style, e.g. "flat two-tone icons, matching primary palette"]
-- Border/separator: [e.g. "thin #E0E0E0 line at bottom of each panel"]
-- Header chrome: [series title treatment, panel indicator position and style]
-- Footer chrome: [visual treatment -- font, alignment, decorative elements;
-  footer CONTENT may vary per panel but visual style must be identical]
-- Aspect ratio: [same for all panels]
-```
-
-### Decomposition Heuristics
+## Decomposition Heuristics
 
 **If the user specifies a panel count** (e.g., "make a 3-panel infographic",
 "split this into 5 panels"), use that count directly. Skip the heuristic table.
@@ -87,6 +58,8 @@ of 6 panels.
 | 15-20 items | 5 | Dense topics with distinct sections |
 | 20+ items | 6 (max) | More than 6 panels loses coherence |
 
+## Multi-Panel Composition
+
 ### Content Map (No Duplication)
 
 Before writing any panel prompts, build a content map that assigns every concept
@@ -97,15 +70,40 @@ CONTENT MAP:
 Panel 1 -- [title]: [concepts/data ONLY in this panel]
 Panel 2 -- [title]: [concepts/data ONLY in this panel]
 ...
-Shared across panels: [series title, panel numbering, style brief only]
+Shared across panels: [series title, style brief only]
 ```
 
 Rules:
 - Each concept, statistic, or visual element appears in exactly ONE panel
 - No panel recaps or summarizes another panel's content
-- The only repeated elements: series title, panel number, and style brief
+- The only repeated elements: series title and style brief
 - Each panel prompt includes a scoping line: "This panel covers ONLY: [X].
   Do NOT include: [Y, Z]." where Y and Z are other panels' content
+
+### Style Consistency Brief
+
+Before generating any panels, write a style brief that will be copied verbatim
+into every panel's generation prompt. The brief MUST specify:
+
+```
+STYLE BRIEF (apply to all panels):
+- Background: [exact description, e.g. "white background, #F5F5F5"]
+- Primary colors: [2-3 hex codes or color names]
+- Accent color: [1 hex code or color name]
+- Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
+- Icons: [style, e.g. "flat two-tone icons, matching primary palette"]
+- Border/separator: [e.g. "thin #E0E0E0 line at bottom of each panel"]
+- Header chrome: [series title treatment]
+- Footer chrome: [visual treatment -- font, alignment, decorative elements;
+  footer CONTENT may vary per panel but visual style must be identical]
+- Aspect ratio: [same for all panels]
+```
+
+**Header and footer are style, not content.** The style brief governs the
+visual treatment of headers and footers (font, alignment, decorative elements).
+Per-panel content (e.g. "Continued in Part 2" vs "See Part 1") goes in the
+content map. But the *rendering* must be identical -- same font size, weight,
+position, and decorative elements (arrows, dividers, etc.) across all panels.
 
 ### Reference Image Chaining (Visual Consistency)
 
@@ -124,6 +122,28 @@ Panel 1 is the style anchor. All subsequent panels reference it:
 
 Panel 1 MUST be generated first and alone. Panels 2-N may be generated in
 parallel since they all reference Panel 1, not each other.
+
+### Post-Panel 1 Style Reconciliation
+
+After Panel 1 is generated, analyze it with nano-banana `analyze` using this
+prompt:
+
+```
+Describe the exact visual style of this infographic panel:
+- Background: solid color, gradient, alternating bands, or textured? Describe the progression.
+- Section backgrounds: how do they differ from top to bottom?
+- Step number circles: color, size, border style
+- Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
+- Typography: header weight/size relative to body, color
+- Separators: lines, arrows, spacing? Style and color
+- Header area: layout, font treatment, any decorative elements
+- Footer area: layout, font treatment, any decorative elements
+Be specific -- these descriptions will be used to prompt-match subsequent panels.
+```
+
+Update the style brief with the analysis results before writing Panels 2-N
+prompts. Where the original brief and the actual render disagree, the render
+wins.
 
 ### Panel Naming Convention
 
@@ -168,7 +188,7 @@ specific changes that would fix the issues (be concrete -- these will be
 used to refine the generation prompt).
 ```
 
-### Refinement rules
+### Refinement Rules
 
 - Only refine if the analysis says `NEEDS_REFINEMENT`
 - When refining, update the generation prompt to address ONLY the specific issues
@@ -176,3 +196,13 @@ used to refine the generation prompt).
 - Max 1 refinement pass. If the second generation still has issues, return it
   with the critic notes and let the user decide
 - Always report what the critic found, even if no refinement was needed
+
+## Pre-Generation Checklist
+
+Before calling nano-banana generate, verify the prompt addresses:
+
+- [ ] Is the topic clearly stated?
+- [ ] Are specific data points or text included in the prompt?
+- [ ] Is the layout type appropriate for the content?
+- [ ] Is the color direction specified?
+- [ ] Is the target medium considered (social, slides, print)?
