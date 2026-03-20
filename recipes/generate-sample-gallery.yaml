@@ -2,9 +2,9 @@
 # Generate Sample Gallery
 # =============================================================================
 #
-# Generates 12 sample infographics covering every panel count (1-6),
+# Generates 14 sample infographics covering every panel count (1-6),
 # different layout types, and a mix of audiences (AI/tech, outdoors,
-# music, fun). Each scenario delegates to infographic-builder:infographic-builder,
+# music, data/business). Each scenario delegates to infographic-builder:infographic-builder,
 # which handles style briefs, content maps, reference image chaining, and
 # quality review internally.
 #
@@ -49,6 +49,36 @@ context:
         cancellation process. Clean minimal style with a light gray background, blue
         and dark gray palette. 9:16 aspect ratio.
         Save as ./samples/noise-canceling-headphones.png
+
+    - name: "saas-metrics-dashboard"
+      prompt: >
+        Create a single-panel infographic about "Q3 2025 SaaS Metrics Dashboard".
+        Present these specific KPIs with large prominent numbers and supporting
+        context: Monthly Recurring Revenue $4.2M (up 23% from Q2), Customer
+        Churn Rate 2.3% (down from 3.1%), Customer Acquisition Cost $142 (target
+        was $150), Net Promoter Score 72 (industry avg 41), Active Users 28,400
+        (up 3,200 from Q2). Use a statistics/KPI layout with large numbers and
+        icons. Clean corporate style with navy blue and emerald green on white
+        background, accent gold for positive trends. 9:16 aspect ratio.
+        Save as ./samples/saas-metrics-dashboard.png
+
+    - name: "developer-survey-results"
+      prompt: >
+        Create a 2-panel infographic about "2025 Developer Survey Results"
+        presenting survey data with specific percentages and rankings.
+        Panel 1 "Languages & Frameworks": Top 5 languages by usage --
+        Python 68%, JavaScript 62%, TypeScript 51%, Go 29%, Rust 18%.
+        Framework satisfaction scores -- React 4.1/5, Next.js 4.3/5,
+        FastAPI 4.5/5, Django 3.9/5, Express 3.7/5.
+        Panel 2 "Career & Compensation": Median salary by role -- Senior
+        Engineer $185K, Staff Engineer $225K, Engineering Manager $210K,
+        Principal Engineer $260K. Remote work breakdown -- Fully remote 42%,
+        Hybrid 38%, In-office 20%. Job satisfaction 73% positive.
+        Use a statistics layout with large numbers, ranking bars, and percentage
+        callouts. Modern tech style with electric blue and cool gray on dark
+        background, white text, clean sans-serif. 9:16 aspect ratio.
+        Save panels as ./samples/developer-survey-results_panel_1.png,
+        ./samples/developer-survey-results_panel_2.png
 
     - name: "dns"
       prompt: >
