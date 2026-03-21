@@ -198,7 +198,6 @@ infographic-builder/
 |   |-- style-guide.md                     # design knowledge base (layouts, prompts, review criteria)
 |   |-- architecture.dot                   # Graphviz source for architecture diagram
 |   |-- architecture.png                   # rendered architecture diagram
-|   |-- BACKLOG.md                         # planned features not yet designed
 |   +-- plans/
 |       +-- 2026-03-20-style-system-design.md  # validated design for style system feature
 |-- modules/
@@ -213,6 +212,21 @@ infographic-builder/
     |-- pro/                               # Gemini Pro outputs
     +-- 3.1-flash/                         # Gemini 3.1 Flash outputs
 ```
+
+## Roadmap
+
+**Next up -- Style System and Browsable Catalog** (design complete, ready to implement):
+Adds 6 curated visual aesthetics (clean minimalist, dark mode tech, bold editorial,
+hand-drawn sketchnote, claymation studio, lego brick builder) plus freeform style
+input, 4 new layout types, and a static catalog website showcasing all combinations.
+See `docs/plans/2026-03-20-style-system-design.md` for the full design.
+
+**Planned -- User-Provided Reference Images**:
+When a user says "make it look like this" and provides an image, the agent should
+pass it as `reference_image_path` to `nano-banana.generate`. The mechanism already
+exists in the tool but the agent workflow doesn't handle user-supplied style
+references yet. Blocked on understanding how Amplifier handles user-provided
+image/file uploads natively.
 
 ## Local development
 
