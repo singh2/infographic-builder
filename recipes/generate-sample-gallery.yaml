@@ -12,22 +12,22 @@
 #   amplifier run "execute recipes/generate-sample-gallery.yaml"
 #
 # Output:
-#   ./samples/*.png — 12 infographic sets (30+ images total)
+#   ./samples/*.png — 14 infographic sets (52 images total)
 #
 # =============================================================================
 # CHANGELOG
 # =============================================================================
 #
 # v1.0.0 (2026-03-19):
-#   - NEW FEATURE: Initial recipe — 12 scenarios across 1-6 panels
+#   - NEW FEATURE: Initial recipe — 14 scenarios across 1-6 panels
 #     * Bash step creates ./samples/ directory
-#     * Foreach iterates all 12 scenarios sequentially
+#     * Foreach iterates all 14 scenarios sequentially
 #     * Each iteration delegates to infographic-builder:infographic-builder
 #
 # =============================================================================
 
 name: "generate-sample-gallery"
-description: "Generate a gallery of 12 sample infographics covering panel counts 1-6, diverse layouts, and mixed audiences"
+description: "Generate a gallery of 14 sample infographics covering panel counts 1-6, diverse layouts, and mixed audiences"
 version: "1.0.0"
 tags: ["infographic", "gallery", "samples", "batch"]
 
@@ -236,7 +236,7 @@ steps:
     output: "dir_status"
 
   # -------------------------------------------------------------------------
-  # Step 2: Iterate through all 12 scenarios and generate each infographic
+  # Step 2: Iterate through all 14 scenarios and generate each infographic
   # -------------------------------------------------------------------------
   - id: "generate-infographics"
     foreach: "{{scenarios}}"
