@@ -228,7 +228,7 @@ steps:
     output: "dir_status"
 
   # -------------------------------------------------------------------------
-  # Step 2: Iterate through all 12 scenarios and generate each infographic
+  # Step 2: Iterate through all 14 scenarios and generate each infographic
   # -------------------------------------------------------------------------
   - id: "generate-infographics"
     foreach: "{{scenarios}}"
