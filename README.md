@@ -74,7 +74,7 @@ amplifier run
 | Multi-panel styles don't match | Rare -- Panel 1 is used as style anchor | Ask the agent to regenerate; Panel 1 sets the style for all others |
 | Slow generation | Quality review adds ~10-20s per image | Say "skip the review" for faster output |
 | Image text is garbled or unreadable | Limitation of current image generation models | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
-| Output doesn't match requested aesthetic | Aesthetic fidelity varies by complexity | The critic loop checks aesthetic fidelity -- try regenerating or simplify the content |
+| Output doesn't match requested aesthetic | Aesthetic fidelity varies by complexity | The critic loop checks aesthetic fidelity -- try regenerating, or simplify the content |
 
 ## How it works
 
@@ -208,7 +208,7 @@ amplifier run
 
 # Test 6: Inline aesthetic shortcut (skips aesthetic prompt)
 amplifier run
-# Say: "Make a claymation infographic about the water cycle"
+# Say: "Make a claymation infographic about the nitrogen cycle"
 # Expected: Skips aesthetic proposal, generates directly in Claymation style
 ```
 
