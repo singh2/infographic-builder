@@ -24,6 +24,7 @@ The primary use case is ongoing regression testing after changes, which benefits
 
 ## Architecture
 
+
 ### Recipe Stages
 
 1. **Generate** -- For each predefined test scenario, delegate to the infographic-builder agent to create the infographic. Outputs go to a timestamped directory.

@@ -16,6 +16,105 @@ Unless the user specifies otherwise, generate infographics with:
 - **Data viz**: Use charts, graphs, or visual metaphors appropriate to the data type
 - **Whitespace**: Generous -- let the content breathe
 
+> **Note:** The Default Style above _is_ Clean Minimalist. When a user selects
+> "Clean Minimalist" from the aesthetic options, apply these defaults as-is.
+
+## Aesthetics
+
+Six curated prompt templates spanning the professional-to-playful spectrum, plus
+open-ended freeform input. Each template overrides three prompt dimensions
+(typography, palette, icon style) and bakes in additional modifiers (texture,
+lighting, mood) that stay invisible to the user.
+
+When constructing a generation prompt, load the selected aesthetic's template and
+use its properties to fill the **Style modifier** slot (item 5 under Prompt
+Engineering below).
+
+### 1. Clean Minimalist
+
+> Professional, Swiss design, boardroom-ready
+
+- **Background:** Solid white (#FFFFFF) or subtle light gradient (#F5F5F5 → #FFFFFF)
+- **Typography:** Helvetica/sans-serif; bold weight headers, light weight body; dark gray (#333333) text
+- **Icons:** Monochrome flat icons, single accent color, no outlines
+- **Color palette:** 1 primary accent + neutral grays — one blue or one teal against white
+- **Lighting:** Flat, even — no shadows, no directional light
+- **Texture:** None — pure clean surfaces
+- **Mood:** Calm, authoritative, boardroom-safe
+
+### 2. Dark Mode Tech
+
+> Developer-native, neon on dark, glassmorphism
+
+- **Background:** Dark slate (#1A1A2E to #16213E), subtle grid or circuit-trace pattern
+- **Typography:** Monospace or tech sans-serif; neon-colored headers, light gray (#E0E0E0) body text
+- **Icons:** Glassmorphism — frosted glass containers with neon glow outlines
+- **Color palette:** Neon cyan (#00F5FF), electric purple (#B026FF), neon green (#39FF14) on dark
+- **Lighting:** Neon glow, subtle ambient light bloom, no natural light sources
+- **Texture:** Faint digital grid or noise overlay
+- **Mood:** Futuristic, technical, developer-native
+
+### 3. Bold Editorial
+
+> Wired/Vox magazine style, high contrast, commanding
+
+- **Background:** High-contrast color blocks — bold red, deep navy, bright yellow as section fills
+- **Typography:** Massive serif headlines (72pt+ feel), tight tracking, bold weight; clean sans-serif body
+- **Icons:** Collage-style mixed elements — cutout photos, bold graphic shapes, editorial illustrations
+- **Color palette:** 2-3 bold primaries (red + navy + yellow, or orange + black + white), no pastels
+- **Lighting:** Dramatic directional lighting, strong highlights and deep shadows
+- **Texture:** Slight paper grain or halftone dot overlay
+- **Mood:** High energy, commanding, magazine-cover striking
+
+### 4. Hand-Drawn Sketchnote
+
+> Casual, marker-on-notebook, creative
+
+- **Background:** Off-white paper (#F5F0E8), lightly textured graph paper or dot grid, visible grain
+- **Typography:** Hand-drawn marker lettering, slightly irregular baselines, doodle emphasis (underlines, circles, arrows)
+- **Icons:** Hand-drawn sketch icons, wobbly outlines, filled with hatching or loose color wash
+- **Color palette:** 3-4 marker colors — warm gray, teal, orange, red — like a real Copic/Sharpie palette on paper
+- **Lighting:** Flat even — like scanning a notebook page
+- **Texture:** Paper grain, visible notebook ruling or dot grid
+- **Mood:** Casual, handmade, charming, deliberately imperfect
+
+### 5. Claymation Studio
+
+> Whimsical, tactile, plasticine textures
+
+- **Background:** Cardboard or craft paper set, visible texture and slight wrinkles
+- **Typography:** Rounded playful sans-serif; letters may appear sculpted from clay or extruded
+- **Icons:** 3D sculpted plasticine/clay figures, fingerprint texture visible, rounded organic shapes
+- **Color palette:** Warm saturated primaries — clay red, cobalt blue, sunshine yellow, grass green — like real plasticine
+- **Lighting:** Soft diffused studio lighting with realistic cast shadows, shallow depth of field
+- **Texture:** Visible clay fingerprints, slightly lumpy sculpted surfaces
+- **Mood:** Whimsical, tactile, handmade, warm
+
+### 6. Lego Brick Builder
+
+> Playful, structural, plastic bricks
+
+- **Background:** Plastic Lego baseplate — gray or green studded surface
+- **Typography:** Blocky geometric letterforms; may appear embossed on Lego tiles or printed on brick faces
+- **Icons:** Built from Lego bricks — recognizable objects constructed from studs and plates
+- **Color palette:** Classic Lego primaries — red (#D01012), blue (#0057A6), yellow (#FFD700), green (#00852B), black, white
+- **Lighting:** Macro photography lighting with shallow depth of field, plastic specular highlights
+- **Texture:** Smooth injection-molded plastic, visible stud geometry
+- **Mood:** Playful, structural, childhood delight, tilt-shift perspective
+
+### Freeform Aesthetics
+
+Users can describe any aesthetic beyond the featured six — "vintage travel poster",
+"watercolor", "comic book", "pixel art", "corporate annual report". When a user
+provides a freeform description:
+
+1. Translate it into reasonable defaults for background, typography, icon style,
+   color palette, lighting, texture, and mood
+2. All structural prompt engineering still applies (output type, orientation,
+   sections, text, aspect ratio) — only the visual treatment is freeform
+3. Use your best design judgment — there is no failure mode, only best-effort
+   interpretation
+
 ## Layout Types
 
 Match layout to content:
@@ -28,12 +127,14 @@ Match layout to content:
 | Timeline | Horizontal or vertical line | History, roadmaps, project phases |
 | Hierarchy | Tree or pyramid | Org charts, taxonomies, priorities |
 | Cycle | Circular arrows | Recurring processes, feedback loops |
-| Decision tree / branching logic | Flowchart with decision nodes | If/then scenarios, troubleshooting guides, approval workflows |
+| Decision tree / process logic | Flowchart / process flow diagram | If/then scenarios, algorithms, logic flows, troubleshooting, approval workflows |
 | Conversion / narrowing stages | Funnel (wide to narrow) | Sales pipeline, user journey drop-off, filtering processes |
 | Multi-option evaluation | Comparison grid / matrix | Feature comparison, vendor evaluation, option scoring |
 | Strategic positioning (2 axes) | Quadrant chart (2x2) | Priority matrices, risk/impact, build vs buy |
 | Overlapping concepts | Venn diagram | Skill intersections, market overlap, shared responsibilities |
 | Concept relationships / brainstorms | Mind map / radial | Ecosystem maps, topic exploration, feature relationships |
+| Narrative sequence / user journey | Storyboard journey (sequential scenes) | Step-by-step stories, user journey maps, customer experience flows |
+| Deep dive / multi-section explanation | Long-form explainer panel (horizontal bands) | In-depth topics with per-section illustrations, comprehensive guides |
 
 ## Prompt Engineering
 
@@ -93,7 +194,8 @@ into every panel's generation prompt. The brief MUST specify:
 
 ```
 STYLE BRIEF (apply to all panels):
-- Background: [exact description, e.g. "white background, #F5F5F5"]
+- Aesthetic: [curated name (e.g. "Claymation Studio") or freeform description (e.g. "vintage travel poster")]
+- Background: [from the aesthetic template -- e.g. "white background, #F5F5F5"]
 - Primary colors: [2-3 hex codes or color names]
 - Accent color: [1 hex code or color name]
 - Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
@@ -198,9 +300,14 @@ Dimensions:
 4. PROMPT FIDELITY: Does the output match the style, layout type, and color
    direction specified in the generation prompt?
 
-Summary: Overall PASS or NEEDS_REFINEMENT. If NEEDS_REFINEMENT, list the
-specific changes that would fix the issues (be concrete -- these will be
-used to refine the generation prompt).
+5. AESTHETIC FIDELITY: If a specific aesthetic was requested (e.g., "Claymation
+   Studio", "Dark Mode Tech", or a freeform description), does the output
+   visually match that aesthetic? Check background treatment, icon style,
+   typography feel, lighting, and overall mood against the aesthetic template.
+
+Summary: Overall PASS or NEEDS_REFINEMENT across all 5 dimensions. If
+NEEDS_REFINEMENT, list the specific changes that would fix the issues (be
+concrete -- these will be used to refine the generation prompt).
 ```
 
 ### Refinement Rules
@@ -221,3 +328,4 @@ Before calling nano-banana generate, verify the prompt addresses:
 - [ ] Is the layout type appropriate for the content?
 - [ ] Is the color direction specified?
 - [ ] Is the target medium considered (social, slides, print)?
+- [ ] Has an aesthetic been selected or confirmed (curated, freeform, or default)?
