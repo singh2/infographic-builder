@@ -7,6 +7,11 @@ Covers (task-6 quality fix suggestions):
 3. Step 3 contains sub-parts a, b, c, d
 4. Step 3c ends with the halt instruction
 5. Cross-reference in step 2 says 'step 6' (not 'step 5')
+
+Covers (task-8 output contract suggestions):
+6. Output Contract suggestions line says 'try a different aesthetic' first
+7. Step 8 Return results says 'different aesthetic' first
+8. 'style variation' is removed from both locations
 """
 
 from pathlib import Path
@@ -154,4 +159,79 @@ def test_step_2_cross_reference_says_step_6():
     )
     assert "step 5" not in step_2_block, (
         "Step 2 must not reference 'step 5' (quality review is now step 6)"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Task-8: Output Contract and Step 8 suggestions — 'try a different aesthetic'
+# ---------------------------------------------------------------------------
+
+
+def _get_output_contract_block(content: str) -> str:
+    """Extract text of the Output Contract section."""
+    start = content.index("## Output Contract")
+    end = content.index("\n## ", start + 1) if "\n## " in content[start + 1 :] else len(content)
+    return content[start:end]
+
+
+def _get_step_8_block(content: str) -> str:
+    """Extract text of step 8 (Return results) up to the next section."""
+    start = content.index("8. **Return results**")
+    end = content.index("\n## ", start)
+    return content[start:end]
+
+
+def test_output_contract_suggests_different_aesthetic():
+    """Output Contract suggestions must list 'try a different aesthetic' as first suggestion."""
+    block = _get_output_contract_block(read_agent())
+    assert "try a different aesthetic" in block, (
+        "Output Contract suggestions must include 'try a different aesthetic'"
+    )
+
+
+def test_output_contract_no_style_variation():
+    """Output Contract suggestions must NOT contain 'style variation' (replaced by 'different aesthetic')."""
+    block = _get_output_contract_block(read_agent())
+    assert "style variation" not in block, (
+        "Output Contract must not contain 'style variation'; it should say 'try a different aesthetic'"
+    )
+
+
+def test_output_contract_different_aesthetic_before_layout():
+    """In Output Contract suggestions, 'different aesthetic' must appear before 'different layout'."""
+    block = _get_output_contract_block(read_agent())
+    aesthetic_pos = block.find("different aesthetic")
+    layout_pos = block.find("different layout")
+    assert aesthetic_pos != -1, "Output Contract must mention 'different aesthetic'"
+    assert layout_pos != -1, "Output Contract must mention 'different layout'"
+    assert aesthetic_pos < layout_pos, (
+        "'different aesthetic' must appear before 'different layout' in Output Contract"
+    )
+
+
+def test_step_8_suggests_different_aesthetic():
+    """Step 8 Return results must list 'different aesthetic' as first suggestion."""
+    block = _get_step_8_block(read_agent())
+    assert "different aesthetic" in block, (
+        "Step 8 must include 'different aesthetic' in its suggestions"
+    )
+
+
+def test_step_8_no_style_variation():
+    """Step 8 must NOT contain 'style variation' (replaced by 'different aesthetic')."""
+    block = _get_step_8_block(read_agent())
+    assert "style variation" not in block, (
+        "Step 8 must not contain 'style variation'; it should say 'different aesthetic'"
+    )
+
+
+def test_step_8_different_aesthetic_before_layout():
+    """In Step 8 suggestions, 'different aesthetic' must appear before 'different layout'."""
+    block = _get_step_8_block(read_agent())
+    aesthetic_pos = block.find("different aesthetic")
+    layout_pos = block.find("different layout")
+    assert aesthetic_pos != -1, "Step 8 must mention 'different aesthetic'"
+    assert layout_pos != -1, "Step 8 must mention 'different layout'"
+    assert aesthetic_pos < layout_pos, (
+        "'different aesthetic' must appear before 'different layout' in Step 8"
     )
