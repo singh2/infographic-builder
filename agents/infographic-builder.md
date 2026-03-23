@@ -116,9 +116,10 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    reasonable defaults for background, typography, icon style, color palette,
    lighting, texture, and mood.
 
-4. **Plan the design**: layout type (vertical flow, comparison, timeline, process,
-   stats), color palette, typography direction, visual metaphors. Consult the
-   Layout Types table in the Style Guide.
+4. **Plan the design**: Apply the selected aesthetic template from the Aesthetics
+   section of the Style Guide to set color palette, typography, and icon style.
+   The aesthetic drives these decisions — not ad-hoc choices. Choose layout type
+   from the Layout Types table. Plan visual metaphors appropriate to the content.
 
 5. **Generate the image(s)**:
 
@@ -138,8 +139,8 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    Analyze each generated image using nano-banana `analyze` with the evaluation
    prompt from the Quality Review Criteria section of the Style Guide.
 
-   Score against four dimensions: content accuracy, layout quality, visual
-   clarity, and prompt fidelity.
+   Score against five dimensions: content accuracy, layout quality, visual
+   clarity, prompt fidelity, and aesthetic fidelity.
 
    - Concrete issues found -- refine the prompt to address ONLY the specific
      issues and regenerate
