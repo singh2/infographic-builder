@@ -100,16 +100,17 @@ STYLE BRIEF (apply to all panels):
 - Icons: [style, e.g. "flat two-tone icons, matching primary palette"]
 - Border/separator: [e.g. "thin #E0E0E0 line at bottom of each panel"]
 - Header chrome: [series title treatment]
-- Footer chrome: [visual treatment -- font, alignment, decorative elements;
-  footer CONTENT may vary per panel but visual style must be identical]
 - Aspect ratio: [same for all panels]
 ```
 
-**Header and footer are style, not content.** The style brief governs the
-visual treatment of headers and footers (font, alignment, decorative elements).
-Per-panel content (e.g. "Continued in Part 2" vs "See Part 1") goes in the
-content map. But the *rendering* must be identical -- same font size, weight,
-position, and decorative elements (arrows, dividers, etc.) across all panels.
+**Header chrome is style, not content.** The style brief governs the visual
+treatment of headers (font, alignment, decorative elements). The *rendering*
+must be identical across all panels -- same font size, weight, position, and
+decorative elements (arrows, dividers, etc.).
+
+**Do not include panel numbering or footer text** ("Panel 1 of 4", etc.).
+Position already implies order. If a user explicitly requests numbered panels
+(e.g., for individual use in a slide deck), add them at that point.
 
 ### Reference Image Chaining (Visual Consistency)
 
@@ -123,8 +124,14 @@ Panel 1 is the style anchor. All subsequent panels reference it:
   brief and the actual render disagree, **the render wins** -- Panels 2-N must
   match what Panel 1 *looks like*, not what you originally *asked for*.
 - **Panels 2-N**: Generate with `reference_image_path` set to Panel 1's output
-  path AND the **updated** style brief. The combination of visual reference +
-  accurate text brief gives Gemini the best chance of style consistency.
+  path AND the **replaced** style brief (from reconciliation). Every Panel 2-N
+  prompt MUST open with this directive:
+
+  > "This panel MUST match the exact visual style of the reference image provided."
+
+  This directive + the reference image + the reconciled style brief create three
+  reinforcing consistency signals. All three are required -- dropping any one
+  weakens cross-panel coherence.
 
 Panel 1 MUST be generated first and alone. Panels 2-N may be generated in
 parallel since they all reference Panel 1, not each other.
@@ -147,9 +154,11 @@ Describe the exact visual style of this infographic panel:
 Be specific -- these descriptions will be used to prompt-match subsequent panels.
 ```
 
-Update the style brief with the analysis results before writing Panels 2-N
-prompts. Where the original brief and the actual render disagree, the render
-wins.
+**Replace your original style brief entirely with the reconciliation output.
+Do not merge -- overwrite.** The analysis describes what Gemini *actually
+rendered*, which is what Panels 2-N must match. Carrying forward any original
+brief language that contradicts the render causes style drift. The render wins,
+completely.
 
 ### Panel Naming Convention
 
