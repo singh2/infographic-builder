@@ -2,8 +2,8 @@
 
 This bundle provides infographic design and generation. The
 `infographic-builder` agent handles everything automatically -- layout selection,
-style decisions, panel decomposition for complex topics, quality review, and
-image generation.
+interactive aesthetic selection (6 curated styles + freeform), panel decomposition
+for complex topics, quality review, and image generation.
 
 ## Delegation
 
@@ -19,6 +19,7 @@ delegate(
 
 Just pass the user's request as-is. The agent automatically:
 - Picks the best layout for the content (timeline, comparison, hierarchy, etc.)
+- Proposes a visual aesthetic before generating (6 curated styles + freeform)
 - Splits complex topics into multiple panels when the content is dense enough
 - Reviews its own output and refines if it spots issues
 - Maintains visual consistency across multi-panel sets
@@ -29,6 +30,8 @@ No flags or configuration needed. The user steers with natural language:
 - "skip the review" -- faster generation, skips the quality check
 - "use a timeline layout" -- overrides automatic layout selection
 - "bold and colorful" / "minimal and corporate" -- sets the style direction
+- "make it claymation" / "dark mode tech style" -- picks a curated aesthetic
+- "3" (as a reply to aesthetic options) -- selects an aesthetic by number
 
 **Delegate when the user says:**
 - "create an infographic about..."
