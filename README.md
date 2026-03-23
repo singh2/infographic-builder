@@ -201,12 +201,12 @@ amplifier run
 
 # Test 5: Aesthetic selection flow
 amplifier run
-# Say: "Create an infographic about how DNS works"
+# Say: "Create an infographic about how HTTPS works"
 # Expected: Agent recommends layout, presents 6 aesthetic options + freeform
 # Pick: "2" or "Dark Mode Tech"
 # Expected: Infographic generated in Dark Mode Tech style
 
-# Test 6: Inline aesthetic shortcut (two-turn)
+# Test 6: Inline aesthetic shortcut (skips aesthetic prompt)
 amplifier run
 # Say: "Make a claymation infographic about the water cycle"
 # Expected: Skips aesthetic proposal, generates directly in Claymation style
