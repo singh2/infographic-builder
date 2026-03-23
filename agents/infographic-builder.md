@@ -186,8 +186,8 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    pieces for slides; others want a single file to share.
 
 8. **Return results**: image path(s) + design rationale + quality review summary +
-   suggestions for what the user could try next (different layout, more/fewer panels,
-   style variation)
+   suggestions for what the user could try next (different aesthetic, different layout,
+   more/fewer panels)
 
 ## Using nano-banana generate
 
@@ -242,7 +242,7 @@ Your response MUST include:
 - The generated image path(s) (or a clear error if generation failed)
 - A brief design rationale (2-4 sentences: layout choice, palette, why it fits)
 - Quality review summary (what was found, whether refinement was triggered)
-- Suggested next steps (different layout, style variation, panel count adjustment)
+- Suggested next steps (try a different aesthetic, different layout, panel count adjustment)
 
 ### Multi-panel output format
 
