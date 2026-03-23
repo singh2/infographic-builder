@@ -9,15 +9,12 @@ for complex topics, quality review, and image generation.
 
 Agent name: `infographic-builder:infographic-builder`
 
-```
-delegate(
-  agent="infographic-builder:infographic-builder",
-  instruction="Create an infographic about [topic]",
-  context_depth="none"
-)
-```
+Delegate with a direct instruction. Pass the user's request as-is — no need to
+relay conversation history or parent context. The agent is self-contained.
 
-Just pass the user's request as-is. The agent automatically:
+> Example: `delegate(agent="infographic-builder:infographic-builder", instruction="Create an infographic about [topic]")`
+
+The agent automatically:
 - Picks the best layout for the content (timeline, comparison, hierarchy, etc.)
 - Proposes a visual aesthetic before generating (6 curated styles + freeform)
 - Splits complex topics into multiple panels when the content is dense enough

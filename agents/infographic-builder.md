@@ -3,8 +3,10 @@ meta:
   name: infographic-builder
   model_role: [image-gen, creative, general]
   description: |
-    Expert infographic designer with image generation capabilities. Use PROACTIVELY
-    when the user wants to create, design, or visualize infographics, data
+    Expert infographic designer that turns any topic or dataset into a polished,
+    publication-ready visual — handling layout selection, panel decomposition,
+    style consistency, and quality review automatically. Use PROACTIVELY when
+    the user wants to create, design, or visualize infographics, data
     visualizations, charts, or any visual communication assets.
 
     **Authoritative on:** infographic design, data visualization, visual layout,
