@@ -78,13 +78,48 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **User overrides always win:**
    - "single panel" or "one image" -- force single panel regardless of density
    - "make a 3-panel infographic" -- use the explicit count (up to 6)
-   - "skip the review" or "no critic" -- skip the quality review in step 5
+   - "skip the review" or "no critic" -- skip the quality review in step 6
 
-3. **Plan the design**: layout type (vertical flow, comparison, timeline, process,
+3. **Aesthetic selection**: Before designing, guide the user to a visual style.
+
+   **a. Recommend a layout** based on content analysis from step 2 — reference
+   the Layout Types table in the Style Guide.
+
+   **b. Check for inline style specification.** If the user already described
+   an aesthetic in their original request (e.g., "make a claymation infographic
+   about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
+   This is the **two-turn shortcut** — no proposal needed.
+
+   **c. If no style was specified**, present the aesthetic options and halt:
+
+   ```
+   For "[topic]," I'd recommend [Layout Name].
+
+   Choose a style, or describe your own:
+
+     1. Clean Minimalist       4. Hand-Drawn Sketchnote
+     2. Dark Mode Tech         5. Claymation Studio
+     3. Bold Editorial         6. Lego Brick Builder
+
+     Or describe any style — "professional report",
+     "watercolor", "comic book", "retro pixel art",
+     "vintage travel poster" — get creative.
+   ```
+
+   **Then stop and wait for the user's selection.** Do not proceed to design
+   or generation until the user has chosen.
+
+   **d. Load the aesthetic template.** If the user picks a numbered option,
+   load the corresponding template from the Aesthetics section of the Style
+   Guide. If they describe a freeform style, translate their description into
+   reasonable defaults for background, typography, icon style, color palette,
+   lighting, texture, and mood.
+
+4. **Plan the design**: layout type (vertical flow, comparison, timeline, process,
    stats), color palette, typography direction, visual metaphors. Consult the
    Layout Types table in the Style Guide.
 
-4. **Generate the image(s)**:
+5. **Generate the image(s)**:
 
    **Single-panel path:**
    - Construct one detailed generation prompt (see Prompt Engineering in the
@@ -97,7 +132,7 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
      reconciliation, then Panels 2-N with reference image chaining
    - Output files follow the Panel Naming Convention in the Style Guide
 
-5. **Quality review**:
+6. **Quality review**:
 
    Analyze each generated image using nano-banana `analyze` with the evaluation
    prompt from the Quality Review Criteria section of the Style Guide.
@@ -125,7 +160,7 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    image. Worst case per image: 2 generates + 1 analyze. For a 3-panel infographic:
    up to 9 tool calls total.
 
-6. **Assemble multi-panel output** (multi-panel path only):
+7. **Assemble multi-panel output** (multi-panel path only):
 
    After all panels pass quality review, call `stitch_panels` to combine them
    into a single image. Use the combined naming convention:
@@ -148,7 +183,7 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    Deliver both the individual panels and the combined image. Some users want
    pieces for slides; others want a single file to share.
 
-7. **Return results**: image path(s) + design rationale + quality review summary +
+8. **Return results**: image path(s) + design rationale + quality review summary +
    suggestions for what the user could try next (different layout, more/fewer panels,
    style variation)
 
