@@ -35,14 +35,34 @@ EXPECTED_PROPERTIES = [
     "Mood",
 ]
 
+H2_AESTHETICS = "## Aesthetics"
+H2_LAYOUT_TYPES = "## Layout Types"
+H3_FREEFORM = "### Freeform Aesthetics"
+
 
 def read_guide() -> str:
     return STYLE_GUIDE.read_text(encoding="utf-8")
 
 
+def _get_aesthetic_block(content: str, aesthetic: str) -> str:
+    """Extract the markdown block for a single aesthetic (heading → next ### or end)."""
+    start = content.index(H2_AESTHETICS)
+    end = content.index(H2_LAYOUT_TYPES)
+    section = content[start:end]
+
+    pattern = rf"### \d+\. {re.escape(aesthetic)}"
+    m = re.search(pattern, section)
+    assert m, f"Heading not found for: {aesthetic}"
+
+    next_heading = re.search(r"\n###", section[m.end() :])
+    block_end = m.end() + next_heading.start() if next_heading else len(section)
+    return section[m.start() : block_end]
+
+
 # ---------------------------------------------------------------------------
 # Criterion 1: Note callout directly after Default Style bullet list
 # ---------------------------------------------------------------------------
+
 
 def test_note_callout_after_default_style():
     """The > **Note:** callout must appear directly after the Default Style bullets."""
@@ -69,14 +89,15 @@ def test_note_callout_after_default_style():
 # Criterion 2: ## Aesthetics H2 exists and comes before ## Layout Types
 # ---------------------------------------------------------------------------
 
+
 def test_aesthetics_h2_before_layout_types():
     """## Aesthetics must be a top-level section before ## Layout Types."""
     content = read_guide()
-    assert "## Aesthetics" in content, "## Aesthetics section not found"
-    assert "## Layout Types" in content, "## Layout Types section not found"
+    assert H2_AESTHETICS in content, "## Aesthetics section not found"
+    assert H2_LAYOUT_TYPES in content, "## Layout Types section not found"
 
-    aesthetics_idx = content.index("## Aesthetics")
-    layout_idx = content.index("## Layout Types")
+    aesthetics_idx = content.index(H2_AESTHETICS)
+    layout_idx = content.index(H2_LAYOUT_TYPES)
     assert aesthetics_idx < layout_idx, (
         "## Aesthetics must appear before ## Layout Types"
     )
@@ -85,6 +106,7 @@ def test_aesthetics_h2_before_layout_types():
 # ---------------------------------------------------------------------------
 # Criterion 3: All 6 aesthetics have ### subheadings, blockquote tagline, 7 properties
 # ---------------------------------------------------------------------------
+
 
 def test_all_six_aesthetics_present():
     """Each of the 6 named aesthetics must have a ### heading."""
@@ -99,27 +121,8 @@ def test_all_six_aesthetics_present():
 def test_each_aesthetic_has_blockquote_tagline():
     """Each aesthetic block must contain a blockquote tagline (> ...)."""
     content = read_guide()
-    # Find the Aesthetics section boundaries
-    start = content.index("## Aesthetics")
-    end = content.index("## Layout Types")
-    aesthetics_block = content[start:end]
-
     for aesthetic in EXPECTED_AESTHETICS:
-        # Find the heading position
-        pattern = rf"### \d+\. {re.escape(aesthetic)}"
-        heading_match = re.search(pattern, aesthetics_block)
-        assert heading_match, f"Heading not found for: {aesthetic}"
-
-        # Find the next ### heading or end of section
-        next_heading = re.search(r"\n###", aesthetics_block[heading_match.end():])
-        block_end = (
-            heading_match.end() + next_heading.start()
-            if next_heading
-            else len(aesthetics_block)
-        )
-        block = aesthetics_block[heading_match.start():block_end]
-
-        # Must have a blockquote
+        block = _get_aesthetic_block(content, aesthetic)
         assert re.search(r"^> .+", block, re.MULTILINE), (
             f"Missing blockquote tagline for: {aesthetic}"
         )
@@ -128,23 +131,8 @@ def test_each_aesthetic_has_blockquote_tagline():
 def test_each_aesthetic_has_seven_properties():
     """Each aesthetic must have all 7 required bullet-point properties."""
     content = read_guide()
-    start = content.index("## Aesthetics")
-    end = content.index("## Layout Types")
-    aesthetics_block = content[start:end]
-
     for aesthetic in EXPECTED_AESTHETICS:
-        pattern = rf"### \d+\. {re.escape(aesthetic)}"
-        heading_match = re.search(pattern, aesthetics_block)
-        assert heading_match, f"Heading not found for: {aesthetic}"
-
-        next_heading = re.search(r"\n###", aesthetics_block[heading_match.end():])
-        block_end = (
-            heading_match.end() + next_heading.start()
-            if next_heading
-            else len(aesthetics_block)
-        )
-        block = aesthetics_block[heading_match.start():block_end]
-
+        block = _get_aesthetic_block(content, aesthetic)
         for prop in EXPECTED_PROPERTIES:
             assert f"**{prop}**" in block or f"**{prop}:**" in block, (
                 f"Missing property '{prop}' in aesthetic: {aesthetic}"
@@ -155,16 +143,15 @@ def test_each_aesthetic_has_seven_properties():
 # Criterion 4: ### Freeform Aesthetics subsection with 3 numbered rules
 # ---------------------------------------------------------------------------
 
+
 def test_freeform_aesthetics_subsection_exists():
     """### Freeform Aesthetics must be a subsection within ## Aesthetics."""
     content = read_guide()
-    assert "### Freeform Aesthetics" in content, (
-        "### Freeform Aesthetics subsection not found"
-    )
+    assert H3_FREEFORM in content, "### Freeform Aesthetics subsection not found"
 
-    aesthetics_idx = content.index("## Aesthetics")
-    layout_idx = content.index("## Layout Types")
-    freeform_idx = content.index("### Freeform Aesthetics")
+    aesthetics_idx = content.index(H2_AESTHETICS)
+    layout_idx = content.index(H2_LAYOUT_TYPES)
+    freeform_idx = content.index(H3_FREEFORM)
 
     assert aesthetics_idx < freeform_idx < layout_idx, (
         "### Freeform Aesthetics must be inside ## Aesthetics, before ## Layout Types"
@@ -174,8 +161,8 @@ def test_freeform_aesthetics_subsection_exists():
 def test_freeform_has_three_numbered_rules():
     """### Freeform Aesthetics must contain exactly 3 numbered rules."""
     content = read_guide()
-    start = content.index("### Freeform Aesthetics")
-    end = content.index("## Layout Types")
+    start = content.index(H3_FREEFORM)
+    end = content.index(H2_LAYOUT_TYPES)
     freeform_block = content[start:end]
 
     # Match numbered list items: "1.", "2.", "3."
@@ -188,8 +175,8 @@ def test_freeform_has_three_numbered_rules():
 def test_freeform_is_last_subsection_before_layout_types():
     """### Freeform Aesthetics must be the last ### subsection before ## Layout Types."""
     content = read_guide()
-    aesthetics_idx = content.index("## Aesthetics")
-    layout_idx = content.index("## Layout Types")
+    aesthetics_idx = content.index(H2_AESTHETICS)
+    layout_idx = content.index(H2_LAYOUT_TYPES)
     aesthetics_block = content[aesthetics_idx:layout_idx]
 
     subsections = list(re.finditer(r"^### .+", aesthetics_block, re.MULTILINE))
@@ -205,16 +192,15 @@ def test_freeform_is_last_subsection_before_layout_types():
 # Criterion 5: ## Layout Types still present and after ## Aesthetics
 # ---------------------------------------------------------------------------
 
+
 def test_layout_types_still_present():
     """## Layout Types must still appear after ## Aesthetics."""
     content = read_guide()
-    assert "## Layout Types" in content, "## Layout Types section is missing!"
+    assert H2_LAYOUT_TYPES in content, "## Layout Types section is missing!"
 
-    aesthetics_idx = content.index("## Aesthetics")
-    layout_idx = content.index("## Layout Types")
-    assert aesthetics_idx < layout_idx, (
-        "## Layout Types must follow ## Aesthetics"
-    )
+    aesthetics_idx = content.index(H2_AESTHETICS)
+    layout_idx = content.index(H2_LAYOUT_TYPES)
+    assert aesthetics_idx < layout_idx, "## Layout Types must follow ## Aesthetics"
 
 
 def test_layout_types_content_intact():
