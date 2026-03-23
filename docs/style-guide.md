@@ -194,7 +194,8 @@ into every panel's generation prompt. The brief MUST specify:
 
 ```
 STYLE BRIEF (apply to all panels):
-- Background: [exact description, e.g. "white background, #F5F5F5"]
+- Aesthetic: [curated name (e.g. "Claymation Studio") or freeform description (e.g. "vintage travel poster")]
+- Background: [from the aesthetic template -- e.g. "white background, #F5F5F5"]
 - Primary colors: [2-3 hex codes or color names]
 - Accent color: [1 hex code or color name]
 - Typography: [font style direction, e.g. "bold sans-serif headers, light body"]
