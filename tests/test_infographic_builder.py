@@ -14,13 +14,7 @@ Covers (task-8 output contract suggestions):
 8. 'style variation' is removed from both locations
 """
 
-from pathlib import Path
-
-AGENT_FILE = Path(__file__).parent.parent / "agents" / "infographic-builder.md"
-
-
-def read_agent() -> str:
-    return AGENT_FILE.read_text(encoding="utf-8")
+from helpers import read_agent
 
 
 # ---------------------------------------------------------------------------
@@ -122,9 +116,7 @@ def test_step_3_has_subpart_d():
 def test_step_3b_two_turn_shortcut():
     """Step 3b must mention the two-turn shortcut."""
     block = _get_step_3_block(read_agent())
-    assert "two-turn shortcut" in block, (
-        "Step 3b must mention the 'two-turn shortcut'"
-    )
+    assert "two-turn shortcut" in block, "Step 3b must mention the 'two-turn shortcut'"
 
 
 def test_step_3c_has_six_numbered_options():
@@ -170,7 +162,11 @@ def test_step_2_cross_reference_says_step_6():
 def _get_output_contract_block(content: str) -> str:
     """Extract text of the Output Contract section."""
     start = content.index("## Output Contract")
-    end = content.index("\n## ", start + 1) if "\n## " in content[start + 1 :] else len(content)
+    end = (
+        content.index("\n## ", start + 1)
+        if "\n## " in content[start + 1 :]
+        else len(content)
+    )
     return content[start:end]
 
 

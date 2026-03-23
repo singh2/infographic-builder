@@ -4,7 +4,7 @@ Tests for the Layout Types table additions in docs/style-guide.md.
 Acceptance criteria (task-2):
 1. The Flowchart row now says 'Flowchart / process flow diagram' with expanded use cases.
 2. Two new rows appear after Mind map: Storyboard journey and Long-form explainer panel.
-3. The table now has 14 rows (12 original + 2 new), counting the header and separator.
+3. The table now has 16 rows (14 original + 2 new), counting the header and separator.
 4. Mind Map is NOT duplicated.
 5. Commit message: "feat: add Storyboard Journey and Long-Form Explainer layouts, enrich Flowchart entry"
    (criterion 5 is verified manually via `git log` — commit message assertions are fragile in tests)

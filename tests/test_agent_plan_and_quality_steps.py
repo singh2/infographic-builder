@@ -9,13 +9,7 @@ Acceptance criteria:
 4. Step 6 lists 'aesthetic fidelity' at the end of the dimension list.
 """
 
-from pathlib import Path
-
-AGENT_FILE = Path(__file__).parent.parent / "agents" / "infographic-builder.md"
-
-
-def read_agent() -> str:
-    return AGENT_FILE.read_text(encoding="utf-8")
+from helpers import read_agent
 
 
 def _get_step_4_block(content: str) -> str:
