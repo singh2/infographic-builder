@@ -134,7 +134,7 @@ def test_each_aesthetic_has_seven_properties():
     for aesthetic in EXPECTED_AESTHETICS:
         block = _get_aesthetic_block(content, aesthetic)
         for prop in EXPECTED_PROPERTIES:
-            assert f"**{prop}**" in block or f"**{prop}:**" in block, (
+            assert f"**{prop}:**" in block, (
                 f"Missing property '{prop}' in aesthetic: {aesthetic}"
             )
 
