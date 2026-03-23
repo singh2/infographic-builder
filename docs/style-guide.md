@@ -327,3 +327,4 @@ Before calling nano-banana generate, verify the prompt addresses:
 - [ ] Is the layout type appropriate for the content?
 - [ ] Is the color direction specified?
 - [ ] Is the target medium considered (social, slides, print)?
+- [ ] Has an aesthetic been selected or confirmed (curated, freeform, or default)?
