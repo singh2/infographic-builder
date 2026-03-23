@@ -127,12 +127,14 @@ Match layout to content:
 | Timeline | Horizontal or vertical line | History, roadmaps, project phases |
 | Hierarchy | Tree or pyramid | Org charts, taxonomies, priorities |
 | Cycle | Circular arrows | Recurring processes, feedback loops |
-| Decision tree / branching logic | Flowchart with decision nodes | If/then scenarios, troubleshooting guides, approval workflows |
+| Decision tree / process logic | Flowchart / process flow diagram | If/then scenarios, algorithms, logic flows, troubleshooting, approval workflows |
 | Conversion / narrowing stages | Funnel (wide to narrow) | Sales pipeline, user journey drop-off, filtering processes |
 | Multi-option evaluation | Comparison grid / matrix | Feature comparison, vendor evaluation, option scoring |
 | Strategic positioning (2 axes) | Quadrant chart (2x2) | Priority matrices, risk/impact, build vs buy |
 | Overlapping concepts | Venn diagram | Skill intersections, market overlap, shared responsibilities |
 | Concept relationships / brainstorms | Mind map / radial | Ecosystem maps, topic exploration, feature relationships |
+| Narrative sequence / user journey | Storyboard journey (sequential scenes) | Step-by-step stories, user journey maps, customer experience flows |
+| Deep dive / multi-section explanation | Long-form explainer panel (horizontal bands) | In-depth topics with per-section illustrations, comprehensive guides |
 
 ## Prompt Engineering
 
