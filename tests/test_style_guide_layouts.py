@@ -7,18 +7,12 @@ Acceptance criteria (task-2):
 3. The table now has 14 rows (12 original + 2 new), counting the header and separator.
 4. Mind Map is NOT duplicated.
 5. Commit message: "feat: add Storyboard Journey and Long-Form Explainer layouts, enrich Flowchart entry"
+   (criterion 5 is verified manually via `git log` — commit message assertions are fragile in tests)
 """
 
 import re
-from pathlib import Path
 
-STYLE_GUIDE = Path(__file__).parent.parent / "docs" / "style-guide.md"
-
-H2_LAYOUT_TYPES = "## Layout Types"
-
-
-def read_guide() -> str:
-    return STYLE_GUIDE.read_text(encoding="utf-8")
+from helpers import H2_LAYOUT_TYPES, read_guide
 
 
 def _get_layout_table(content: str) -> str:
