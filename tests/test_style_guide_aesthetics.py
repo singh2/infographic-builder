@@ -12,9 +12,8 @@ Acceptance criteria:
 """
 
 import re
-from pathlib import Path
 
-STYLE_GUIDE = Path(__file__).parent.parent / "docs" / "style-guide.md"
+from helpers import H2_LAYOUT_TYPES, read_guide
 
 EXPECTED_AESTHETICS = [
     "Clean Minimalist",
@@ -36,12 +35,7 @@ EXPECTED_PROPERTIES = [
 ]
 
 H2_AESTHETICS = "## Aesthetics"
-H2_LAYOUT_TYPES = "## Layout Types"
 H3_FREEFORM = "### Freeform Aesthetics"
-
-
-def read_guide() -> str:
-    return STYLE_GUIDE.read_text(encoding="utf-8")
 
 
 def _get_aesthetic_block(content: str, aesthetic: str) -> str:
