@@ -12,7 +12,3 @@ tools:
 agents:
   include:
     - infographic-builder:infographic-builder
-
-context:
-  include:
-    - infographic-builder:context/infographic-awareness.md
