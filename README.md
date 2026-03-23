@@ -15,9 +15,13 @@ layout, color, typography, and composition automatically.
 | "Visualize our Q3 sales funnel with key metrics" | Statistics layout with large numbers and icons |
 | "Make a 3-panel infographic about climate change" | Exactly 3 panels (your count, your call) |
 | "Create a timeline of the space race" | Horizontal/vertical timeline layout |
+| "Create a claymation infographic about how DNS works" | Claymation-styled infographic (detects style inline, skips selection) |
+| "Make a dark mode tech infographic about CI/CD pipelines" | Dark Mode Tech aesthetic with auto-selected layout |
+| "Create an infographic about quarterly metrics" → pick "Bold Editorial" | Bold editorial magazine-style infographic |
 
 The agent automatically:
 - **Picks the best layout** for your content -- process flow, comparison, timeline, hierarchy, cycle, or statistics
+- **Presents aesthetic options** -- 6 curated styles from Clean Minimalist to Lego Brick Builder, plus freeform
 - **Splits complex topics** into multiple panels when there's too much for one image
 - **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
 - **Keeps multi-panel sets visually consistent** using reference image chaining
@@ -27,6 +31,8 @@ You steer with plain English:
 - "use a timeline layout" -- override the automatic layout choice
 - "single panel only" -- force one image even for dense topics
 - "make it a 4-panel infographic" -- set an explicit panel count (up to 6)
+- "make it claymation" / "dark mode tech" -- choose a curated aesthetic
+- "2" (when prompted) -- pick an aesthetic by number
 - "skip the review" -- faster generation, skip the quality check
 
 ## Get started
@@ -68,16 +74,18 @@ amplifier run
 | Multi-panel styles don't match | Rare -- Panel 1 is used as style anchor | Ask the agent to regenerate; Panel 1 sets the style for all others |
 | Slow generation | Quality review adds ~10-20s per image | Say "skip the review" for faster output |
 | Image text is garbled or unreadable | Limitation of current image generation models | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
+| Output doesn't match requested aesthetic | Aesthetic fidelity varies by complexity | The critic loop checks aesthetic fidelity -- try regenerating or simplify the content |
 
 ## How it works
 
 ```
 1. You describe what you want
 2. Agent analyzes content density --> picks single or multi-panel
-3. Agent designs layout, palette, typography, and visual hierarchy
-4. Agent generates image(s) via Gemini (nano-banana tool)
-5. Agent reviews output and refines if needed
-6. You get the .png file(s) + design rationale + suggestions
+3. Agent recommends a layout and presents 6 aesthetic options (or detects your inline style)
+4. Agent designs layout, palette, typography using your chosen aesthetic template
+5. Agent generates image(s) via Gemini (nano-banana tool)
+6. Agent reviews output (including aesthetic fidelity) and refines if needed
+7. You get the .png file(s) + design rationale + suggestions
 ```
 
 ## Architecture
@@ -94,7 +102,7 @@ flowchart TB
         B["bundle.md<br/><i>thin root</i>"]
         BH["behaviors/infographic.yaml<br/><i>wires tool + agent + context</i>"]
         AW["context/infographic-awareness.md<br/><i>loaded every session</i>"]
-        SP["context/prompts/system-prompt.md<br/><i>style guide</i>"]
+        SP["docs/style-guide.md<br/><i>style guide</i>"]
         AG["agents/infographic-builder.md<br/><i>loaded only when spawned</i>"]
         B --> BH
         BH --> AW
@@ -134,10 +142,10 @@ infographic-builder/
 |   +-- infographic.yaml             # wires tool + agent + context
 |-- agents/
 |   +-- infographic-builder.md       # the expert agent (context sink)
-+-- context/
-    |-- infographic-awareness.md     # thin pointer loaded every session
-    +-- prompts/
-        +-- system-prompt.md         # infographic generation style guide
+|-- context/
+|   +-- infographic-awareness.md     # thin pointer loaded every session
++-- docs/
+    +-- style-guide.md              # design knowledge: aesthetics, layouts, quality criteria
 ```
 
 ## Testing
@@ -190,6 +198,18 @@ amplifier run
 amplifier run
 # Say: "Create a single-panel infographic about climate change impacts"
 # Expected: one image even though topic is dense
+
+# Test 5: Aesthetic selection flow
+amplifier run
+# Say: "Create an infographic about how DNS works"
+# Expected: Agent recommends layout, presents 6 aesthetic options + freeform
+# Pick: "2" or "Dark Mode Tech"
+# Expected: Infographic generated in Dark Mode Tech style
+
+# Test 6: Inline aesthetic shortcut (two-turn)
+amplifier run
+# Say: "Make a claymation infographic about the water cycle"
+# Expected: Skips aesthetic proposal, generates directly in Claymation style
 ```
 
 ### What to check
@@ -202,6 +222,9 @@ amplifier run
 | Quality review | Agent reports what the review found and whether it refined |
 | Auto multi-panel | Dense topics get split into panels without being asked |
 | Style consistency | Multi-panel sets share the same color palette and typography |
+| Aesthetic selection | Agent presents 6 options + freeform and waits for user choice |
+| Inline style shortcut | Specifying aesthetic in the request skips the proposal turn |
+| Aesthetic fidelity | Quality review includes aesthetic match as a review dimension |
 
 ## License
 
