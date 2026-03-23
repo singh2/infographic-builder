@@ -299,9 +299,14 @@ Dimensions:
 4. PROMPT FIDELITY: Does the output match the style, layout type, and color
    direction specified in the generation prompt?
 
-Summary: Overall PASS or NEEDS_REFINEMENT. If NEEDS_REFINEMENT, list the
-specific changes that would fix the issues (be concrete -- these will be
-used to refine the generation prompt).
+5. AESTHETIC FIDELITY: If a specific aesthetic was requested (e.g., "Claymation
+   Studio", "Dark Mode Tech", or a freeform description), does the output
+   visually match that aesthetic? Check background treatment, icon style,
+   typography feel, lighting, and overall mood against the aesthetic template.
+
+Summary: Overall PASS or NEEDS_REFINEMENT across all 5 dimensions. If
+NEEDS_REFINEMENT, list the specific changes that would fix the issues (be
+concrete -- these will be used to refine the generation prompt).
 ```
 
 ### Refinement Rules
