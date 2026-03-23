@@ -55,6 +55,8 @@ def _get_aesthetic_block(content: str, aesthetic: str) -> str:
     assert m, f"Heading not found for: {aesthetic}"
 
     next_heading = re.search(r"\n###", section[m.end() :])
+    # block_end falls back to end of section if no next ### exists (only
+    # correct while ### Freeform Aesthetics terminates the numbered list)
     block_end = m.end() + next_heading.start() if next_heading else len(section)
     return section[m.start() : block_end]
 
