@@ -308,8 +308,8 @@ async def evaluate_image(
         )
 
     response = await client.chat.completions.create(
-        model="gpt-5.2-chat-latest-20260210",
-        max_tokens=4096,
+        model="gpt-5.4-2026-03-05",
+        max_completion_tokens=4096,
         temperature=0.2,
         messages=[{"role": "user", "content": content}],  # type: ignore[arg-type]
     )
