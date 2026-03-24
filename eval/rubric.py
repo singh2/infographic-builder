@@ -171,7 +171,7 @@ def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str
         "### Prompt Fidelity",
         "",
         "Score how closely the infographic follows the **Original brief** above "
-        "(1 = completely ignored, 10 = fully realised). Note any elements from the "
+        "(1 = completely ignored, 5 = fully realised). Note any elements from the "
         "brief that are missing or misrepresented.",
         "",
     ]
