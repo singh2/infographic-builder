@@ -134,7 +134,10 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    - Follow the full Multi-Panel Composition process in the Style Guide:
      content map, style brief, Panel 1 generation, post-Panel 1 style
      reconciliation, then Panels 2-N with reference image chaining
-   - Output files follow the Panel Naming Convention in the Style Guide
+   - **If the user's prompt specifies output paths, use those paths exactly.**
+     Output paths from the user override the default Panel Naming Convention.
+   - If no output paths are specified, follow the Panel Naming Convention
+     in the Style Guide
 
 6. **Quality review**:
 

@@ -264,12 +264,19 @@ completely.
 
 ### Panel Naming Convention
 
-Output files follow this pattern:
+**If the user specified an output path, always use it exactly.** User-specified
+paths take absolute priority over the defaults below.
+
+For example, if the user says "Save as `./samples/dns_panel_1.png`", save to
+exactly that path. If they say "Save as `./samples/mechanical-keyboard.png`"
+for a single-panel infographic, save to exactly `./samples/mechanical-keyboard.png`.
+
+**Default convention** (only when no output path is specified):
 - `./infographic_panel_1.png`
 - `./infographic_panel_2.png`
 - etc.
 
-If the user specified a custom output path like `./sales.png`, adapt:
+If the user specified a custom stem like `./sales.png` without panel suffixes, adapt:
 - `./sales_panel_1.png`
 - `./sales_panel_2.png`
 - etc.
