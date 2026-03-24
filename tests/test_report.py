@@ -14,7 +14,7 @@ Covers:
 
 from __future__ import annotations
 
-import pytest
+import re
 
 from eval.report import aggregate_scores, generate_markdown_report, interpret_band
 
@@ -48,22 +48,62 @@ SCENARIO_SCORES: list[dict] = [
         "scenario": "dns",
         "composite_score": 3.75,
         "scores": {
-            "content_accuracy": {"score": 3.5, "evidence": "Good accuracy.", "improvement": "Minor gaps."},
-            "narrative_structure": {"score": 4.0, "evidence": "Clear flow.", "improvement": "None."},
-            "visual_explanation": {"score": 4.0, "evidence": "Good visuals.", "improvement": "None."},
-            "typography": {"score": 3.0, "evidence": "Readable.", "improvement": "Size up body text."},
-            "visual_quality": {"score": 4.0, "evidence": "Clean design.", "improvement": "None."},
+            "content_accuracy": {
+                "score": 3.5,
+                "evidence": "Good accuracy.",
+                "improvement": "Minor gaps.",
+            },
+            "narrative_structure": {
+                "score": 4.0,
+                "evidence": "Clear flow.",
+                "improvement": "None.",
+            },
+            "visual_explanation": {
+                "score": 4.0,
+                "evidence": "Good visuals.",
+                "improvement": "None.",
+            },
+            "typography": {
+                "score": 3.0,
+                "evidence": "Readable.",
+                "improvement": "Size up body text.",
+            },
+            "visual_quality": {
+                "score": 4.0,
+                "evidence": "Clean design.",
+                "improvement": "None.",
+            },
         },
     },
     {
         "scenario": "neural-networks",
         "composite_score": 2.95,
         "scores": {
-            "content_accuracy": {"score": 3.5, "evidence": "Acceptable.", "improvement": "Add citations."},
-            "narrative_structure": {"score": 3.0, "evidence": "Adequate.", "improvement": "Clearer transitions."},
-            "visual_explanation": {"score": 3.0, "evidence": "Decent.", "improvement": "Simplify diagrams."},
-            "typography": {"score": 2.0, "evidence": "Hard to read.", "improvement": "Increase contrast."},
-            "visual_quality": {"score": 3.0, "evidence": "Average.", "improvement": "More polish."},
+            "content_accuracy": {
+                "score": 3.5,
+                "evidence": "Acceptable.",
+                "improvement": "Add citations.",
+            },
+            "narrative_structure": {
+                "score": 3.0,
+                "evidence": "Adequate.",
+                "improvement": "Clearer transitions.",
+            },
+            "visual_explanation": {
+                "score": 3.0,
+                "evidence": "Decent.",
+                "improvement": "Simplify diagrams.",
+            },
+            "typography": {
+                "score": 2.0,
+                "evidence": "Hard to read.",
+                "improvement": "Increase contrast.",
+            },
+            "visual_quality": {
+                "score": 3.0,
+                "evidence": "Average.",
+                "improvement": "More polish.",
+            },
         },
     },
 ]
@@ -171,14 +211,18 @@ def test_report_contains_composite_scores() -> None:
     """
     report = generate_markdown_report(SCENARIO_SCORES)
     assert "3.75" in report, "Report must contain composite score '3.75' for dns"
-    assert "2.95" in report, "Report must contain composite score '2.95' for neural-networks"
+    assert "2.95" in report, (
+        "Report must contain composite score '2.95' for neural-networks"
+    )
 
 
 def test_report_contains_scenario_names() -> None:
     """generate_markdown_report output names both evaluated scenarios."""
     report = generate_markdown_report(SCENARIO_SCORES)
     assert "dns" in report, "Report must reference scenario 'dns'"
-    assert "neural-networks" in report, "Report must reference scenario 'neural-networks'"
+    assert "neural-networks" in report, (
+        "Report must reference scenario 'neural-networks'"
+    )
 
 
 def test_report_contains_dimension_averages() -> None:
@@ -239,7 +283,6 @@ def test_report_without_baseline_omits_trends() -> None:
     )
     # A bare '+' could appear in other contexts (e.g. markdown), so we check
     # for the specific delta pattern: a '+' followed by digits like '+0.75'.
-    import re
     delta_pattern = re.compile(r"\+\d+\.\d+")
     assert not delta_pattern.search(report), (
         "Report without baseline must not contain delta patterns like '+0.75'"
