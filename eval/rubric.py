@@ -35,40 +35,40 @@ REQUIRED_DIMENSIONS: set[str] = set(DIMENSION_WEIGHTS.keys())
 # ---------------------------------------------------------------------------
 
 _RUBRIC_DIMENSIONS = """
-### Scoring Rubric (each dimension scored 1–10)
+### Scoring Rubric (each dimension scored 1–5)
 
 **1. Content Accuracy (20%)**
 Evaluates factual correctness, data integrity, and absence of misleading claims.
-- *Behavioral anchors*: 9–10 = all data verifiable and accurate; 5–6 = minor errors
-  or omissions; 1–2 = significant factual mistakes.
+- *Behavioral anchors*: 5 = all data verifiable and accurate; 3 = minor errors
+  or omissions; 1 = significant factual mistakes.
 - *AI failure modes*: hallucinated statistics, incorrect labels, conflated concepts.
 
 **2. Narrative Structure (15%)**
 Evaluates logical flow, clear entry/exit points, and coherent story progression.
-- *Behavioral anchors*: 9–10 = intuitive reading path, strong intro and conclusion;
-  5–6 = structure exists but transitions are weak; 1–2 = no discernible narrative.
+- *Behavioral anchors*: 5 = intuitive reading path, strong intro and conclusion;
+  3 = structure exists but transitions are weak; 1 = no discernible narrative.
 - *AI failure modes*: random ordering, missing connective tissue between sections.
 
 **3. Visual Explanation (25%)**
 Evaluates how effectively visuals communicate the core idea (diagrams, icons,
 metaphors, data encodings).
-- *Behavioral anchors*: 9–10 = visuals alone convey the message; 5–6 = visuals
-  assist but text carries the load; 1–2 = visuals confuse or are decorative only.
+- *Behavioral anchors*: 5 = visuals alone convey the message; 3 = visuals
+  assist but text carries the load; 1 = visuals confuse or are decorative only.
 - *AI failure modes*: generic stock-art feel, mismatched metaphors, over-cluttered
   diagrams.
 
 **4. Typography & Legibility (20%)**
 Evaluates font hierarchy, contrast, type size, and overall readability.
-- *Behavioral anchors*: 9–10 = clear hierarchy, all text readable at target size;
-  5–6 = mostly readable with minor issues; 1–2 = poor contrast or illegible text.
+- *Behavioral anchors*: 5 = clear hierarchy, all text readable at target size;
+  3 = mostly readable with minor issues; 1 = poor contrast or illegible text.
 - *AI failure modes*: uniform weight with no hierarchy, low-contrast colour pairings,
   decorative fonts used for body copy.
 
 **5. Visual Quality & Consistency (20%)**
 Evaluates overall polish, colour palette coherence, icon consistency, and brand
 alignment.
-- *Behavioral anchors*: 9–10 = professional finish, unified visual language;
-  5–6 = mostly consistent with occasional rough edges; 1–2 = inconsistent or amateurish.
+- *Behavioral anchors*: 5 = professional finish, unified visual language;
+  3 = mostly consistent with occasional rough edges; 1 = inconsistent or amateurish.
 - *AI failure modes*: mismatched icon styles, clashing colours, uneven padding.
 """
 
@@ -80,14 +80,14 @@ Respond with **only** a JSON object matching this schema (no markdown fences):
 ```
 {
   "dimensions": {
-    "content_accuracy":    {"score": <int 1-10>, "evidence": "...", "improvement": "..."},
-    "narrative_structure": {"score": <int 1-10>, "evidence": "...", "improvement": "..."},
-    "visual_explanation":  {"score": <int 1-10>, "evidence": "...", "improvement": "..."},
-    "typography":          {"score": <int 1-10>, "evidence": "...", "improvement": "..."},
-    "visual_quality":      {"score": <int 1-10>, "evidence": "...", "improvement": "..."}
+    "content_accuracy":    {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "narrative_structure": {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "visual_explanation":  {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "typography":          {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "visual_quality":      {"score": <int 1-5>, "evidence": "...", "improvement": "..."}
   },
   "prompt_fidelity": {
-    "score": <int 1-10>,
+    "score": <int 1-5>,
     "evidence": "...",
     "improvement": "..."
   },
@@ -200,7 +200,7 @@ def parse_scores(raw_json_str: str) -> dict[str, Any]:
 
     Raises:
         ValueError: If the JSON is malformed, required dimensions are missing,
-            or any score is outside the valid 1–10 range.
+            or any score is outside the valid 1–5 range.
     """
     # --- parse ---
     try:
@@ -221,9 +221,9 @@ def parse_scores(raw_json_str: str) -> dict[str, Any]:
     composite: float = 0.0
     for dim, weight in DIMENSION_WEIGHTS.items():
         score = dimensions[dim].get("score")
-        if not isinstance(score, int) or score < 1 or score > 10:
+        if not isinstance(score, int) or score < 1 or score > 5:
             raise ValueError(
-                f"Score for '{dim}' is out of range (got {score!r}; must be int 1–10)"
+                f"Score for '{dim}' is out of range (got {score!r}; must be int 1–5)"
             )
         composite += score * weight
 

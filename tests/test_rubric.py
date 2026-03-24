@@ -26,51 +26,51 @@ from eval.rubric import DIMENSION_WEIGHTS, build_rubric_prompt, parse_scores
 # ---------------------------------------------------------------------------
 
 # A valid raw LLM response dict with all required rubric fields.
-# composite_score is intentionally set to 8.0 so recalculation tests can
+# composite_score is intentionally set to 3.0 so recalculation tests can
 # verify that parse_scores overwrites it with the weighted average.
 #
 # Weighted composite:
-#   content_accuracy   8 × 0.20 = 1.60
-#   narrative_structure 6 × 0.15 = 0.90
-#   visual_explanation  9 × 0.25 = 2.25
-#   typography          7 × 0.20 = 1.40
-#   visual_quality      8 × 0.20 = 1.60
+#   content_accuracy   4 × 0.20 = 0.80
+#   narrative_structure 3 × 0.15 = 0.45
+#   visual_explanation  5 × 0.25 = 1.25
+#   typography          4 × 0.20 = 0.80
+#   visual_quality      4 × 0.20 = 0.80
 #   ─────────────────────────────────────
-#   computed composite               7.75
+#   computed composite               4.10
 VALID_RESPONSE: dict = {
     "dimensions": {
         "content_accuracy": {
-            "score": 8,
+            "score": 4,
             "evidence": "Data is accurate and well-sourced throughout.",
             "improvement": "Minor footnote clarification would help.",
         },
         "narrative_structure": {
-            "score": 6,
+            "score": 3,
             "evidence": "Logical flow exists but transitions could be stronger.",
             "improvement": "Strengthen the introductory framing.",
         },
         "visual_explanation": {
-            "score": 9,
+            "score": 5,
             "evidence": "Excellent use of visual metaphors and diagrams.",
             "improvement": "None significant.",
         },
         "typography": {
-            "score": 7,
+            "score": 4,
             "evidence": "Consistent font hierarchy maintained.",
             "improvement": "Body text could be slightly larger for readability.",
         },
         "visual_quality": {
-            "score": 8,
+            "score": 4,
             "evidence": "Good colour usage and overall composition.",
             "improvement": "Some icons lack polish.",
         },
     },
     "prompt_fidelity": {
-        "score": 8,
+        "score": 4,
         "evidence": "Follows the original prompt closely.",
         "improvement": "One minor element from the brief is missing.",
     },
-    "composite_score": 8.0,  # intentionally wrong — recalculated by parse_scores
+    "composite_score": 3.0,  # intentionally wrong — recalculated by parse_scores
     "overall_impression": "A well-crafted infographic with strong visual explanation.",
     "top_strength": "Clear data visualisation",
     "top_weakness": "Minor icon inconsistency",
@@ -148,16 +148,16 @@ def test_parse_scores_includes_summary_fields() -> None:
 def test_parse_scores_recalculates_composite() -> None:
     """parse_scores overwrites composite_score with the correct weighted average.
 
-    Expected: 8*0.20 + 6*0.15 + 9*0.25 + 7*0.20 + 8*0.20 = 7.75
-    The fixture supplies 8.0 so this directly tests recalculation logic.
+    Expected: 4*0.20 + 3*0.15 + 5*0.25 + 4*0.20 + 4*0.20 = 4.10
+    The fixture supplies 3.0 so this directly tests recalculation logic.
     """
     result = parse_scores(_as_json_string(VALID_RESPONSE))
     expected = (
-        8 * 0.20  # content_accuracy
-        + 6 * 0.15  # narrative_structure
-        + 9 * 0.25  # visual_explanation
-        + 7 * 0.20  # typography
-        + 8 * 0.20  # visual_quality
+        4 * 0.20  # content_accuracy
+        + 3 * 0.15  # narrative_structure
+        + 5 * 0.25  # visual_explanation
+        + 4 * 0.20  # typography
+        + 4 * 0.20  # visual_quality
     )
     assert abs(result["composite_score"] - expected) < 1e-9, (
         f"Expected composite_score {expected}, got {result['composite_score']}"
@@ -203,9 +203,11 @@ def test_parse_scores_rejects_missing_dimensions() -> None:
 
 def test_parse_scores_rejects_out_of_range_score() -> None:
     """parse_scores raises ValueError containing 'out of range' when a dimension
-    score is outside the valid 1–10 band."""
+    score is outside the valid 1–5 band."""
     out_of_range = copy.deepcopy(VALID_RESPONSE)
-    out_of_range["dimensions"]["content_accuracy"]["score"] = 11  # invalid
+    out_of_range["dimensions"]["content_accuracy"]["score"] = (
+        6  # invalid: just above max 5
+    )
     with pytest.raises(ValueError, match="out of range"):
         parse_scores(_as_json_string(out_of_range))
 
