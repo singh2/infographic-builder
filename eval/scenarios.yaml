@@ -1,0 +1,374 @@
+# =============================================================================
+# Evaluation Scenarios
+# =============================================================================
+#
+# 18 infographic test scenarios used by the evaluation harness.
+# 14 scenarios are extracted from the sample gallery recipes; 4 are new
+# Microsoft/incubation-audience scenarios added for broader coverage.
+#
+# Organized by panel count (ascending): 1 → 2 → 3 → 4 → 5 → 6
+#
+# Each scenario has:
+#   name            — unique slug identifier
+#   topic           — human-readable title
+#   panels          — number of panels (int)
+#   audience        — intended target audience
+#   style_direction — brief visual style description
+#   prompt          — full generation prompt passed to the infographic builder
+#
+# =============================================================================
+
+scenarios:
+
+  # ---------------------------------------------------------------------------
+  # 1-panel scenarios (3)
+  # ---------------------------------------------------------------------------
+
+  - name: mechanical-keyboard
+    topic: "The Anatomy of a Mechanical Keyboard"
+    panels: 1
+    audience: "Tech enthusiasts and hardware hobbyists"
+    style_direction: "Dark background with RGB color accents (red, green, blue, purple), bold sans-serif headers"
+    prompt: >
+      Create a single-panel infographic about "The Anatomy of a Mechanical Keyboard".
+      Show the key switch mechanism (spring, stem, housing), keycap layers, PCB,
+      stabilizers, and plate mount. Use an exploded diagram layout. Dark background
+      with RGB color accents (red, green, blue, purple). Bold sans-serif headers,
+      9:16 aspect ratio. Save as ./samples/mechanical-keyboard.png
+
+  - name: noise-canceling-headphones
+    topic: "How Noise-Canceling Headphones Work"
+    panels: 1
+    audience: "General consumer / everyday tech users"
+    style_direction: "Clean minimal, light gray background, blue and dark gray palette"
+    prompt: >
+      Create a single-panel infographic about "How Noise-Canceling Headphones Work".
+      Show ambient sound waves, microphone pickup, anti-phase wave generation, and
+      combined output (silence). Use a horizontal flow diagram showing the wave
+      cancellation process. Clean minimal style with a light gray background, blue
+      and dark gray palette. 9:16 aspect ratio.
+      Save as ./samples/noise-canceling-headphones.png
+
+  - name: saas-metrics-dashboard
+    topic: "Q3 2025 SaaS Metrics Dashboard"
+    panels: 1
+    audience: "SaaS executives and business stakeholders"
+    style_direction: "Clean corporate, navy blue and emerald green on white, accent gold for positive trends"
+    prompt: >
+      Create a single-panel infographic about "Q3 2025 SaaS Metrics Dashboard".
+      Present these specific KPIs with large prominent numbers and supporting
+      context: Monthly Recurring Revenue $4.2M (up 23% from Q2), Customer
+      Churn Rate 2.3% (down from 3.1%), Customer Acquisition Cost $142 (target
+      was $150), Net Promoter Score 72 (industry avg 41), Active Users 28,400
+      (up 3,200 from Q2). Use a statistics/KPI layout with large numbers and
+      icons. Clean corporate style with navy blue and emerald green on white
+      background, accent gold for positive trends. 9:16 aspect ratio.
+      Save as ./samples/saas-metrics-dashboard.png
+
+  # ---------------------------------------------------------------------------
+  # 2-panel scenarios (6)
+  # ---------------------------------------------------------------------------
+
+  - name: developer-survey-results
+    topic: "2025 Developer Survey Results"
+    panels: 2
+    audience: "Software developers and engineers"
+    style_direction: "Modern tech, electric blue and cool gray on dark background, white text, clean sans-serif"
+    prompt: >
+      Create a 2-panel infographic about "2025 Developer Survey Results"
+      presenting survey data with specific percentages and rankings.
+      Panel 1 "Languages & Frameworks": Top 5 languages by usage --
+      Python 68%, JavaScript 62%, TypeScript 51%, Go 29%, Rust 18%.
+      Framework satisfaction scores -- React 4.1/5, Next.js 4.3/5,
+      FastAPI 4.5/5, Django 3.9/5, Express 3.7/5.
+      Panel 2 "Career & Compensation": Median salary by role -- Senior
+      Engineer $185K, Staff Engineer $225K, Engineering Manager $210K,
+      Principal Engineer $260K. Remote work breakdown -- Fully remote 42%,
+      Hybrid 38%, In-office 20%. Job satisfaction 73% positive.
+      Use a statistics layout with large numbers, ranking bars, and percentage
+      callouts. Modern tech style with electric blue and cool gray on dark
+      background, white text, clean sans-serif. 9:16 aspect ratio.
+      Save panels as ./samples/developer-survey-results_panel_1.png,
+      ./samples/developer-survey-results_panel_2.png
+
+  - name: dns
+    topic: "How DNS Works"
+    panels: 2
+    audience: "Technical users and web developers"
+    style_direction: "Warm off-white editorial, teal and charcoal palette, golden yellow accents"
+    prompt: >
+      Create a 2-panel infographic about "How DNS Works".
+      Panel 1 "The Lookup Begins": browser request, DNS resolver, root nameserver,
+      TLD nameserver.
+      Panel 2 "The Answer Returns": authoritative nameserver, IP address return,
+      caching/TTL, browser connects.
+      Warm off-white editorial style with teal and charcoal palette, golden yellow
+      accents. 9:16 aspect ratio.
+      Save panels as ./samples/dns_panel_1.png, ./samples/dns_panel_2.png
+
+  - name: campfire
+    topic: "The Science Behind a Perfect Campfire"
+    panels: 2
+    audience: "Outdoor enthusiasts and general audience"
+    style_direction: "Warm illustrated, deep orange, amber, and dark brown palette on cream background"
+    prompt: >
+      Create a 2-panel infographic about "The Science Behind a Perfect Campfire".
+      Panel 1 "The Fire Triangle": fuel, heat, oxygen — the three elements needed
+      for combustion, plus best wood types (hardwood vs softwood).
+      Panel 2 "Building Technique": tinder nest → kindling teepee → fuel logs,
+      airflow management, and common mistakes.
+      Warm illustrated style with deep orange, amber, and dark brown palette on a
+      cream background. 9:16 aspect ratio.
+      Save panels as ./samples/campfire_panel_1.png, ./samples/campfire_panel_2.png
+
+  - name: agile-vs-waterfall
+    topic: "Agile vs Waterfall"
+    panels: 2
+    audience: "Software teams and project managers"
+    style_direction: "Clean corporate, blue tones for Waterfall and green tones for Agile on light background"
+    prompt: >
+      Create a 2-panel comparison infographic about "Agile vs Waterfall".
+      Panel 1 "Waterfall": linear sequential phases (requirements → design →
+      implementation → testing → deployment), plan-driven, heavy documentation,
+      change is expensive.
+      Panel 2 "Agile": iterative sprints (plan → build → test → review → repeat),
+      adaptive, working software over documentation, embraces change.
+      Use a clean corporate style with blue tones for Waterfall and green tones for
+      Agile, light background. Side-by-side comparison layout within each panel.
+      9:16 aspect ratio.
+      Save panels as ./samples/agile-vs-waterfall_panel_1.png,
+      ./samples/agile-vs-waterfall_panel_2.png
+
+  - name: okr-cascade
+    topic: "OKR Cascade: From Company to Team"
+    panels: 2
+    audience: "Microsoft incubation teams and program managers"
+    style_direction: "Clean corporate Microsoft style, navy and teal on white, hierarchical diagram layout"
+    prompt: >
+      Create a 2-panel infographic about "OKR Cascade: From Company to Team".
+      Panel 1 "Company OKRs": top-level objectives aligned to mission, key results
+      with measurable targets, executive ownership, quarterly cadence, and scoring
+      rubric (0.0–1.0 scale).
+      Panel 2 "Team OKRs": team objectives derived from company OKRs, granular key
+      results owned by individuals, contribution mapping arrows showing alignment,
+      weekly check-in cadence, and common pitfalls (output vs outcome confusion).
+      Clean corporate Microsoft style with navy blue and teal on white background,
+      hierarchical cascade diagram with alignment arrows. 9:16 aspect ratio.
+      Save panels as ./samples/okr-cascade_panel_1.png,
+      ./samples/okr-cascade_panel_2.png
+
+  - name: customer-discovery-funnel
+    topic: "Customer Discovery Funnel for New Ventures"
+    panels: 2
+    audience: "Microsoft incubation teams and startup founders"
+    style_direction: "Modern startup, gradient blues with bold typography on white, funnel and flow diagram motifs"
+    prompt: >
+      Create a 2-panel infographic about "Customer Discovery Funnel for New Ventures".
+      Panel 1 "Problem Validation": hypothesis formation, customer interviews using
+      the 5-why technique, pain point mapping on an impact/frequency matrix, market
+      segment identification, and signals that invalidate the hypothesis.
+      Panel 2 "Solution Validation": MVP prototype types (concierge, Wizard of Oz,
+      prototype), usability testing methods, feedback loop structure, pivot vs
+      persevere decision criteria, and key metrics to track (activation rate,
+      retention, NPS).
+      Modern startup style with gradient blues and bold typography on a white
+      background, funnel shape and flow diagram motifs. 9:16 aspect ratio.
+      Save panels as ./samples/customer-discovery-funnel_panel_1.png,
+      ./samples/customer-discovery-funnel_panel_2.png
+
+  # ---------------------------------------------------------------------------
+  # 3-panel scenarios (4)
+  # ---------------------------------------------------------------------------
+
+  - name: neural-networks
+    topic: "How Neural Networks Learn"
+    panels: 3
+    audience: "AI/ML learners and technical practitioners"
+    style_direction: "Technical diagram, gradient blues and purples on dark background, glowing node connections"
+    prompt: >
+      Create a 3-panel infographic about "How Neural Networks Learn".
+      Panel 1 "Forward Pass": input data flows through layers (input → hidden →
+      output), weights multiply signals, activation functions fire.
+      Panel 2 "Backpropagation": error calculated at output, gradients flow backwards
+      through the network, chain rule applies layer by layer.
+      Panel 3 "Gradient Descent": weights updated to minimize loss, learning rate
+      controls step size, training loop repeats until convergence.
+      Technical diagram style with gradient blues and purples on a dark background,
+      glowing node connections. 9:16 aspect ratio.
+      Save panels as ./samples/neural-networks_panel_1.png through _panel_3.png
+
+  - name: surfing
+    topic: "What Happens When You Drop Into a Wave"
+    panels: 3
+    audience: "Surfing enthusiasts and outdoor sports fans"
+    style_direction: "Vibrant ocean, deep blues and turquoise with white foam accents, dynamic action-oriented feel"
+    prompt: >
+      Create a 3-panel infographic about "What Happens When You Drop Into a Wave".
+      Panel 1 "The Paddle": reading the swell, positioning in the lineup, timing
+      the takeoff, catching the wave's energy.
+      Panel 2 "The Pop-Up": chest push, back foot plants, front foot slides forward,
+      low center of gravity, all in under 2 seconds.
+      Panel 3 "The Ride": trimming the face, bottom turns, cutbacks, how wave energy
+      propels the surfer.
+      Vibrant ocean style with deep blues, turquoise, and white foam accents on a
+      gradient blue background. Dynamic and action-oriented feel. 9:16 aspect ratio.
+      Save panels as ./samples/surfing_panel_1.png through _panel_3.png
+
+  - name: incubation-lifecycle
+    topic: "Microsoft Incubation Lifecycle"
+    panels: 3
+    audience: "Microsoft incubation teams and innovation leaders"
+    style_direction: "Professional Microsoft design language, blue gradient palette, milestone markers and gate icons"
+    prompt: >
+      Create a 3-panel infographic about "Microsoft Incubation Lifecycle".
+      Panel 1 "Explore": problem framing using Jobs-to-be-Done, opportunity sizing
+      (TAM/SAM/SOM), founding team formation, research spikes, and the criteria for
+      advancing to the Incubate stage.
+      Panel 2 "Incubate": rapid prototyping cycles, customer co-development
+      partnerships, weekly learning cadence (build-measure-learn), go/no-go reviews
+      at 30/60/90 days, and key metrics (weekly active users, retention).
+      Panel 3 "Scale": product-market fit validation signals, engineering team
+      handoff process, growth metrics dashboard (DAU, revenue, NPS), graduation
+      criteria checklist, and paths forward (spin-in, spin-out, incubate further).
+      Professional design with Microsoft blue gradient palette on a clean white
+      background, milestone markers, stage gates, and directional flow arrows.
+      9:16 aspect ratio.
+      Save panels as ./samples/incubation-lifecycle_panel_1.png through _panel_3.png
+
+  - name: cicd-pipeline
+    topic: "CI/CD Pipeline: From Commit to Production"
+    panels: 3
+    audience: "Microsoft incubation teams and software engineers"
+    style_direction: "Technical dark theme, green and teal accents on near-black background, pipeline flow diagram"
+    prompt: >
+      Create a 3-panel infographic about "CI/CD Pipeline: From Commit to Production".
+      Panel 1 "Continuous Integration": developer commits trigger automated pipeline,
+      build compilation and dependency resolution, unit and integration test suites,
+      code quality gates (linting, type checking, coverage thresholds), and artifact
+      creation on success.
+      Panel 2 "Continuous Delivery": artifact packaging and versioning, staging
+      environment deployment, automated smoke and regression tests, performance
+      benchmarks, and release candidate approval gates (manual sign-off).
+      Panel 3 "Continuous Deployment": production rollout strategies (blue-green,
+      canary with traffic percentages, feature flags), health monitoring with
+      automatic rollback triggers, observability dashboards (error rate, latency,
+      saturation), and post-deployment validation.
+      Technical dark theme with green and teal accents on a near-black background,
+      pipeline flow diagram with stage boxes and connector arrows. 9:16 aspect ratio.
+      Save panels as ./samples/cicd-pipeline_panel_1.png through _panel_3.png
+
+  # ---------------------------------------------------------------------------
+  # 4-panel scenarios (2)
+  # ---------------------------------------------------------------------------
+
+  - name: llm-pipeline
+    topic: "The LLM Training Pipeline"
+    panels: 4
+    audience: "AI/ML practitioners and developers"
+    style_direction: "Dark navy neon, electric blue and cyan with purple accents and amber highlights"
+    prompt: >
+      Create a 4-panel infographic about "The LLM Training Pipeline".
+      Panel 1 "Pre-training": next-token prediction on trillions of tokens,
+      self-supervised, thousands of GPUs, costs $2M-$100M+.
+      Panel 2 "Supervised Fine-Tuning": 10K-100K instruction-response pairs, human
+      expert annotators, task alignment.
+      Panel 3 "RLHF & Alignment": human preference ranking, reward model training,
+      PPO optimization loop, goal of helpful/harmless/honest.
+      Panel 4 "Evaluation & Deployment": benchmarks (MMLU, HumanEval), red-teaming,
+      API serving, monitoring, continuous feedback.
+      Dark navy neon style with electric blue, cyan, purple accents and amber
+      highlights. 9:16 aspect ratio.
+      Save panels as ./samples/llm-pipeline_panel_1.png through _panel_4.png
+
+  - name: song-to-spotify
+    topic: "How a Song Goes from Idea to Spotify"
+    panels: 4
+    audience: "Music creators and general audience"
+    style_direction: "Creative music, warm purple and gold on dark background, vinyl and waveform visual motifs"
+    prompt: >
+      Create a 4-panel infographic about "How a Song Goes from Idea to Spotify".
+      Panel 1 "Songwriting": melody creation, lyric writing, chord progressions,
+      demo recording.
+      Panel 2 "Recording": studio session, instrument tracking, vocal takes,
+      DAW editing.
+      Panel 3 "Mixing & Mastering": EQ balancing, compression, spatial effects,
+      loudness optimization for streaming.
+      Panel 4 "Distribution": digital aggregators (DistroKid, TuneCore), streaming
+      platform delivery, royalty splits, playlist placement.
+      Creative music style with warm purple and gold palette on a dark background,
+      vinyl/waveform visual motifs. 9:16 aspect ratio.
+      Save panels as ./samples/song-to-spotify_panel_1.png through _panel_4.png
+
+  # ---------------------------------------------------------------------------
+  # 5-panel scenarios (2)
+  # ---------------------------------------------------------------------------
+
+  - name: ai-everyday-life
+    topic: "AI in Everyday Life"
+    panels: 5
+    audience: "General public and non-technical users"
+    style_direction: "Friendly modern, bright blues and greens on white background, rounded icons, approachable feel"
+    prompt: >
+      Create a 5-panel infographic about "AI in Everyday Life".
+      Panel 1 "Recommendations": Netflix, Spotify, shopping algorithms —
+      collaborative filtering and content-based matching.
+      Panel 2 "Voice Assistants": speech recognition, natural language understanding,
+      intent classification, response generation.
+      Panel 3 "Navigation": real-time traffic prediction, route optimization, ETA
+      estimation, map data fusion.
+      Panel 4 "Healthcare": medical imaging analysis, drug discovery acceleration,
+      clinical decision support.
+      Panel 5 "Creative Tools": image generation, writing assistants, code
+      completion, music composition.
+      Friendly modern style with bright blues and greens on a white background,
+      rounded icons, approachable feel. 9:16 aspect ratio.
+      Save panels as ./samples/ai-everyday-life_panel_1.png through _panel_5.png
+
+  - name: coffee-bean
+    topic: "The Life of a Coffee Bean"
+    panels: 5
+    audience: "Coffee enthusiasts and general audience"
+    style_direction: "Warm earthy, rich browns, cream, and forest greens on light parchment background, illustrated feel"
+    prompt: >
+      Create a 5-panel infographic about "The Life of a Coffee Bean".
+      Panel 1 "Growing": coffee belt regions, cherry development on the branch,
+      altitude and shade impact on flavor.
+      Panel 2 "Harvesting & Processing": hand-picking vs strip-picking, washed vs
+      natural vs honey processing methods.
+      Panel 3 "Roasting": green bean transformation, Maillard reaction, first crack,
+      roast profiles (light/medium/dark).
+      Panel 4 "Brewing": grind size spectrum, water temperature, extraction time,
+      brew methods (espresso, pour-over, French press).
+      Panel 5 "The Cup": flavor wheel, tasting notes (acidity, body, sweetness),
+      single-origin vs blend characteristics.
+      Warm earthy style with rich browns, cream, and forest greens on a light
+      parchment background, illustrated feel. 9:16 aspect ratio.
+      Save panels as ./samples/coffee-bean_panel_1.png through _panel_5.png
+
+  # ---------------------------------------------------------------------------
+  # 6-panel scenarios (1)
+  # ---------------------------------------------------------------------------
+
+  - name: history-of-internet
+    topic: "History of the Internet"
+    panels: 6
+    audience: "General public and tech history enthusiasts"
+    style_direction: "Timeline, retro-to-modern color progression from muted greens/ambers to vibrant blues/purples"
+    prompt: >
+      Create a 6-panel infographic about "History of the Internet".
+      Panel 1 "ARPANET (1960s-70s)": packet switching invention, first 4 nodes,
+      military origins.
+      Panel 2 "Protocols & Email (1980s)": TCP/IP standardization, SMTP email, DNS
+      introduced, NSFNet backbone.
+      Panel 3 "The World Wide Web (1990s)": Tim Berners-Lee, HTML/HTTP,
+      Mosaic/Netscape browsers, dotcom boom.
+      Panel 4 "Web 2.0 (2000s)": social media explosion, user-generated content,
+      Ajax/dynamic web, Google/Facebook/YouTube.
+      Panel 5 "Mobile & Cloud (2010s)": smartphone revolution, app economy,
+      AWS/cloud computing, streaming services.
+      Panel 6 "AI & Beyond (2020s)": large language models, edge computing, IoT,
+      decentralized web.
+      Timeline style with a retro-to-modern color progression — muted greens/ambers
+      in early panels transitioning to vibrant blues/purples in later panels.
+      9:16 aspect ratio.
+      Save panels as ./samples/history-of-internet_panel_1.png through _panel_6.png
