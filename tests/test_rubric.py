@@ -71,9 +71,10 @@ VALID_RESPONSE: dict = {
         "improvement": "One minor element from the brief is missing.",
     },
     "composite_score": 8.0,  # intentionally wrong — recalculated by parse_scores
-    "summary": "A well-crafted infographic with strong visual explanation.",
-    "strengths": ["Clear data visualisation", "Consistent typography"],
-    "weaknesses": ["Minor icon inconsistency"],
+    "overall_impression": "A well-crafted infographic with strong visual explanation.",
+    "top_strength": "Clear data visualisation",
+    "top_weakness": "Minor icon inconsistency",
+    "reasoning": "Evaluated each dimension against the visual evidence provided.",
 }
 
 
@@ -95,7 +96,7 @@ def _as_json_string(data: dict) -> str:
 def test_parse_scores_returns_all_dimension_scores() -> None:
     """parse_scores returns a mapping that contains all five dimension keys."""
     result = parse_scores(_as_json_string(VALID_RESPONSE))
-    dimensions = result["dimensions"]
+    dimensions = result["scores"]
     expected_keys = {
         "content_accuracy",
         "narrative_structure",
@@ -111,7 +112,7 @@ def test_parse_scores_returns_all_dimension_scores() -> None:
 def test_parse_scores_includes_evidence_and_improvement() -> None:
     """Each dimension entry in the result has 'evidence' and 'improvement' fields."""
     result = parse_scores(_as_json_string(VALID_RESPONSE))
-    for dim_name, dim_data in result["dimensions"].items():
+    for dim_name, dim_data in result["scores"].items():
         assert "evidence" in dim_data, (
             f"Dimension '{dim_name}' is missing 'evidence' field"
         )
@@ -133,9 +134,9 @@ def test_parse_scores_includes_prompt_fidelity() -> None:
 
 
 def test_parse_scores_includes_summary_fields() -> None:
-    """parse_scores result contains 'summary', 'strengths', and 'weaknesses'."""
+    """parse_scores result contains 'overall_impression', 'top_strength', 'top_weakness', and 'reasoning'."""
     result = parse_scores(_as_json_string(VALID_RESPONSE))
-    for field in ("summary", "strengths", "weaknesses"):
+    for field in ("overall_impression", "top_strength", "top_weakness", "reasoning"):
         assert field in result, f"Result is missing '{field}' field"
 
 
@@ -191,9 +192,10 @@ def test_parse_scores_rejects_missing_dimensions() -> None:
         },
         "prompt_fidelity": {"score": 7, "evidence": "ok", "improvement": "none"},
         "composite_score": 7.0,
-        "summary": "ok",
-        "strengths": [],
-        "weaknesses": [],
+        "overall_impression": "ok",
+        "top_strength": "ok",
+        "top_weakness": "ok",
+        "reasoning": "ok",
     }
     with pytest.raises(ValueError, match=r"Missing.*dimension"):
         parse_scores(_as_json_string(incomplete))
@@ -254,7 +256,7 @@ _SCENARIO = {
 
 def test_build_rubric_prompt_contains_all_dimensions() -> None:
     """build_rubric_prompt output mentions all five scoring dimensions by name."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=1)
+    prompt = build_rubric_prompt(_SCENARIO, ["image.png"])
     for label in (
         "Content Accuracy",
         "Narrative Structure",
@@ -267,7 +269,7 @@ def test_build_rubric_prompt_contains_all_dimensions() -> None:
 
 def test_build_rubric_prompt_contains_scenario_context() -> None:
     """build_rubric_prompt embeds the scenario topic and/or prompt in the output."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=1)
+    prompt = build_rubric_prompt(_SCENARIO, ["image.png"])
     # At least one identifying piece of the scenario should appear.
     assert _SCENARIO["topic"] in prompt or _SCENARIO["prompt"] in prompt, (
         "Rubric prompt does not include scenario context (topic or prompt)"
@@ -276,7 +278,7 @@ def test_build_rubric_prompt_contains_scenario_context() -> None:
 
 def test_build_rubric_prompt_contains_json_instruction() -> None:
     """build_rubric_prompt output instructs the model to respond in JSON."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=1)
+    prompt = build_rubric_prompt(_SCENARIO, ["image.png"])
     assert "json" in prompt.lower() or "JSON" in prompt, (
         "Rubric prompt must contain a JSON response instruction"
     )
@@ -285,7 +287,7 @@ def test_build_rubric_prompt_contains_json_instruction() -> None:
 def test_build_rubric_prompt_contains_chain_of_thought_instruction() -> None:
     """build_rubric_prompt output includes a chain-of-thought instruction
     (e.g. 'think step by step', 'reasoning', 'chain of thought', etc.)."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=1)
+    prompt = build_rubric_prompt(_SCENARIO, ["image.png"])
     cot_patterns = [
         "step by step",
         "reasoning",
@@ -301,21 +303,21 @@ def test_build_rubric_prompt_contains_chain_of_thought_instruction() -> None:
 
 
 def test_build_rubric_prompt_includes_multi_panel_instruction() -> None:
-    """For panel_count > 1, build_rubric_prompt includes multi-panel evaluation
+    """For len(image_paths) > 1, build_rubric_prompt includes multi-panel evaluation
     guidance containing 'Multi-Panel Evaluation' and 'cross-panel'."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=3)
+    prompt = build_rubric_prompt(_SCENARIO, ["img1.png", "img2.png", "img3.png"])
     assert "Multi-Panel Evaluation" in prompt, (
-        "Expected 'Multi-Panel Evaluation' in prompt for panel_count=3"
+        "Expected 'Multi-Panel Evaluation' in prompt for 3 image_paths"
     )
-    assert "cross-panel" in prompt, "Expected 'cross-panel' in prompt for panel_count=3"
+    assert "cross-panel" in prompt, "Expected 'cross-panel' in prompt for 3 image_paths"
 
 
 def test_build_rubric_prompt_excludes_multi_panel_instruction_for_single_panel() -> (
     None
 ):
-    """For panel_count=1, build_rubric_prompt must NOT include multi-panel
+    """For a single image_path, build_rubric_prompt must NOT include multi-panel
     evaluation guidance."""
-    prompt = build_rubric_prompt(_SCENARIO, panel_count=1)
+    prompt = build_rubric_prompt(_SCENARIO, ["image.png"])
     assert "Multi-Panel Evaluation" not in prompt, (
         "Multi-panel guidance must not appear in single-panel rubric prompts"
     )

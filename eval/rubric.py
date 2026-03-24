@@ -92,26 +92,29 @@ Respond with **only** a JSON object matching this schema (no markdown fences):
     "improvement": "..."
   },
   "composite_score": <float — will be recalculated; provide your estimate>,
-  "summary": "...",
-  "strengths": ["...", "..."],
-  "weaknesses": ["...", "..."]
+  "overall_impression": "...",
+  "top_strength": "...",
+  "top_weakness": "...",
+  "reasoning": "..."
 }
 ```
 """
 
 
-def build_rubric_prompt(scenario: dict[str, Any], panel_count: int = 1) -> str:
+def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str:
     """Construct the full evaluation prompt for the given scenario.
 
     Args:
         scenario: Scenario dict with keys ``topic``, ``audience``,
             ``style_direction``, and ``prompt``.
-        panel_count: Number of panels in the infographic (>1 adds multi-panel
-            consistency section).
+        image_paths: List of image file paths to evaluate; its length
+            determines the panel count (>1 adds multi-panel consistency
+            section).
 
     Returns:
         A complete evaluation prompt string ready to send to the vision model.
     """
+    panel_count = len(image_paths)
     topic = scenario.get("topic", "")
     audience = scenario.get("audience", "")
     style_direction = scenario.get("style_direction", "")
@@ -224,14 +227,15 @@ def parse_scores(raw_json_str: str) -> dict[str, Any]:
             )
         composite += score * weight
 
-    # Return a normalised copy with recalculated composite
+    # Return a normalised copy with recalculated composite and spec-mandated keys
     return {
-        "dimensions": dimensions,
+        "scores": dimensions,
         "prompt_fidelity": data.get("prompt_fidelity"),
         "composite_score": composite,
-        "summary": data.get("summary"),
-        "strengths": data.get("strengths", []),
-        "weaknesses": data.get("weaknesses", []),
+        "overall_impression": data.get("overall_impression"),
+        "top_strength": data.get("top_strength"),
+        "top_weakness": data.get("top_weakness"),
+        "reasoning": data.get("reasoning"),
     }
 
 
@@ -287,8 +291,7 @@ async def evaluate_image(
 
     client = AsyncOpenAI(api_key=api_key)
 
-    panel_count = len(image_paths)
-    text_prompt = build_rubric_prompt(scenario, panel_count=panel_count)
+    text_prompt = build_rubric_prompt(scenario, image_paths)
 
     # Build the content list: text instruction followed by each image
     content: list[dict[str, Any]] = [{"type": "text", "text": text_prompt}]
