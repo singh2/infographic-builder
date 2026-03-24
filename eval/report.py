@@ -8,6 +8,8 @@ Provides:
 
 from __future__ import annotations
 
+from eval.rubric import DIMENSION_WEIGHTS as _DIMENSION_WEIGHTS
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -18,14 +20,6 @@ _DIMENSION_LABELS: dict[str, str] = {
     "visual_explanation": "Visual Explanation",
     "typography": "Typography & Legibility",
     "visual_quality": "Visual Quality & Consistency",
-}
-
-_DIMENSION_WEIGHTS: dict[str, float] = {
-    "content_accuracy": 0.20,
-    "narrative_structure": 0.15,
-    "visual_explanation": 0.25,
-    "typography": 0.20,
-    "visual_quality": 0.20,
 }
 
 

@@ -70,7 +70,7 @@ scenarios:
     scenario_file = tmp_path / "scenarios.yaml"
     scenario_file.write_text(yaml_content)
 
-    with pytest.raises((ValueError, KeyError, SystemExit)):
+    with pytest.raises(ValueError):
         _load_scenario(str(scenario_file), "nonexistent")
 
 
