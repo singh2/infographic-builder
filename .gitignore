@@ -11,3 +11,6 @@
 
 # OS files
 .DS_Store
+
+# Evaluation harness output (timestamped results directories)
+eval-results/
