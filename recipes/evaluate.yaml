@@ -5,9 +5,16 @@
 # Full evaluation pipeline that:
 #   1. Creates a timestamped output directory under eval-results/
 #   2. Loads evaluation scenarios from eval/scenarios.yaml
-#   3. Generates infographics for every scenario via the infographic-builder agent
-#   4. Scores each generated infographic using the rubric-based evaluator
-#   5. Aggregates all scores into a markdown summary report
+#   3. Snapshots existing samples/ to detect new files
+#   4. Generates infographics for every scenario via the infographic-builder agent
+#   5. Collects newly generated images into eval-results/<run>/<scenario>/
+#   6. Scores each generated infographic using the rubric-based evaluator
+#   7. Aggregates all scores into a markdown summary report
+#
+# Design note: The infographic-builder agent saves images to paths embedded
+# in each scenario's prompt (typically ./samples/). Rather than fighting this
+# behavior with prompt overrides, we let the agent save naturally, then detect
+# and copy new images into the eval-results directory structure.
 #
 # Usage:
 #   amplifier run "execute recipes/evaluate.yaml"
@@ -17,27 +24,15 @@
 #   - pip install -e '.[dev]'
 #
 # Output:
-#   eval-results/<timestamp>/<scenario_name>/panel_*.png  — generated images
-#   eval-results/<timestamp>/<scenario_name>/*_scores.json — per-scenario scores
-#   eval-results/<timestamp>/summary.md                   — aggregated report
-#
-# =============================================================================
-# CHANGELOG
-# =============================================================================
-#
-# v1.0.0 (2026-03-24):
-#   - NEW FEATURE: Initial evaluation pipeline recipe
-#     * setup: creates timestamped eval-results directory
-#     * load-scenarios: loads eval/scenarios.yaml into recipe context
-#     * generate-infographics: foreach over scenarios, delegates to builder agent
-#     * evaluate-scenarios: foreach over scenarios, scores PNG images with rubric
-#     * generate-report: aggregates *_scores.json files into summary.md
+#   eval-results/<timestamp>/<scenario_name>/panel_*.png  -- generated images
+#   eval-results/<timestamp>/<scenario_name>/*_scores.json -- per-scenario scores
+#   eval-results/<timestamp>/summary.md                   -- aggregated report
 #
 # =============================================================================
 
 name: "evaluate-infographic-quality"
 description: "Full evaluation pipeline: generate infographics for every scenario, score them with the rubric, and produce a summary report"
-version: "1.0.0"
+version: "1.1.0"
 tags: ["evaluation", "quality", "rubric", "batch"]
 
 context:
@@ -52,7 +47,7 @@ steps:
     command: >
       RUN_DIR="eval-results/$(date +%Y-%m-%d_%H%M%S)" &&
       mkdir -p "$RUN_DIR" &&
-      echo "$RUN_DIR"
+      printf "%s" "$RUN_DIR"
     output: "run_dir"
 
   # ---------------------------------------------------------------------------
@@ -69,33 +64,73 @@ steps:
     output: "scenarios"
 
   # ---------------------------------------------------------------------------
-  # Step 3: Generate infographics for every scenario
+  # Step 3: Snapshot samples/ before generation so we can detect new files
+  # ---------------------------------------------------------------------------
+  - id: "snapshot-before"
+    type: "bash"
+    command: >
+      find samples -name "*.png" 2>/dev/null | sort > /tmp/eval_before_snapshot.txt &&
+      printf "%s" "$(wc -l < /tmp/eval_before_snapshot.txt | tr -d ' ') existing PNGs"
+
+  # ---------------------------------------------------------------------------
+  # Step 4: Generate infographics for every scenario
   #
-  # For each scenario we:
-  #   • Create the scenario output subdirectory
-  #   • Delegate to the infographic-builder agent, instructing it to save
-  #     all panel images into {{run_dir}}/{{scenario.name}}/
+  # The agent saves images to paths embedded in the scenario prompts
+  # (typically ./samples/). We detect new files in the next step.
   # ---------------------------------------------------------------------------
   - id: "generate-infographics"
     foreach: "{{scenarios}}"
     as: "scenario"
     agent: "infographic-builder:infographic-builder"
-    prompt: |
-      Create the output directory {{run_dir}}/{{scenario.name}}/ before saving any images.
-
-      {{scenario.prompt}}
-
-      IMPORTANT: Save all panel images to {{run_dir}}/{{scenario.name}}/ instead of any
-      path mentioned in the prompt above. Name them panel_1.png, panel_2.png, etc.
+    prompt: "{{scenario.prompt}}"
     timeout: 1800
     on_error: "continue"
 
   # ---------------------------------------------------------------------------
-  # Step 4: Score each scenario against the evaluation rubric
+  # Step 5: Collect newly generated images into eval-results/<run>/
   #
-  # For each scenario we:
-  #   • Check that PNG files were actually generated (skip if none)
-  #   • Run `python -m eval evaluate` to produce a *_scores.json file
+  # For each scenario, find PNGs matching the scenario name that are newer
+  # than the pre-generation snapshot, and copy them into the eval directory.
+  # Falls back to existing samples if no new files were generated.
+  # ---------------------------------------------------------------------------
+  - id: "collect-images"
+    foreach: "{{scenarios}}"
+    as: "scenario"
+    type: "bash"
+    command: |
+      SCENARIO_DIR="{{run_dir}}/{{scenario.name}}"
+      mkdir -p "$SCENARIO_DIR"
+
+      # Find new PNGs matching this scenario name (generated after snapshot)
+      FOUND=0
+      for f in $(find samples -name "{{scenario.name}}*.png" -newer /tmp/eval_before_snapshot.txt 2>/dev/null); do
+        cp "$f" "$SCENARIO_DIR/"
+        FOUND=$((FOUND + 1))
+      done
+
+      # Fallback: if no new files, check existing samples directories
+      if [ "$FOUND" -eq 0 ]; then
+        for subdir in samples/pro samples/3.1-flash samples; do
+          for f in $(find "$subdir" -maxdepth 1 -name "{{scenario.name}}*.png" 2>/dev/null); do
+            if ! [ -f "$SCENARIO_DIR/$(basename "$f")" ]; then
+              cp "$f" "$SCENARIO_DIR/"
+              FOUND=$((FOUND + 1))
+            fi
+          done
+          # Stop at first directory that had matches
+          [ "$FOUND" -gt 0 ] && break
+        done
+      fi
+
+      if [ "$FOUND" -eq 0 ]; then
+        echo "No images found for {{scenario.name}} -- skipping"
+      else
+        echo "Collected $FOUND image(s) for {{scenario.name}}"
+      fi
+    on_error: "continue"
+
+  # ---------------------------------------------------------------------------
+  # Step 6: Score each scenario against the evaluation rubric
   # ---------------------------------------------------------------------------
   - id: "evaluate-scenarios"
     foreach: "{{scenarios}}"
@@ -105,10 +140,10 @@ steps:
       SCENARIO_DIR="{{run_dir}}/{{scenario.name}}"
       PNG_COUNT=$(ls "$SCENARIO_DIR"/*.png 2>/dev/null | wc -l | tr -d ' ')
       if [ "$PNG_COUNT" -eq 0 ]; then
-        echo "No PNG files found in $SCENARIO_DIR — skipping evaluation for {{scenario.name}}"
+        echo "No PNG files found in $SCENARIO_DIR -- skipping evaluation for {{scenario.name}}"
         exit 0
       fi
-      python -m eval evaluate \
+      python3 -m eval evaluate \
         --scenario-file "{{scenarios_file}}" \
         --scenario-name "{{scenario.name}}" \
         --image-dir "$SCENARIO_DIR" \
@@ -117,9 +152,9 @@ steps:
     timeout: 120
 
   # ---------------------------------------------------------------------------
-  # Step 5: Aggregate all score files into a markdown summary report
+  # Step 7: Aggregate all score files into a markdown summary report
   # ---------------------------------------------------------------------------
   - id: "generate-report"
     type: "bash"
     command: >
-      python -m eval report --run-dir {{run_dir}}
+      python3 -m eval report --run-dir {{run_dir}}
