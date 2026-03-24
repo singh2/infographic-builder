@@ -130,18 +130,12 @@ journey, and history of the internet.
 ```
 1. You describe what you want
 2. Agent analyzes content density --> picks single or multi-panel
-<<<<<<< HEAD
 3. Agent recommends a layout and presents 6 aesthetic options (or detects your inline style)
 4. Agent designs layout, palette, typography using your chosen aesthetic template
 5. Agent generates image(s) via Gemini (nano-banana tool)
 6. Agent reviews output (including aesthetic fidelity) and refines if needed
-=======
-3. Agent designs layout, palette, typography, and visual hierarchy
-4. Agent generates image(s) via Gemini (nano-banana tool)
-5. Agent reviews output and refines if needed
-6. For multi-panel: agent stitches panels into a combined image
->>>>>>> origin/master
-7. You get the .png file(s) + design rationale + suggestions
+7. For multi-panel: agent stitches panels into a combined image
+8. You get the .png file(s) + design rationale + suggestions
 ```
 
 The agent's design decisions are guided by a comprehensive style guide
@@ -163,34 +157,50 @@ flowchart TB
         B["bundle.md<br/><i>thin root</i>"]
         BH["behaviors/infographic.yaml<br/><i>wires tools + agent + context</i>"]
         AW["context/infographic-awareness.md<br/><i>loaded every session</i>"]
-<<<<<<< HEAD
-        SP["docs/style-guide.md<br/><i>style guide</i>"]
-=======
-        SG["docs/style-guide.md<br/><i>design knowledge base</i>"]
->>>>>>> origin/master
+        SG["docs/style-guide.md<br/><i>6 aesthetics, 12 layouts, review criteria</i>"]
         AG["agents/infographic-builder.md<br/><i>loaded only when spawned</i>"]
         B --> BH
         BH --> AW
         BH --> AG
-        AG --> SG
+        AG -.-> SG
     end
 
     subgraph runtime ["Runtime Flow"]
         direction TB
         U["User<br/>'create an infographic about X'"]
         RS["Root Session<br/><i>reads awareness context</i>"]
-        DE["infographic-builder agent<br/><i>auto: layout + panels + review</i>"]
+        DE["infographic-builder agent<br/><i>auto: layout + aesthetic + review</i>"]
+
+        subgraph aesthetic ["Aesthetic Selection"]
+            direction TB
+            AD{"Inline style<br/>detected?"}
+            AP["Present 6 options<br/>+ freeform<br/>(halt for user)"]
+        end
+
         NB["nano-banana tool<br/><i>Gemini image generation</i>"]
-        SP["stitch_panels tool<br/><i>Pillow-based panel assembly</i>"]
+
+        subgraph review ["Quality Review Loop"]
+            direction TB
+            RV["Analyze output<br/>(5 dimensions)"]
+            RC{"Issues<br/>found?"}
+            RF["Refine & regenerate<br/>(max 1x)"]
+        end
+
+        ST["stitch_panels tool<br/><i>Pillow-based panel assembly</i>"]
         IMG["Generated image(s)<br/><i>./infographic.png</i>"]
 
         U --> RS
         RS -->|"delegate()"| DE
-        DE -->|"generate + analyze"| NB
-        DE -->|"combine panels"| SP
-        NB --> IMG
-        SP --> IMG
-        IMG --> DE
+        DE --> AD
+        AD -->|"no"| AP
+        AD -->|"yes (shortcut)"| NB
+        AP -->|"user picks"| NB
+        NB --> RV
+        RV --> RC
+        RC -->|"yes"| RF
+        RF -->|"regenerate"| NB
+        RC -->|"no (accept)"| ST
+        ST -->|"combine panels"| IMG
         DE -->|"path + rationale + suggestions"| RS
         RS --> U
     end
@@ -201,6 +211,71 @@ flowchart TB
 
 </details>
 
+## Evaluation harness
+
+The project includes a standalone evaluation system for scoring generated infographics
+against a weighted rubric. This is separate from the Amplifier bundle -- it's a Python
+package (`infographic-eval`) that uses GPT-4o vision to assess quality.
+
+![Evaluation process](docs/evaluation.png)
+
+### How evaluation works
+
+1. **18 test scenarios** (`eval/scenarios.yaml`) spanning 1-6 panel infographics
+2. **Generate**: The infographic-builder agent creates images for each scenario
+3. **Score**: GPT-4o vision evaluates each image against a 5-dimension rubric
+4. **Report**: Scores are aggregated into a markdown summary with per-scenario detail
+
+### Scoring rubric
+
+| Dimension | Weight | What it measures |
+|-----------|--------|------------------|
+| Visual Explanation | 25% | How effectively visuals communicate the core idea |
+| Content Accuracy | 20% | Factual correctness, absence of hallucinated data |
+| Typography & Legibility | 20% | Font hierarchy, contrast, readability |
+| Visual Quality & Consistency | 20% | Polish, palette coherence, icon consistency |
+| Narrative Structure | 15% | Logical flow, entry/exit points, story progression |
+
+Plus an unweighted **prompt fidelity** score (1-5) measuring adherence to the original brief.
+
+The model's own composite estimate is always discarded -- `parse_scores()` recalculates
+it from dimension scores × weights as a guard against model self-reporting bias.
+
+### Quality bands
+
+| Score | Band |
+|-------|------|
+| 4.0 - 5.0 | High quality |
+| 3.0 - 3.9 | Acceptable |
+| 2.0 - 2.9 | Below bar |
+| 1.0 - 1.9 | Failed |
+
+### Running evaluations
+
+```bash
+# Score a single scenario
+python -m eval evaluate \
+  --scenario-file eval/scenarios.yaml \
+  --scenario-name dns \
+  --image-dir eval-results/run-name/dns/ \
+  --output eval-results/run-name/dns/dns_scores.json
+
+# Generate a markdown report from all scored scenarios
+python -m eval report \
+  --run-dir eval-results/run-name/ \
+  --baseline-dir eval-results/previous-run/   # optional: adds trend deltas
+```
+
+Or run the full pipeline as an Amplifier recipe:
+
+```bash
+amplifier run
+# Say: "execute recipes/evaluate.yaml"
+```
+
+The recipe automates: setup → load scenarios → generate infographics (foreach) →
+evaluate each scenario → generate summary report.
+
 ## Project structure
 
 ```
@@ -209,34 +284,37 @@ infographic-builder/
 |-- behaviors/
 |   +-- infographic.yaml                   # wires tools + agent + context
 |-- agents/
-<<<<<<< HEAD
-|   +-- infographic-builder.md       # the expert agent (context sink)
-|-- context/
-|   +-- infographic-awareness.md     # thin pointer loaded every session
-+-- docs/
-    +-- style-guide.md              # design knowledge: aesthetics, layouts, quality criteria
-=======
 |   +-- infographic-builder.md             # the expert agent (context sink)
 |-- context/
 |   +-- infographic-awareness.md           # thin pointer loaded every session
 |-- docs/
-|   |-- style-guide.md                     # design knowledge base (layouts, prompts, review criteria)
+|   |-- style-guide.md                     # design knowledge: aesthetics, layouts, quality criteria
 |   |-- architecture.dot                   # Graphviz source for architecture diagram
 |   |-- architecture.png                   # rendered architecture diagram
-|   +-- plans/
-|       +-- 2026-03-20-style-system-design.md  # validated design for style system feature
+|   |-- evaluation.dot                     # Graphviz source for evaluation process diagram
+|   |-- evaluation.png                     # rendered evaluation process diagram
+|   +-- plans/                             # design documents
 |-- modules/
 |   +-- tool-stitch-panels/                # Python module: combines panels into one image
 |       |-- pyproject.toml
 |       +-- amplifier_module_tool_stitch_panels/
 |           +-- __init__.py                # StitchPanelsTool + mount() entry point
+|-- eval/
+|   |-- __init__.py                        # package marker
+|   |-- __main__.py                        # enables python -m eval
+|   |-- cli.py                             # evaluate + report subcommands
+|   |-- rubric.py                          # scoring rubric, prompt builder, GPT-4o evaluation
+|   |-- report.py                          # score aggregation + markdown report generation
+|   +-- scenarios.yaml                     # 18 test scenarios (1-6 panels)
 |-- recipes/
+|   |-- evaluate.yaml                      # full evaluation pipeline recipe
 |   |-- generate-sample-gallery.yaml       # batch-generate 14 scenarios (Gemini Pro)
 |   +-- generate-sample-gallery-3.1-flash.yaml  # same scenarios (Gemini 3.1 Flash)
+|-- tests/                                 # pytest test suite
+|-- eval-results/                          # persisted evaluation runs
 +-- samples/                               # generated gallery output (gitignored)
     |-- pro/                               # Gemini Pro outputs
     +-- 3.1-flash/                         # Gemini 3.1 Flash outputs
->>>>>>> origin/master
 ```
 
 ## Roadmap
