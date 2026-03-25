@@ -1,0 +1,126 @@
+# =============================================================================
+# Generate Multi-Panel Infographic (Structurally Enforced Consistency)
+# =============================================================================
+#
+# Splits multi-panel generation into separate recipe steps so the runtime
+# enforces the dependency chain:
+#
+#   Panel 1 → Reconcile style → Panels 2-N → Stitch
+#
+# Each step is a separate agent session. The reconciliation MUST complete
+# before Panels 2-N can begin — enforced by recipe step ordering, not by
+# LLM instruction-following.
+#
+# Usage:
+#   amplifier run "execute recipes/generate-multi-panel.yaml" \
+#     context='{"prompt": "Create a 3-panel infographic about ...", "output_dir": "./output", "name": "my-infographic"}'
+#
+# =============================================================================
+
+name: "generate-multi-panel"
+description: "Multi-panel infographic generation with structurally enforced style reconciliation gate"
+version: "1.0.0"
+tags: ["infographic", "multi-panel", "consistency"]
+
+context:
+  prompt: ""
+  output_dir: "."
+  name: "infographic"
+
+steps:
+  # ---------------------------------------------------------------------------
+  # Step 1: Generate Panel 1 only — establishes the style anchor
+  # ---------------------------------------------------------------------------
+  - id: "generate-panel-1"
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      {{prompt}}
+
+      CRITICAL OVERRIDE: Generate ONLY Panel 1 of this infographic. Do NOT
+      generate any other panels. Stop after Panel 1 is complete and reviewed.
+
+      Save Panel 1 to: {{output_dir}}/{{name}}_panel_1.png
+    timeout: 600
+    output: "panel_1_result"
+
+  # ---------------------------------------------------------------------------
+  # Step 2: Verify Panel 1 was actually saved to disk
+  # ---------------------------------------------------------------------------
+  - id: "verify-panel-1"
+    type: "bash"
+    command: |
+      if [ ! -f "{{output_dir}}/{{name}}_panel_1.png" ]; then
+        echo "Panel 1 not found at {{output_dir}}/{{name}}_panel_1.png — aborting" >&2
+        exit 1
+      fi
+      echo "Panel 1 confirmed: {{output_dir}}/{{name}}_panel_1.png"
+
+  # ---------------------------------------------------------------------------
+  # Step 3: Reconcile style — analyze Panel 1 to capture actual rendered style
+  #
+  # THIS IS THE STRUCTURAL GATE. The recipe runtime will not proceed to
+  # step 4 until this step completes. An LLM cannot skip this.
+  # ---------------------------------------------------------------------------
+  - id: "reconcile-style"
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      Analyze the infographic at {{output_dir}}/{{name}}_panel_1.png using
+      nano-banana analyze with this prompt:
+
+      "Describe the exact visual style of this infographic panel:
+      - Background: solid color, gradient, alternating bands, or textured? Describe the progression.
+      - Section backgrounds: how do they differ from top to bottom?
+      - Step number circles: color, size, border style
+      - Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
+      - Typography: header weight/size relative to body, color
+      - Separators: lines, arrows, spacing? Style and color
+      - Header area: layout, font treatment, any decorative elements
+      - Footer area: layout, font treatment, any decorative elements
+      Be specific -- these descriptions will be used to prompt-match subsequent panels."
+
+      Return the full analysis as the reconciled style brief.
+    timeout: 120
+    output: "reconciled_brief"
+
+  # ---------------------------------------------------------------------------
+  # Step 3: Generate remaining panels with reference image chaining
+  #
+  # All three consistency signals are injected: opening directive,
+  # reference_image_path = Panel 1, and the reconciled style brief.
+  # ---------------------------------------------------------------------------
+  - id: "generate-remaining-panels"
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      Generate the REMAINING panels (Panel 2 onward) for this infographic.
+      Panel 1 already exists at {{output_dir}}/{{name}}_panel_1.png — do NOT
+      regenerate it.
+
+      Original request:
+      {{prompt}}
+
+      For EVERY panel you generate, you MUST:
+      1. Set reference_image_path to: {{output_dir}}/{{name}}_panel_1.png
+      2. Start each panel's generation prompt with: "This panel MUST match the exact visual style of the reference image provided."
+      3. Include this reconciled style brief (captured from Panel 1's actual render) verbatim in each prompt:
+
+      {{reconciled_brief}}
+
+      Save panels as: {{output_dir}}/{{name}}_panel_2.png, {{output_dir}}/{{name}}_panel_3.png, etc.
+      Run quality review on each panel including cross-panel visual comparison against Panel 1.
+    timeout: 1200
+    output: "remaining_result"
+
+  # ---------------------------------------------------------------------------
+  # Step 4: Stitch all panels into a combined image
+  # ---------------------------------------------------------------------------
+  - id: "stitch-panels"
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      Use stitch_panels to combine all generated panels into one image.
+      Panel paths: find all files matching {{output_dir}}/{{name}}_panel_*.png
+      (sorted by panel number).
+      Save combined image to: {{output_dir}}/{{name}}_combined.png
+      Choose stitch direction based on the content structure (vertical for
+      sequential steps, horizontal for parallel subjects).
+    timeout: 120
+    output: "stitch_result"

@@ -34,7 +34,7 @@ scenarios:
       Show the key switch mechanism (spring, stem, housing), keycap layers, PCB,
       stabilizers, and plate mount. Use an exploded diagram layout. Dark background
       with RGB color accents (red, green, blue, purple). Bold sans-serif headers,
-      9:16 aspect ratio. Save as ./samples/mechanical-keyboard.png
+      9:16 aspect ratio.
 
   - name: noise-canceling-headphones
     topic: "How Noise-Canceling Headphones Work"
@@ -47,7 +47,6 @@ scenarios:
       combined output (silence). Use a horizontal flow diagram showing the wave
       cancellation process. Clean minimal style with a light gray background, blue
       and dark gray palette. 9:16 aspect ratio.
-      Save as ./samples/noise-canceling-headphones.png
 
   - name: saas-metrics-dashboard
     topic: "Q3 2025 SaaS Metrics Dashboard"
@@ -63,7 +62,6 @@ scenarios:
       (up 3,200 from Q2). Use a statistics/KPI layout with large numbers and
       icons. Clean corporate style with navy blue and emerald green on white
       background, accent gold for positive trends. 9:16 aspect ratio.
-      Save as ./samples/saas-metrics-dashboard.png
 
   # ---------------------------------------------------------------------------
   # 2-panel scenarios (6)
@@ -88,8 +86,6 @@ scenarios:
       Use a statistics layout with large numbers, ranking bars, and percentage
       callouts. Modern tech style with electric blue and cool gray on dark
       background, white text, clean sans-serif. 9:16 aspect ratio.
-      Save panels as ./samples/developer-survey-results_panel_1.png,
-      ./samples/developer-survey-results_panel_2.png
 
   - name: dns
     topic: "How DNS Works"
@@ -104,7 +100,6 @@ scenarios:
       caching/TTL, browser connects.
       Warm off-white editorial style with teal and charcoal palette, golden yellow
       accents. 9:16 aspect ratio.
-      Save panels as ./samples/dns_panel_1.png, ./samples/dns_panel_2.png
 
   - name: campfire
     topic: "The Science Behind a Perfect Campfire"
@@ -119,7 +114,6 @@ scenarios:
       airflow management, and common mistakes.
       Warm illustrated style with deep orange, amber, and dark brown palette on a
       cream background. 9:16 aspect ratio.
-      Save panels as ./samples/campfire_panel_1.png, ./samples/campfire_panel_2.png
 
   - name: agile-vs-waterfall
     topic: "Agile vs Waterfall"
@@ -136,8 +130,6 @@ scenarios:
       Use a clean corporate style with blue tones for Waterfall and green tones for
       Agile, light background. Side-by-side comparison layout within each panel.
       9:16 aspect ratio.
-      Save panels as ./samples/agile-vs-waterfall_panel_1.png,
-      ./samples/agile-vs-waterfall_panel_2.png
 
   - name: okr-cascade
     topic: "OKR Cascade: From Company to Team"
@@ -154,8 +146,6 @@ scenarios:
       weekly check-in cadence, and common pitfalls (output vs outcome confusion).
       Clean corporate Microsoft style with navy blue and teal on white background,
       hierarchical cascade diagram with alignment arrows. 9:16 aspect ratio.
-      Save panels as ./samples/okr-cascade_panel_1.png,
-      ./samples/okr-cascade_panel_2.png
 
   - name: customer-discovery-funnel
     topic: "Customer Discovery Funnel for New Ventures"
@@ -173,8 +163,6 @@ scenarios:
       retention, NPS).
       Modern startup style with gradient blues and bold typography on a white
       background, funnel shape and flow diagram motifs. 9:16 aspect ratio.
-      Save panels as ./samples/customer-discovery-funnel_panel_1.png,
-      ./samples/customer-discovery-funnel_panel_2.png
 
   # ---------------------------------------------------------------------------
   # 3-panel scenarios (4)
@@ -195,7 +183,6 @@ scenarios:
       controls step size, training loop repeats until convergence.
       Technical diagram style with gradient blues and purples on a dark background,
       glowing node connections. 9:16 aspect ratio.
-      Save panels as ./samples/neural-networks_panel_1.png through _panel_3.png
 
   - name: surfing
     topic: "What Happens When You Drop Into a Wave"
@@ -212,7 +199,6 @@ scenarios:
       propels the surfer.
       Vibrant ocean style with deep blues, turquoise, and white foam accents on a
       gradient blue background. Dynamic and action-oriented feel. 9:16 aspect ratio.
-      Save panels as ./samples/surfing_panel_1.png through _panel_3.png
 
   - name: incubation-lifecycle
     topic: "Microsoft Incubation Lifecycle"
@@ -233,7 +219,6 @@ scenarios:
       Professional design with Microsoft blue gradient palette on a clean white
       background, milestone markers, stage gates, and directional flow arrows.
       9:16 aspect ratio.
-      Save panels as ./samples/incubation-lifecycle_panel_1.png through _panel_3.png
 
   - name: cicd-pipeline
     topic: "CI/CD Pipeline: From Commit to Production"
@@ -255,7 +240,6 @@ scenarios:
       saturation), and post-deployment validation.
       Technical dark theme with green and teal accents on a near-black background,
       pipeline flow diagram with stage boxes and connector arrows. 9:16 aspect ratio.
-      Save panels as ./samples/cicd-pipeline_panel_1.png through _panel_3.png
 
   # ---------------------------------------------------------------------------
   # 4-panel scenarios (2)
@@ -278,7 +262,6 @@ scenarios:
       API serving, monitoring, continuous feedback.
       Dark navy neon style with electric blue, cyan, purple accents and amber
       highlights. 9:16 aspect ratio.
-      Save panels as ./samples/llm-pipeline_panel_1.png through _panel_4.png
 
   - name: song-to-spotify
     topic: "How a Song Goes from Idea to Spotify"
@@ -297,7 +280,6 @@ scenarios:
       platform delivery, royalty splits, playlist placement.
       Creative music style with warm purple and gold palette on a dark background,
       vinyl/waveform visual motifs. 9:16 aspect ratio.
-      Save panels as ./samples/song-to-spotify_panel_1.png through _panel_4.png
 
   # ---------------------------------------------------------------------------
   # 5-panel scenarios (2)
@@ -322,7 +304,6 @@ scenarios:
       completion, music composition.
       Friendly modern style with bright blues and greens on a white background,
       rounded icons, approachable feel. 9:16 aspect ratio.
-      Save panels as ./samples/ai-everyday-life_panel_1.png through _panel_5.png
 
   - name: coffee-bean
     topic: "The Life of a Coffee Bean"
@@ -343,7 +324,6 @@ scenarios:
       single-origin vs blend characteristics.
       Warm earthy style with rich browns, cream, and forest greens on a light
       parchment background, illustrated feel. 9:16 aspect ratio.
-      Save panels as ./samples/coffee-bean_panel_1.png through _panel_5.png
 
   # ---------------------------------------------------------------------------
   # 6-panel scenarios (1)
@@ -371,4 +351,3 @@ scenarios:
       Timeline style with a retro-to-modern color progression — muted greens/ambers
       in early panels transitioning to vibrant blues/purples in later panels.
       9:16 aspect ratio.
-      Save panels as ./samples/history-of-internet_panel_1.png through _panel_6.png
