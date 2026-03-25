@@ -7,7 +7,7 @@ digraph infographic_builder {
     compound=true
     newrank=true
 
-    // ── Bundle Composition ──────────────────────────────────
+    // ── Bundle Composition ──────────────────────────────────────
 
     subgraph cluster_bundle {
         label="infographic-builder bundle"
@@ -29,15 +29,22 @@ digraph infographic_builder {
             color="#b0b0b0"
             bgcolor="#f5f5f5"
 
-            tool_wire [
-                label="tool: nano-banana\n(source: git+https://...)"
+            tool_nano [
+                label="tool: nano-banana\n(Gemini image gen)"
+                shape=component
+                fillcolor="#fff3cd"
+                color="#d4a017"
+            ]
+
+            tool_stitch [
+                label="tool: stitch_panels\n(Pillow-based assembly)"
                 shape=component
                 fillcolor="#fff3cd"
                 color="#d4a017"
             ]
 
             agent_wire [
-                label="agents: infographic-builder"
+                label="agent: infographic-builder"
                 shape=component
                 fillcolor="#d4edda"
                 color="#28a745"
@@ -59,10 +66,10 @@ digraph infographic_builder {
         ]
 
         bundle_md -> foundation [label="includes" style=dashed color="#999999"]
-        bundle_md -> tool_wire [label="includes" style=dashed color="#999999" lhead=cluster_behavior]
+        bundle_md -> tool_nano [label="includes" style=dashed color="#999999" lhead=cluster_behavior]
     }
 
-    // ── Runtime Components ──────────────────────────────────
+    // ── Runtime Flow ────────────────────────────────────────────
 
     subgraph cluster_runtime {
         label="Runtime Flow"
@@ -78,7 +85,7 @@ digraph infographic_builder {
         ]
 
         root_session [
-            label="Root Session\n(reads awareness context,\nchecks env vars)"
+            label="Root Session\n(reads awareness context)"
             shape=box
             fillcolor="#e8f4fd"
             color="#4a90d9"
@@ -92,14 +99,37 @@ digraph infographic_builder {
         ]
 
         style_guide [
-            label="docs/style-guide.md\n(design knowledge +\ncritic criteria)"
+            label="docs/style-guide.md\n(6 aesthetics, 12 layouts,\nreview criteria)"
             shape=note
             fillcolor="#e2d9f3"
             color="#7b5ea7"
         ]
 
+        subgraph cluster_aesthetic {
+            label="Aesthetic Selection"
+            style="rounded"
+            color="#b0b0b0"
+            bgcolor="#f9f9f9"
+
+            aesthetic_detect [
+                label="Inline style\ndetected?"
+                shape=diamond
+                fillcolor="#fce4ec"
+                color="#c62828"
+                fontsize=9
+            ]
+
+            aesthetic_prompt [
+                label="Present 6 options\n+ freeform\n(halt for user)"
+                shape=box
+                fillcolor="#fff3cd"
+                color="#d4a017"
+                fontsize=9
+            ]
+        }
+
         nano_banana [
-            label="nano-banana\ntool"
+            label="nano-banana tool\n(generate + analyze)"
             shape=hexagon
             fillcolor="#fff3cd"
             color="#d4a017"
@@ -112,65 +142,79 @@ digraph infographic_builder {
             color="#c62828"
         ]
 
+        subgraph cluster_review {
+            label="Quality Review Loop"
+            style="rounded,dashed"
+            color="#ff6b00"
+            bgcolor="#fff8f0"
+
+            review [
+                label="Analyze output\n(5 dimensions)"
+                shape=box
+                fillcolor="#ffe0b2"
+                color="#ff6b00"
+                fontsize=9
+            ]
+
+            refine_check [
+                label="Issues\nfound?"
+                shape=diamond
+                fillcolor="#ffe0b2"
+                color="#ff6b00"
+                fontsize=9
+            ]
+
+            refine [
+                label="Refine & regenerate\n(max 1x)"
+                shape=box
+                fillcolor="#ffe0b2"
+                color="#ff6b00"
+                fontsize=9
+            ]
+        }
+
+        stitch [
+            label="stitch_panels\n(vertical / horizontal)"
+            shape=hexagon
+            fillcolor="#fff3cd"
+            color="#d4a017"
+        ]
+
         image [
-            label="./infographic.png"
+            label="./infographic.png\n(+ individual panels)"
             shape=folder
             fillcolor="#e8f5e9"
             color="#2e7d32"
         ]
     }
 
-    // ── Main Flow Edges ─────────────────────────────────────
+    // ── Main Flow Edges ─────────────────────────────────────────
 
     user -> root_session [label="1. request" color="#2563eb" penwidth=1.5]
     root_session -> agent [label="2. delegate()" color="#28a745" penwidth=1.5]
-    agent -> style_guide [label="3. load\nstyle guide" style=dashed color="#7b5ea7"]
-    agent -> nano_banana [label="4. generate" color="#d4a017" penwidth=1.5]
+    agent -> style_guide [label="3. load style guide" style=dashed color="#7b5ea7"]
+    agent -> aesthetic_detect [label="4. aesthetic\n    selection" color="#c62828"]
+    aesthetic_detect -> aesthetic_prompt [label="no" color="#c62828"]
+    aesthetic_detect -> nano_banana [label="yes\n(shortcut)" color="#28a745"]
+    aesthetic_prompt -> nano_banana [label="user picks" color="#d4a017"]
     nano_banana -> gemini [label="API call" color="#c62828"]
     gemini -> nano_banana [label="image data" color="#c62828" style=dashed]
-    nano_banana -> image [label="5. save" color="#2e7d32"]
-    agent -> root_session [label="6. path +\nrationale" color="#28a745" style=dashed]
-    root_session -> user [label="7. result" color="#2563eb" style=dashed]
 
-    // ── Feature Flags ───────────────────────────────────────
+    // Quality review loop
+    nano_banana -> review [label="5. review" color="#ff6b00"]
+    review -> refine_check [color="#ff6b00"]
+    refine_check -> refine [label="yes" color="#ff6b00"]
+    refine_check -> stitch [label="no\n(accept)" color="#28a745"]
+    refine -> nano_banana [label="regenerate" color="#ff6b00" style=dashed]
 
-    subgraph cluster_flags {
-        label="Feature Flags (env vars)"
-        style="rounded,dashed"
-        color="#ff6b00"
-        fontcolor="#ff6b00"
-        bgcolor="#fff8f0"
+    // Multi-panel stitching
+    stitch -> image [label="6. combine\n    panels" color="#2e7d32"]
 
-        critic [
-            label="INFOGRAPHIC_CRITIC=true\n\ngenerate → analyze →\nscore → refine (max 1x)"
-            shape=box
-            fillcolor="#ffe0b2"
-            color="#ff6b00"
-        ]
+    // Return path
+    agent -> root_session [label="7. path + rationale\n    + suggestions" color="#28a745" style=dashed]
+    root_session -> user [label="8. result" color="#2563eb" style=dashed]
 
-        multi_panel [
-            label="INFOGRAPHIC_MULTI_PANEL=true\n\ndecompose → style brief →\nN panels (2-4)"
-            shape=box
-            fillcolor="#ffe0b2"
-            color="#ff6b00"
-        ]
-    }
-
-    // ── Flag connections ────────────────────────────────────
-
-    critic -> agent [
-        label="analyze loop"
-        style=dashed
-        color="#ff6b00"
-    ]
-
-    multi_panel -> agent [
-        label="panel pipeline"
-        style=dashed
-        color="#ff6b00"
-    ]
-
-    // ── Wiring connections (bundle → runtime) ───────────────
+    // ── Wiring connections (bundle → runtime) ───────────────────
 
     context_wire -> root_session [
         label="routing signal\n(loaded every session)"
@@ -184,7 +228,13 @@ digraph infographic_builder {
         color="#28a745"
     ]
 
-    tool_wire -> nano_banana [
+    tool_nano -> nano_banana [
+        label="registers"
+        style=dotted
+        color="#d4a017"
+    ]
+
+    tool_stitch -> stitch [
         label="registers"
         style=dotted
         color="#d4a017"

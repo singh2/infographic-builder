@@ -55,9 +55,9 @@ def test_recipe_name() -> None:
 
 
 def test_recipe_version() -> None:
-    """Recipe version must be '1.0.0'."""
+    """Recipe version must be '2.0.0'."""
     recipe = load_recipe()
-    assert recipe.get("version") == "1.0.0"
+    assert recipe.get("version") == "2.0.0"
 
 
 def test_recipe_tags() -> None:
@@ -220,26 +220,34 @@ def test_generate_infographics_has_as_scenario() -> None:
     assert step.get("as") == "scenario"
 
 
+def _get_sub_step(recipe: dict, parent_id: str, sub_id: str) -> dict:
+    parent = _get_step(recipe, parent_id)
+    for sub in parent.get("steps", []):
+        if sub.get("id") == sub_id:
+            return sub
+    pytest.fail(f"Sub-step '{sub_id}' not found in '{parent_id}'")
+
+
 def test_generate_infographics_delegates_to_agent() -> None:
-    """'generate-infographics' step must delegate to infographic-builder agent."""
+    """'generate-infographics' generate sub-step must delegate to infographic-builder agent."""
     recipe = load_recipe()
-    step = _get_step(recipe, "generate-infographics")
-    agent = step.get("agent", "")
+    sub = _get_sub_step(recipe, "generate-infographics", "generate")
+    agent = sub.get("agent", "")
     assert "infographic-builder" in agent
 
 
 def test_generate_infographics_has_timeout() -> None:
-    """'generate-infographics' step must have timeout of 1800."""
+    """'generate-infographics' generate sub-step must have timeout of 1800."""
     recipe = load_recipe()
-    step = _get_step(recipe, "generate-infographics")
-    assert step.get("timeout") == 1800
+    sub = _get_sub_step(recipe, "generate-infographics", "generate")
+    assert sub.get("timeout") == 1800
 
 
 def test_generate_infographics_on_error_continue() -> None:
-    """'generate-infographics' step must have on_error: continue."""
+    """'generate-infographics' generate sub-step must have on_error: continue."""
     recipe = load_recipe()
-    step = _get_step(recipe, "generate-infographics")
-    assert step.get("on_error") == "continue"
+    sub = _get_sub_step(recipe, "generate-infographics", "generate")
+    assert sub.get("on_error") == "continue"
 
 
 # ---------------------------------------------------------------------------
@@ -277,11 +285,11 @@ def test_evaluate_scenarios_has_timeout() -> None:
 
 
 def test_evaluate_scenarios_runs_python_eval() -> None:
-    """'evaluate-scenarios' step command must invoke python -m eval evaluate."""
+    """'evaluate-scenarios' step command must invoke python3 -m eval evaluate."""
     recipe = load_recipe()
     step = _get_step(recipe, "evaluate-scenarios")
     command = step.get("command", "")
-    assert "python -m eval evaluate" in command
+    assert "python3 -m eval evaluate" in command
 
 
 # ---------------------------------------------------------------------------
@@ -297,9 +305,9 @@ def test_generate_report_is_bash() -> None:
 
 
 def test_generate_report_runs_python_eval_report() -> None:
-    """'generate-report' step command must invoke python -m eval report."""
+    """'generate-report' step command must invoke python3 -m eval report."""
     recipe = load_recipe()
     step = _get_step(recipe, "generate-report")
     command = step.get("command", "")
-    assert "python -m eval report" in command
+    assert "python3 -m eval report" in command
     assert "run_dir" in command or "run-dir" in command
