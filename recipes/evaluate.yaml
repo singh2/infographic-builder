@@ -63,8 +63,8 @@ steps:
   # Step 3: Generate infographics -- one scenario at a time
   #
   # The recipe creates the output directory and tells the agent exactly
-  # where to save. The agent's prompt has its own "Save as" instruction
-  # which we override with an explicit path into the eval-results directory.
+  # where to save. Scenario prompts contain no save paths -- the recipe
+  # is the sole authority on output location.
   # ---------------------------------------------------------------------------
   - id: "generate-infographics"
     foreach: "{{scenarios}}"
@@ -81,10 +81,9 @@ steps:
         prompt: |
           {{scenario.prompt}}
 
-          IMPORTANT -- OUTPUT PATH OVERRIDE: Save all generated images into the directory {{run_dir}}/{{scenario.name}}/ using the filename prefix {{scenario.name}}. For example:
+          OUTPUT PATH: Save all generated images into the directory {{run_dir}}/{{scenario.name}}/ using the filename prefix {{scenario.name}}. For example:
           - Single panel: {{run_dir}}/{{scenario.name}}/{{scenario.name}}.png
           - Multi-panel: {{run_dir}}/{{scenario.name}}/{{scenario.name}}_panel_1.png, {{run_dir}}/{{scenario.name}}/{{scenario.name}}_panel_2.png, etc.
-          Ignore any other "Save as" instruction above. This path takes priority.
         timeout: 1800
         on_error: "continue"
 
@@ -94,7 +93,8 @@ steps:
           SCENARIO_DIR="{{run_dir}}/{{scenario.name}}"
           PNG_COUNT=$(find "$SCENARIO_DIR" -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
           if [ "$PNG_COUNT" -eq 0 ]; then
-            echo "FAILED: No images generated for {{scenario.name}}"
+            echo "FAILED: No images generated for {{scenario.name}} in $SCENARIO_DIR" >&2
+            exit 1
           else
             echo "OK: {{scenario.name}} -- $PNG_COUNT image(s) in $SCENARIO_DIR"
           fi
@@ -111,8 +111,8 @@ steps:
       SCENARIO_DIR="{{run_dir}}/{{scenario.name}}"
       PNG_COUNT=$(find "$SCENARIO_DIR" -name "*.png" 2>/dev/null | wc -l | tr -d ' ')
       if [ "$PNG_COUNT" -eq 0 ]; then
-        echo "No PNG files found in $SCENARIO_DIR -- skipping evaluation for {{scenario.name}}"
-        exit 0
+        echo "FAILED: No PNG files in $SCENARIO_DIR for {{scenario.name}} -- cannot score" >&2
+        exit 1
       fi
       python3 -m eval evaluate \
         --scenario-file "{{scenarios_file}}" \
