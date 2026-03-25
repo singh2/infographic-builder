@@ -1,0 +1,115 @@
+name: "generate-missing-6"
+description: "Generate the 6 missing eval scenarios using foreach/agent pattern identical to generate-sample-gallery"
+version: "1.1.0"
+tags: ["infographic", "gallery", "samples", "batch"]
+
+context:
+  scenarios:
+    - name: "okr-cascade"
+      prompt: >
+        Create a 2-panel infographic about "OKR Cascade: From Company to Team".
+        Panel 1 "Company OKRs": top-level objectives aligned to mission, key results
+        with measurable targets, executive ownership, quarterly cadence, and scoring
+        rubric (0.0–1.0 scale).
+        Panel 2 "Team OKRs": team objectives derived from company OKRs, granular key
+        results owned by individuals, contribution mapping arrows showing alignment,
+        weekly check-in cadence, and common pitfalls (output vs outcome confusion).
+        Clean corporate Microsoft style with navy blue and teal on white background,
+        hierarchical cascade diagram with alignment arrows. 9:16 aspect ratio.
+        Save panels as ./samples/okr-cascade_panel_1.png,
+        ./samples/okr-cascade_panel_2.png
+
+    - name: "incubation-lifecycle"
+      prompt: >
+        Create a 3-panel infographic about "Microsoft Incubation Lifecycle".
+        Panel 1 "Explore": problem framing using Jobs-to-be-Done, opportunity sizing
+        (TAM/SAM/SOM), founding team formation, research spikes, and the criteria for
+        advancing to the Incubate stage.
+        Panel 2 "Incubate": rapid prototyping cycles, customer co-development
+        partnerships, weekly learning cadence (build-measure-learn), go/no-go reviews
+        at 30/60/90 days, and key metrics (weekly active users, retention).
+        Panel 3 "Scale": product-market fit validation signals, engineering team
+        handoff process, growth metrics dashboard (DAU, revenue, NPS), graduation
+        criteria checklist, and paths forward (spin-in, spin-out, incubate further).
+        Professional design with Microsoft blue gradient palette on a clean white
+        background, milestone markers, stage gates, and directional flow arrows.
+        9:16 aspect ratio.
+        Save panels as ./samples/incubation-lifecycle_panel_1.png through _panel_3.png
+
+    - name: "cicd-pipeline"
+      prompt: >
+        Create a 3-panel infographic about "CI/CD Pipeline: From Commit to Production".
+        Panel 1 "Continuous Integration": developer commits trigger automated pipeline,
+        build compilation and dependency resolution, unit and integration test suites,
+        code quality gates (linting, type checking, coverage thresholds), and artifact
+        creation on success.
+        Panel 2 "Continuous Delivery": artifact packaging and versioning, staging
+        environment deployment, automated smoke and regression tests, performance
+        benchmarks, and release candidate approval gates (manual sign-off).
+        Panel 3 "Continuous Deployment": production rollout strategies (blue-green,
+        canary with traffic percentages, feature flags), health monitoring with
+        automatic rollback triggers, observability dashboards (error rate, latency,
+        saturation), and post-deployment validation.
+        Technical dark theme with green and teal accents on a near-black background,
+        pipeline flow diagram with stage boxes and connector arrows. 9:16 aspect ratio.
+        Save panels as ./samples/cicd-pipeline_panel_1.png through _panel_3.png
+
+    - name: "customer-discovery-funnel"
+      prompt: >
+        Create a 2-panel infographic about "Customer Discovery Funnel for New Ventures".
+        Panel 1 "Problem Validation": hypothesis formation, customer interviews using
+        the 5-why technique, pain point mapping on an impact/frequency matrix, market
+        segment identification, and signals that invalidate the hypothesis.
+        Panel 2 "Solution Validation": MVP prototype types (concierge, Wizard of Oz,
+        prototype), usability testing methods, feedback loop structure, pivot vs
+        persevere decision criteria, and key metrics to track (activation rate,
+        retention, NPS).
+        Modern startup style with gradient blues and bold typography on a white
+        background, funnel shape and flow diagram motifs. 9:16 aspect ratio.
+        Save panels as ./samples/customer-discovery-funnel_panel_1.png,
+        ./samples/customer-discovery-funnel_panel_2.png
+
+    - name: "saas-metrics-dashboard"
+      prompt: >
+        Create a single-panel infographic about "Q3 2025 SaaS Metrics Dashboard".
+        Present these specific KPIs with large prominent numbers and supporting
+        context: Monthly Recurring Revenue $4.2M (up 23% from Q2), Customer
+        Churn Rate 2.3% (down from 3.1%), Customer Acquisition Cost $142 (target
+        was $150), Net Promoter Score 72 (industry avg 41), Active Users 28,400
+        (up 3,200 from Q2). Use a statistics/KPI layout with large numbers and
+        icons. Clean corporate style with navy blue and emerald green on white
+        background, accent gold for positive trends. 9:16 aspect ratio.
+        Save as ./samples/saas-metrics-dashboard.png
+
+    - name: "developer-survey-results"
+      prompt: >
+        Create a 2-panel infographic about "2025 Developer Survey Results"
+        presenting survey data with specific percentages and rankings.
+        Panel 1 "Languages & Frameworks": Top 5 languages by usage --
+        Python 68%, JavaScript 62%, TypeScript 51%, Go 29%, Rust 18%.
+        Framework satisfaction scores -- React 4.1/5, Next.js 4.3/5,
+        FastAPI 4.5/5, Django 3.9/5, Express 3.7/5.
+        Panel 2 "Career & Compensation": Median salary by role -- Senior
+        Engineer $185K, Staff Engineer $225K, Engineering Manager $210K,
+        Principal Engineer $260K. Remote work breakdown -- Fully remote 42%,
+        Hybrid 38%, In-office 20%. Job satisfaction 73% positive.
+        Use a statistics layout with large numbers, ranking bars, and percentage
+        callouts. Modern tech style with electric blue and cool gray on dark
+        background, white text, clean sans-serif. 9:16 aspect ratio.
+        Save panels as ./samples/developer-survey-results_panel_1.png,
+        ./samples/developer-survey-results_panel_2.png
+
+steps:
+  - id: "create-samples-dir"
+    type: "bash"
+    command: "mkdir -p ./samples && echo 'samples directory ready'"
+    output: "dir_status"
+
+  - id: "generate-infographics"
+    foreach: "{{scenarios}}"
+    as: "scenario"
+    agent: "infographic-builder:infographic-builder"
+    prompt: "{{scenario.prompt}}"
+    collect: "gallery_results"
+    timeout: 1800
+    on_error: "continue"

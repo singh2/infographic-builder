@@ -1,0 +1,241 @@
+digraph evaluation_process {
+    rankdir=TB
+    fontname="Helvetica"
+    fontsize=12
+    node [fontname="Helvetica" fontsize=10 style=filled]
+    edge [fontname="Helvetica" fontsize=9]
+    compound=true
+    newrank=true
+
+    // ── Title ───────────────────────────────────────────────────
+
+    label="Evaluation Process"
+    labelloc=t
+    fontsize=16
+    fontcolor="#333333"
+
+    // ── Input Layer ─────────────────────────────────────────────
+
+    subgraph cluster_inputs {
+        label="Inputs"
+        style="rounded,dashed"
+        color="#666666"
+        fontcolor="#666666"
+        bgcolor="#fafafa"
+
+        scenarios [
+            label="eval/scenarios.yaml\n(18 test scenarios\n1-6 panels each)"
+            shape=note
+            fillcolor="#e8f4fd"
+            color="#4a90d9"
+        ]
+
+        infographic_agent [
+            label="infographic-builder\nagent"
+            shape=doubleoctagon
+            fillcolor="#d4edda"
+            color="#28a745"
+        ]
+    }
+
+    // ── Generation Phase ────────────────────────────────────────
+
+    subgraph cluster_generate {
+        label="Phase 1: Generate Infographics"
+        style="rounded"
+        color="#28a745"
+        bgcolor="#f0faf0"
+
+        foreach_gen [
+            label="foreach scenario\n(18 scenarios)"
+            shape=box
+            fillcolor="#d4edda"
+            color="#28a745"
+        ]
+
+        gen_invoke [
+            label="Delegate to\ninfographic-builder agent\n(via Amplifier recipe)"
+            shape=box
+            fillcolor="#d4edda"
+            color="#28a745"
+        ]
+
+        gen_output [
+            label="Panel PNGs\neval-results/<timestamp>/\n<scenario>/panel_N.png"
+            shape=folder
+            fillcolor="#e8f5e9"
+            color="#2e7d32"
+        ]
+
+        foreach_gen -> gen_invoke [color="#28a745"]
+        gen_invoke -> gen_output [color="#2e7d32"]
+    }
+
+    // ── Evaluation Phase ────────────────────────────────────────
+
+    subgraph cluster_evaluate {
+        label="Phase 2: Score with GPT-4o Vision"
+        style="rounded"
+        color="#4a90d9"
+        bgcolor="#f0f4fa"
+
+        foreach_eval [
+            label="foreach scenario\n(python -m eval evaluate)"
+            shape=box
+            fillcolor="#e8f4fd"
+            color="#4a90d9"
+        ]
+
+        subgraph cluster_rubric {
+            label="Rubric Engine (eval/rubric.py)"
+            style="rounded"
+            color="#b0b0b0"
+            bgcolor="#ffffff"
+
+            build_prompt [
+                label="Build rubric prompt\n(scenario context +\nmulti-panel criteria)"
+                shape=box
+                fillcolor="#e2d9f3"
+                color="#7b5ea7"
+                fontsize=9
+            ]
+
+            encode_images [
+                label="Base64-encode\npanel images"
+                shape=box
+                fillcolor="#e2d9f3"
+                color="#7b5ea7"
+                fontsize=9
+            ]
+
+            gpt4o [
+                label="GPT-4o Vision\n(temperature=0.2)"
+                shape=cylinder
+                fillcolor="#fce4ec"
+                color="#c62828"
+            ]
+
+            parse [
+                label="Parse & validate\nJSON response"
+                shape=box
+                fillcolor="#fff3cd"
+                color="#d4a017"
+                fontsize=9
+            ]
+
+            recalc [
+                label="Recalculate composite\n(model estimate discarded;\nweights × scores)"
+                shape=box
+                fillcolor="#fff3cd"
+                color="#d4a017"
+                fontsize=9
+            ]
+        }
+
+        score_json [
+            label="<scenario>_scores.json\n(per-scenario result)"
+            shape=note
+            fillcolor="#e8f4fd"
+            color="#4a90d9"
+        ]
+    }
+
+    // ── Scoring Rubric Detail ───────────────────────────────────
+
+    subgraph cluster_dimensions {
+        label="5 Weighted Dimensions"
+        style="rounded,dashed"
+        color="#7b5ea7"
+        fontcolor="#7b5ea7"
+        bgcolor="#f8f4fc"
+
+        dim_table [
+            label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                <TR><TD BGCOLOR="#7b5ea7"><FONT COLOR="white"><B>Dimension</B></FONT></TD><TD BGCOLOR="#7b5ea7"><FONT COLOR="white"><B>Weight</B></FONT></TD></TR>
+                <TR><TD>Visual Explanation</TD><TD>25%</TD></TR>
+                <TR><TD>Content Accuracy</TD><TD>20%</TD></TR>
+                <TR><TD>Typography &amp; Legibility</TD><TD>20%</TD></TR>
+                <TR><TD>Visual Quality &amp; Consistency</TD><TD>20%</TD></TR>
+                <TR><TD>Narrative Structure</TD><TD>15%</TD></TR>
+            </TABLE>>
+            shape=plain
+        ]
+
+        prompt_fidelity [
+            label="+ Prompt Fidelity\n(unweighted, 1-5)"
+            shape=box
+            fillcolor="#f8f4fc"
+            color="#7b5ea7"
+            fontsize=9
+        ]
+    }
+
+    // ── Report Phase ────────────────────────────────────────────
+
+    subgraph cluster_report {
+        label="Phase 3: Aggregate & Report"
+        style="rounded"
+        color="#2e7d32"
+        bgcolor="#f0faf0"
+
+        aggregate [
+            label="Aggregate scores\n(eval/report.py)\nmean, per-dimension avg,\nbest/worst scenario"
+            shape=box
+            fillcolor="#e8f5e9"
+            color="#2e7d32"
+        ]
+
+        baseline [
+            label="Baseline comparison\n(optional: prior run\nfor trend deltas)"
+            shape=note
+            fillcolor="#f0f0f0"
+            color="#999999"
+        ]
+
+        bands [
+            label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                <TR><TD BGCOLOR="#2e7d32"><FONT COLOR="white"><B>Score</B></FONT></TD><TD BGCOLOR="#2e7d32"><FONT COLOR="white"><B>Band</B></FONT></TD></TR>
+                <TR><TD>4.0 - 5.0</TD><TD BGCOLOR="#d4edda">High quality</TD></TR>
+                <TR><TD>3.0 - 3.9</TD><TD BGCOLOR="#fff3cd">Acceptable</TD></TR>
+                <TR><TD>2.0 - 2.9</TD><TD BGCOLOR="#ffe0b2">Below bar</TD></TR>
+                <TR><TD>1.0 - 1.9</TD><TD BGCOLOR="#fce4ec">Failed</TD></TR>
+            </TABLE>>
+            shape=plain
+        ]
+
+        report [
+            label="summary.md\n(markdown report with\nper-scenario detail)"
+            shape=note
+            fillcolor="#e8f5e9"
+            color="#2e7d32"
+        ]
+    }
+
+    // ── Main Flow Edges ─────────────────────────────────────────
+
+    // Input -> Generation
+    scenarios -> foreach_gen [label="load scenarios" color="#4a90d9" penwidth=1.5]
+    infographic_agent -> gen_invoke [label="delegate" style=dashed color="#28a745"]
+
+    // Generation -> Evaluation
+    gen_output -> foreach_eval [label="panel images" color="#4a90d9" penwidth=1.5]
+
+    // Evaluation internal flow
+    foreach_eval -> build_prompt [color="#4a90d9"]
+    foreach_eval -> encode_images [color="#4a90d9"]
+    build_prompt -> gpt4o [color="#c62828"]
+    encode_images -> gpt4o [color="#c62828"]
+    gpt4o -> parse [label="JSON response" color="#c62828"]
+    parse -> recalc [color="#d4a017"]
+    recalc -> score_json [label="validated scores" color="#4a90d9"]
+
+    // Dimension reference
+    dim_table -> build_prompt [style=dotted color="#7b5ea7" label="scoring criteria"]
+    prompt_fidelity -> build_prompt [style=dotted color="#7b5ea7"]
+
+    // Evaluation -> Report
+    score_json -> aggregate [label="all scenario scores" color="#2e7d32" penwidth=1.5]
+    baseline -> aggregate [label="optional\nbaseline" style=dashed color="#999999"]
+    aggregate -> bands [label="classify" color="#2e7d32"]
+    aggregate -> report [label="render markdown" color="#2e7d32"]
+}
