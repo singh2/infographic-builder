@@ -36,8 +36,20 @@ Engineering below).
 
 - **Background:** Solid white (#FFFFFF) or subtle light gradient (#F5F5F5 → #FFFFFF)
 - **Typography:** Helvetica/sans-serif; bold weight headers, light weight body; dark gray (#333333) text
-- **Icons:** Monochrome flat icons, single accent color, no outlines
-- **Color palette:** 1 primary accent + neutral grays — one blue or one teal against white
+- **Icons:** Flat icons in the primary accent color, no outlines
+- **Color palette:** 1 primary accent + 1 secondary accent + neutral grays.
+  Recommended pairings (pick one row):
+
+  | Primary | Secondary | Vibe |
+  |---------|-----------|------|
+  | Deep teal (#0D7377) | Warm coral (#E8634A) | Balanced, modern |
+  | Navy blue (#1B3A5C) | Gold (#D4A843) | Authoritative, premium |
+  | Slate blue (#4A6FA5) | Soft amber (#E8A838) | Approachable, warm |
+
+  The primary accent drives headers, icons, and dividers. The secondary accent
+  is used sparingly — data highlights, callout boxes, one or two key emphasis
+  elements per panel. This prevents monochrome flatness while keeping the
+  palette controlled.
 - **Lighting:** Flat, even — no shadows, no directional light
 - **Texture:** None — pure clean surfaces
 - **Mood:** Calm, authoritative, boardroom-safe
@@ -317,6 +329,34 @@ NEEDS_REFINEMENT, list the specific changes that would fix the issues (be
 concrete -- these will be used to refine the generation prompt).
 ```
 
+### Cross-Panel Visual Comparison (Multi-Panel Only)
+
+For Panels 2-N, add a visual comparison step using nano-banana `compare` with
+Panel 1 as image1 and the panel under review as image2. Use this prompt:
+
+```
+Compare these two infographic panels that must share identical visual style.
+Image 1 is the style anchor (Panel 1). Image 2 is a subsequent panel.
+
+Check each dimension for consistency:
+1. BORDER TREATMENT — same frame/border presence and style?
+2. BACKGROUND — same color, shade, texture?
+3. TYPOGRAPHY — same fonts, weights, sizes for comparable hierarchy levels?
+4. COLOR PALETTE — same accent colors? Any new colors introduced?
+5. ICON STYLE — same rendering (flat/outlined/detailed)? Same color treatment?
+6. DIVIDER LINES — same thickness, color, style?
+7. SPACING/MARGINS — consistent outer margins and padding?
+8. RENDERING STYLE — both same approach (flat/illustrated/3D)?
+
+For each dimension: MATCH or DRIFT.
+If ANY dimension shows DRIFT, the overall verdict is NEEDS_REFINEMENT.
+List the specific drifts so the generation prompt can be corrected.
+```
+
+This comparison catches visual inconsistencies that text-only review misses --
+the critic is comparing actual rendered pixels, not just checking against a
+text brief.
+
 ### Refinement Rules
 
 - Only refine if the analysis says `NEEDS_REFINEMENT`
@@ -336,3 +376,12 @@ Before calling nano-banana generate, verify the prompt addresses:
 - [ ] Is the color direction specified?
 - [ ] Is the target medium considered (social, slides, print)?
 - [ ] Has an aesthetic been selected or confirmed (curated, freeform, or default)?
+
+**Additional items for multi-panel (Panels 2-N only):**
+
+- [ ] Has Panel 1 been generated and reviewed?
+- [ ] Has the style reconciliation `analyze` call been run on Panel 1?
+- [ ] Has the original style brief been OVERWRITTEN (not merged) with the reconciliation output?
+- [ ] Does this panel's prompt include the opening directive ("This panel MUST match...")?
+- [ ] Is `reference_image_path` set to Panel 1's output path?
+- [ ] Is the reconciled style brief included verbatim in the prompt?

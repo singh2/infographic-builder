@@ -28,7 +28,19 @@ DIMENSION_WEIGHTS: dict[str, float] = {
     "visual_quality": 0.20,
 }
 
+# Multi-panel scenarios redistribute weight to include cross-panel consistency.
+# This dimension is only scored when panel_count > 1.
+MULTI_PANEL_DIMENSION_WEIGHTS: dict[str, float] = {
+    "content_accuracy": 0.17,
+    "narrative_structure": 0.12,
+    "visual_explanation": 0.22,
+    "typography": 0.17,
+    "visual_quality": 0.17,
+    "cross_panel_consistency": 0.15,
+}
+
 REQUIRED_DIMENSIONS: set[str] = set(DIMENSION_WEIGHTS.keys())
+REQUIRED_DIMENSIONS_MULTI: set[str] = set(MULTI_PANEL_DIMENSION_WEIGHTS.keys())
 
 # ---------------------------------------------------------------------------
 # Prompt builder
@@ -64,15 +76,30 @@ Evaluates font hierarchy, contrast, type size, and overall readability.
 - *AI failure modes*: uniform weight with no hierarchy, low-contrast colour pairings,
   decorative fonts used for body copy.
 
-**5. Visual Quality & Consistency (20%)**
+**5. Visual Quality & Consistency (20% single-panel / 17% multi-panel)**
 Evaluates overall polish, colour palette coherence, icon consistency, and brand
-alignment.
+alignment WITHIN each panel.
 - *Behavioral anchors*: 5 = professional finish, unified visual language;
   3 = mostly consistent with occasional rough edges; 1 = inconsistent or amateurish.
 - *AI failure modes*: mismatched icon styles, clashing colours, uneven padding.
+
+**6. Cross-Panel Consistency (15% — multi-panel only)**
+Evaluates visual consistency ACROSS panels. All panels must look like they came
+from the same designer — identical border treatment, background color, typography,
+accent colors, icon rendering style, divider lines, and density.
+- *Behavioral anchors*: 5 = panels are visually indistinguishable in style;
+  3 = same general feel but noticeable drift in 1-2 elements (e.g., border on
+  one panel but not another, different icon detail level); 1 = panels look like
+  separate designs — different borders, colors, rendering styles.
+- *AI failure modes*: Panel 1 has no border but Panel 3 has one; icon style shifts
+  from flat monochrome to multi-colored detailed; divider lines change thickness
+  or color; one panel introduces colors not in the shared palette.
+- *Score 1 if*: any panel has a border/frame treatment that differs from Panel 1,
+  OR icon rendering style visibly changes between panels, OR new colors appear
+  that weren't in Panel 1.
 """
 
-_JSON_SCHEMA = """
+_JSON_SCHEMA_SINGLE = """
 ### Required JSON Output
 
 Respond with **only** a JSON object matching this schema (no markdown fences):
@@ -85,6 +112,36 @@ Respond with **only** a JSON object matching this schema (no markdown fences):
     "visual_explanation":  {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
     "typography":          {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
     "visual_quality":      {"score": <int 1-5>, "evidence": "...", "improvement": "..."}
+  },
+  "prompt_fidelity": {
+    "score": <int 1-5>,
+    "evidence": "...",
+    "improvement": "..."
+  },
+  "composite_score": <float — will be recalculated; provide your estimate>,
+  "overall_impression": "...",
+  "top_strength": "...",
+  "top_weakness": "...",
+  "reasoning": "..."
+}
+```
+"""
+
+_JSON_SCHEMA_MULTI = """
+### Required JSON Output
+
+Respond with **only** a JSON object matching this schema (no markdown fences).
+Note: for multi-panel infographics, `cross_panel_consistency` is REQUIRED.
+
+```
+{
+  "dimensions": {
+    "content_accuracy":          {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "narrative_structure":       {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "visual_explanation":        {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "typography":                {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "visual_quality":            {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
+    "cross_panel_consistency":   {"score": <int 1-5>, "evidence": "...", "improvement": "..."}
   },
   "prompt_fidelity": {
     "score": <int 1-5>,
@@ -140,16 +197,29 @@ def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str
         lines += [
             "### Multi-Panel Evaluation",
             "",
-            "Because this infographic spans multiple panels, apply the following "
-            "cross-panel consistency criteria in addition to the per-dimension rubric:",
+            "CRITICAL: This infographic spans multiple panels. You MUST compare panels "
+            "against each other — not just evaluate each one in isolation. Panel 1 is "
+            "the style anchor. Every subsequent panel must match Panel 1's visual system.",
             "",
-            "- **Cross-panel colour coherence**: palette should be stable across panels.",
-            "- **Cross-panel typographic consistency**: font choices and sizes must not "
-            "shift unexpectedly.",
-            "- **Cross-panel narrative continuity**: each panel must advance the story "
-            "without redundancy or gaps.",
-            "- **Cross-panel layout rhythm**: similar spatial grids and proportions across "
-            "panels aid readability.",
+            "Check these specific cross-panel dimensions (score in dimension 6):",
+            "",
+            "- **Border treatment**: Does every panel have the same frame/border "
+            "presence? If Panel 1 has no border, no other panel should have one.",
+            "- **Background**: Same shade, texture, and treatment across all panels.",
+            "- **Color palette**: Same accent colors everywhere. No panel introduces "
+            "colors that weren't in Panel 1.",
+            "- **Icon rendering**: Same style (flat/outlined/detailed/3D) and same "
+            "color treatment across all panels.",
+            "- **Divider lines**: Same thickness, color, and style in every panel.",
+            "- **Typography**: Same fonts, weights, and sizes for comparable hierarchy "
+            "levels.",
+            "- **Spacing/margins**: Consistent outer margins and internal padding.",
+            "- **Rendering approach**: All panels use the same approach (all flat, all "
+            "illustrated, all 3D — never mixed).",
+            "",
+            "Score cross_panel_consistency 1 if ANY of these drift between panels. "
+            "The most common AI failure: Panel 1 is flat monochrome but a later panel "
+            "introduces multi-colored icons, borders, or illustrated elements.",
             "",
         ]
 
@@ -176,7 +246,7 @@ def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str
         "",
     ]
 
-    lines.append(_JSON_SCHEMA)
+    lines.append(_JSON_SCHEMA_MULTI if panel_count > 1 else _JSON_SCHEMA_SINGLE)
 
     return "\n".join(lines)
 
@@ -186,14 +256,18 @@ def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str
 # ---------------------------------------------------------------------------
 
 
-def parse_scores(raw_json_str: str) -> dict[str, Any]:
+def parse_scores(raw_json_str: str, *, panel_count: int = 1) -> dict[str, Any]:
     """Parse and validate the model's JSON evaluation response.
 
     Recalculates ``composite_score`` from dimension scores and weights —
-    the model-supplied value is never trusted.
+    the model-supplied value is never trusted.  For multi-panel scenarios
+    (``panel_count > 1``), the ``cross_panel_consistency`` dimension is
+    required and weighted at 15%.
 
     Args:
         raw_json_str: Raw JSON string from the model.
+        panel_count: Number of panels evaluated (>1 activates multi-panel
+            weights and requires ``cross_panel_consistency``).
 
     Returns:
         Validated and normalised evaluation dict.
@@ -210,8 +284,13 @@ def parse_scores(raw_json_str: str) -> dict[str, Any]:
 
     dimensions: dict[str, Any] = data.get("dimensions", {})
 
+    # --- select weight set based on panel count ---
+    is_multi = panel_count > 1
+    weights = MULTI_PANEL_DIMENSION_WEIGHTS if is_multi else DIMENSION_WEIGHTS
+    required = REQUIRED_DIMENSIONS_MULTI if is_multi else REQUIRED_DIMENSIONS
+
     # --- validate presence ---
-    missing = REQUIRED_DIMENSIONS - set(dimensions.keys())
+    missing = required - set(dimensions.keys())
     if missing:
         raise ValueError(
             f"Missing dimension(s) in evaluation response: {sorted(missing)}"
@@ -219,7 +298,7 @@ def parse_scores(raw_json_str: str) -> dict[str, Any]:
 
     # --- validate ranges and recalculate composite ---
     composite: float = 0.0
-    for dim, weight in DIMENSION_WEIGHTS.items():
+    for dim, weight in weights.items():
         score = dimensions[dim].get("score")
         if not isinstance(score, int) or score < 1 or score > 5:
             raise ValueError(
@@ -320,4 +399,4 @@ async def evaluate_image(
     raw = re.sub(r"^```(?:json)?\s*", "", raw.strip())
     raw = re.sub(r"\s*```$", "", raw.strip())
 
-    return parse_scores(raw)
+    return parse_scores(raw, panel_count=len(image_paths))
