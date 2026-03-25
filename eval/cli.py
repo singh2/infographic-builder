@@ -1,9 +1,13 @@
 """CLI entry point for the infographic evaluation harness.
 
-Provides two subcommands:
+Provides subcommands:
   evaluate  — Score a single scenario against PNG images in a directory.
   report    — Aggregate *_scores.json files from a run directory into a
               markdown summary report.
+
+Image generation is handled by the infographic-builder agent via the
+``recipes/evaluate.yaml`` recipe.  This CLI covers only scoring and
+reporting — the steps that don't require an Amplifier agent session.
 """
 
 from __future__ import annotations

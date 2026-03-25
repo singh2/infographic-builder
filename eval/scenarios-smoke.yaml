@@ -1,0 +1,48 @@
+# =============================================================================
+# Smoke Test Scenarios (3 of 24)
+# =============================================================================
+#
+# Minimal subset for validating the eval pipeline works end-to-end.
+# One scenario from each prompt tier: specified, natural, and aesthetic.
+#
+# Usage:
+#   amplifier run "execute recipes/evaluate.yaml" \
+#     --context '{"scenarios_file": "eval/scenarios-smoke.yaml"}'
+#
+# =============================================================================
+
+scenarios:
+
+  # SPECIFIED -- full visual spec, single panel
+  - name: mechanical-keyboard
+    topic: "The Anatomy of a Mechanical Keyboard"
+    panels: 1
+    audience: "Tech enthusiasts and hardware hobbyists"
+    style_direction: "Dark background with RGB color accents (red, green, blue, purple), bold sans-serif headers"
+    prompt: >
+      Create a single-panel infographic about "The Anatomy of a Mechanical Keyboard".
+      Show the key switch mechanism (spring, stem, housing), keycap layers, PCB,
+      stabilizers, and plate mount. Use an exploded diagram layout. Dark background
+      with RGB color accents (red, green, blue, purple). Bold sans-serif headers,
+      9:16 aspect ratio.
+
+  # NATURAL -- conversational, multi-panel, agent decides everything
+  - name: campfire
+    topic: "The Science Behind a Perfect Campfire"
+    panels: 2
+    audience: "Outdoor enthusiasts and general audience"
+    style_direction: "Agent-selected"
+    prompt: >
+      Make an infographic about building the perfect campfire. Cover both the
+      science behind combustion and the practical fire-building technique.
+
+  # AESTHETIC -- named curated aesthetic, multi-panel
+  - name: sleep-stages
+    topic: "Why Sleep Matters"
+    panels: 2
+    audience: "General public and wellness readers"
+    style_direction: "Hand-Drawn Sketchnote (named aesthetic)"
+    prompt: >
+      Make a Hand-Drawn Sketchnote infographic about why sleep matters and
+      what happens during each stage of sleep. Something I could hang in a
+      doctor's waiting room.

@@ -2,7 +2,7 @@
 Tests for eval/scenarios.yaml structure and completeness.
 
 Verifies that the scenarios file exists, is valid YAML, contains exactly
-18 scenarios, and that each scenario has all required fields.
+23 scenarios, and that each scenario has all required fields.
 """
 
 from __future__ import annotations
@@ -17,51 +17,61 @@ SCENARIOS_PATH = pathlib.Path("eval/scenarios.yaml")
 REQUIRED_FIELDS = {"name", "topic", "panels", "audience", "style_direction", "prompt"}
 
 EXPECTED_NAMES = {
-    # 1-panel
+    # Specified -- full visual spec
     "mechanical-keyboard",
     "noise-canceling-headphones",
     "saas-metrics-dashboard",
-    # 2-panel
     "developer-survey-results",
+    "neural-networks",
+    "cicd-pipeline",
+    "llm-pipeline",
+    "song-to-spotify",
+    "ai-everyday-life",
+    "coffee-bean",
+    "history-of-internet",
+    # Natural -- conversational, agent decides layout/aesthetic
     "dns",
     "campfire",
     "agile-vs-waterfall",
     "okr-cascade",
     "customer-discovery-funnel",
-    # 3-panel
-    "neural-networks",
+    "photosynthesis",
+    # Aesthetic -- named curated aesthetic
     "surfing",
     "incubation-lifecycle",
-    "cicd-pipeline",
-    # 4-panel
-    "llm-pipeline",
-    "song-to-spotify",
-    # 5-panel
-    "ai-everyday-life",
-    "coffee-bean",
-    # 6-panel
-    "history-of-internet",
+    "devops-lifecycle",
+    "sleep-stages",
+    "solar-system",
+    "eisenhower-matrix",
 }
 
 EXPECTED_PANEL_COUNTS = {
+    # Specified
     "mechanical-keyboard": 1,
     "noise-canceling-headphones": 1,
     "saas-metrics-dashboard": 1,
     "developer-survey-results": 2,
-    "dns": 2,
-    "campfire": 2,
-    "agile-vs-waterfall": 2,
-    "okr-cascade": 2,
-    "customer-discovery-funnel": 2,
     "neural-networks": 3,
-    "surfing": 3,
-    "incubation-lifecycle": 3,
     "cicd-pipeline": 3,
     "llm-pipeline": 4,
     "song-to-spotify": 4,
     "ai-everyday-life": 5,
     "coffee-bean": 5,
     "history-of-internet": 6,
+    # Natural
+    "dns": 2,
+    "campfire": 2,
+    "agile-vs-waterfall": 2,
+    "okr-cascade": 2,
+    "customer-discovery-funnel": 2,
+    "photosynthesis": 2,
+    # Aesthetic
+    "surfing": 3,
+    "incubation-lifecycle": 3,
+    "devops-lifecycle": 1,
+    "sleep-stages": 2,
+    "solar-system": 3,
+    "eisenhower-matrix": 1,
 }
 
 
@@ -89,8 +99,8 @@ def test_scenarios_is_valid_yaml() -> None:
 
 
 def test_scenarios_count(scenarios: list[dict]) -> None:
-    """There must be exactly 18 scenarios."""
-    assert len(scenarios) == 18, f"Expected 18 scenarios, got {len(scenarios)}"
+    """There must be exactly 23 scenarios."""
+    assert len(scenarios) == 23, f"Expected 23 scenarios, got {len(scenarios)}"
 
 
 def test_each_scenario_has_required_fields(scenarios: list[dict]) -> None:
@@ -153,4 +163,4 @@ def test_python_c_verification_output(capsys) -> None:
     scenarios = data["scenarios"]
     print(f"{len(scenarios)} scenarios loaded")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "18 scenarios loaded"
+    assert captured.out.strip() == "23 scenarios loaded"
