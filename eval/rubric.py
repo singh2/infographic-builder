@@ -1,8 +1,8 @@
 """Rubric-based evaluation logic for AI-generated infographics.
 
 Provides:
-- DIMENSION_WEIGHTS: weighted scoring dimensions
-- REQUIRED_DIMENSIONS: set of required rubric keys
+- DIMENSION_WEIGHTS: weighted scoring dimensions (single-panel)
+- MULTI_PANEL_DIMENSION_WEIGHTS: weighted scoring dimensions (multi-panel)
 - build_rubric_prompt: constructs the GPT-4o evaluation prompt
 - parse_scores: validates and normalises the model JSON response
 - evaluate_image: async entry-point that calls OpenAI GPT-4o vision
@@ -39,8 +39,6 @@ MULTI_PANEL_DIMENSION_WEIGHTS: dict[str, float] = {
     "cross_panel_consistency": 0.15,
 }
 
-REQUIRED_DIMENSIONS: set[str] = set(DIMENSION_WEIGHTS.keys())
-REQUIRED_DIMENSIONS_MULTI: set[str] = set(MULTI_PANEL_DIMENSION_WEIGHTS.keys())
 
 # ---------------------------------------------------------------------------
 # Prompt builder
@@ -99,61 +97,46 @@ accent colors, icon rendering style, divider lines, and density.
   that weren't in Panel 1.
 """
 
-_JSON_SCHEMA_SINGLE = """
-### Required JSON Output
+_DIMENSION_ENTRY = (
+    '    "{key}": {{"score": <int 1-5>, "evidence": "...", "improvement": "..."}}'
+)
 
-Respond with **only** a JSON object matching this schema (no markdown fences):
 
-```
-{
-  "dimensions": {
-    "content_accuracy":    {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "narrative_structure": {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "visual_explanation":  {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "typography":          {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "visual_quality":      {"score": <int 1-5>, "evidence": "...", "improvement": "..."}
-  },
-  "prompt_fidelity": {
-    "score": <int 1-5>,
-    "evidence": "...",
-    "improvement": "..."
-  },
-  "composite_score": <float — will be recalculated; provide your estimate>,
-  "overall_impression": "...",
-  "top_strength": "...",
-  "top_weakness": "...",
-  "reasoning": "..."
-}
-```
-"""
+def _build_json_schema(*, multi_panel: bool) -> str:
+    """Build the JSON output schema, adding cross_panel_consistency for multi-panel."""
+    dims = list(DIMENSION_WEIGHTS.keys())
+    if multi_panel:
+        dims += [k for k in MULTI_PANEL_DIMENSION_WEIGHTS if k not in DIMENSION_WEIGHTS]
+    entries = ",\n".join(_DIMENSION_ENTRY.format(key=d) for d in dims)
 
-_JSON_SCHEMA_MULTI = """
+    note = ""
+    if multi_panel:
+        note = (
+            "\nNote: for multi-panel infographics, "
+            "`cross_panel_consistency` is REQUIRED.\n"
+        )
+
+    return f"""
 ### Required JSON Output
 
 Respond with **only** a JSON object matching this schema (no markdown fences).
-Note: for multi-panel infographics, `cross_panel_consistency` is REQUIRED.
-
+{note}
 ```
-{
-  "dimensions": {
-    "content_accuracy":          {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "narrative_structure":       {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "visual_explanation":        {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "typography":                {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "visual_quality":            {"score": <int 1-5>, "evidence": "...", "improvement": "..."},
-    "cross_panel_consistency":   {"score": <int 1-5>, "evidence": "...", "improvement": "..."}
-  },
-  "prompt_fidelity": {
+{{
+  "dimensions": {{
+{entries}
+  }},
+  "prompt_fidelity": {{
     "score": <int 1-5>,
     "evidence": "...",
     "improvement": "..."
-  },
+  }},
   "composite_score": <float — will be recalculated; provide your estimate>,
   "overall_impression": "...",
   "top_strength": "...",
   "top_weakness": "...",
   "reasoning": "..."
-}
+}}
 ```
 """
 
@@ -246,7 +229,7 @@ def build_rubric_prompt(scenario: dict[str, Any], image_paths: list[str]) -> str
         "",
     ]
 
-    lines.append(_JSON_SCHEMA_MULTI if panel_count > 1 else _JSON_SCHEMA_SINGLE)
+    lines.append(_build_json_schema(multi_panel=panel_count > 1))
 
     return "\n".join(lines)
 
@@ -285,12 +268,10 @@ def parse_scores(raw_json_str: str, *, panel_count: int = 1) -> dict[str, Any]:
     dimensions: dict[str, Any] = data.get("dimensions", {})
 
     # --- select weight set based on panel count ---
-    is_multi = panel_count > 1
-    weights = MULTI_PANEL_DIMENSION_WEIGHTS if is_multi else DIMENSION_WEIGHTS
-    required = REQUIRED_DIMENSIONS_MULTI if is_multi else REQUIRED_DIMENSIONS
+    weights = MULTI_PANEL_DIMENSION_WEIGHTS if panel_count > 1 else DIMENSION_WEIGHTS
 
     # --- validate presence ---
-    missing = required - set(dimensions.keys())
+    missing = set(weights.keys()) - set(dimensions.keys())
     if missing:
         raise ValueError(
             f"Missing dimension(s) in evaluation response: {sorted(missing)}"
