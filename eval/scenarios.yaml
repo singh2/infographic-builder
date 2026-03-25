@@ -2,27 +2,42 @@
 # Evaluation Scenarios
 # =============================================================================
 #
-# 18 infographic test scenarios used by the evaluation harness.
-# 14 scenarios are extracted from the sample gallery recipes; 4 are new
-# Microsoft/incubation-audience scenarios added for broader coverage.
+# 23 infographic test scenarios used by the evaluation harness.
 #
-# Organized by panel count (ascending): 1 → 2 → 3 → 4 → 5 → 6
+# Organized into four prompt tiers that mirror real user behavior:
+#
+#   SPECIFIED  -- Full visual spec (colors, panel count, aspect ratio).
+#                 Tests generation quality under precise instructions.
+#   NATURAL    -- Conversational request with topic detail but no visual spec.
+#                 Agent decides panel count, layout, and aesthetic.
+#   AESTHETIC  -- Names a curated aesthetic from the style guide.
+#                 Tests step 3d template loading + named aesthetic rendering.
+#   LAYOUT     -- Targets an untested layout type from the style guide.
+#                 Named aesthetic + layout-appropriate topic.
 #
 # Each scenario has:
-#   name            — unique slug identifier
-#   topic           — human-readable title
-#   panels          — number of panels (int)
-#   audience        — intended target audience
-#   style_direction — brief visual style description
-#   prompt          — full generation prompt passed to the infographic builder
+#   name            -- unique slug identifier
+#   topic           -- human-readable title
+#   panels          -- expected panel count (agent may choose differently
+#                      for natural/aesthetic prompts; scoring uses actual
+#                      image count, not this field)
+#   audience        -- intended target audience
+#   style_direction -- visual style (or "Agent-selected" for natural prompts)
+#   prompt          -- full generation prompt passed to the infographic builder
 #
 # =============================================================================
 
 scenarios:
 
+  # ===========================================================================
+  # SPECIFIED -- Full visual spec in prompt (12 scenarios)
+  # ===========================================================================
+  #
+  # These prompts include panel count, color palette, and aspect ratio.
+  # They test generation quality under precise, pre-decomposed instructions.
   # ---------------------------------------------------------------------------
-  # 1-panel scenarios (3)
-  # ---------------------------------------------------------------------------
+
+  # ---- 1-panel (3) ----------------------------------------------------------
 
   - name: mechanical-keyboard
     topic: "The Anatomy of a Mechanical Keyboard"
@@ -63,9 +78,7 @@ scenarios:
       icons. Clean corporate style with navy blue and emerald green on white
       background, accent gold for positive trends. 9:16 aspect ratio.
 
-  # ---------------------------------------------------------------------------
-  # 2-panel scenarios (6)
-  # ---------------------------------------------------------------------------
+  # ---- 2-panel (1) ----------------------------------------------------------
 
   - name: developer-survey-results
     topic: "2025 Developer Survey Results"
@@ -87,86 +100,7 @@ scenarios:
       callouts. Modern tech style with electric blue and cool gray on dark
       background, white text, clean sans-serif. 9:16 aspect ratio.
 
-  - name: dns
-    topic: "How DNS Works"
-    panels: 2
-    audience: "Technical users and web developers"
-    style_direction: "Warm off-white editorial, teal and charcoal palette, golden yellow accents"
-    prompt: >
-      Create a 2-panel infographic about "How DNS Works".
-      Panel 1 "The Lookup Begins": browser request, DNS resolver, root nameserver,
-      TLD nameserver.
-      Panel 2 "The Answer Returns": authoritative nameserver, IP address return,
-      caching/TTL, browser connects.
-      Warm off-white editorial style with teal and charcoal palette, golden yellow
-      accents. 9:16 aspect ratio.
-
-  - name: campfire
-    topic: "The Science Behind a Perfect Campfire"
-    panels: 2
-    audience: "Outdoor enthusiasts and general audience"
-    style_direction: "Warm illustrated, deep orange, amber, and dark brown palette on cream background"
-    prompt: >
-      Create a 2-panel infographic about "The Science Behind a Perfect Campfire".
-      Panel 1 "The Fire Triangle": fuel, heat, oxygen — the three elements needed
-      for combustion, plus best wood types (hardwood vs softwood).
-      Panel 2 "Building Technique": tinder nest → kindling teepee → fuel logs,
-      airflow management, and common mistakes.
-      Warm illustrated style with deep orange, amber, and dark brown palette on a
-      cream background. 9:16 aspect ratio.
-
-  - name: agile-vs-waterfall
-    topic: "Agile vs Waterfall"
-    panels: 2
-    audience: "Software teams and project managers"
-    style_direction: "Clean corporate, blue tones for Waterfall and green tones for Agile on light background"
-    prompt: >
-      Create a 2-panel comparison infographic about "Agile vs Waterfall".
-      Panel 1 "Waterfall": linear sequential phases (requirements → design →
-      implementation → testing → deployment), plan-driven, heavy documentation,
-      change is expensive.
-      Panel 2 "Agile": iterative sprints (plan → build → test → review → repeat),
-      adaptive, working software over documentation, embraces change.
-      Use a clean corporate style with blue tones for Waterfall and green tones for
-      Agile, light background. Side-by-side comparison layout within each panel.
-      9:16 aspect ratio.
-
-  - name: okr-cascade
-    topic: "OKR Cascade: From Company to Team"
-    panels: 2
-    audience: "Microsoft incubation teams and program managers"
-    style_direction: "Clean corporate Microsoft style, navy and teal on white, hierarchical diagram layout"
-    prompt: >
-      Create a 2-panel infographic about "OKR Cascade: From Company to Team".
-      Panel 1 "Company OKRs": top-level objectives aligned to mission, key results
-      with measurable targets, executive ownership, quarterly cadence, and scoring
-      rubric (0.0–1.0 scale).
-      Panel 2 "Team OKRs": team objectives derived from company OKRs, granular key
-      results owned by individuals, contribution mapping arrows showing alignment,
-      weekly check-in cadence, and common pitfalls (output vs outcome confusion).
-      Clean corporate Microsoft style with navy blue and teal on white background,
-      hierarchical cascade diagram with alignment arrows. 9:16 aspect ratio.
-
-  - name: customer-discovery-funnel
-    topic: "Customer Discovery Funnel for New Ventures"
-    panels: 2
-    audience: "Microsoft incubation teams and startup founders"
-    style_direction: "Modern startup, gradient blues with bold typography on white, funnel and flow diagram motifs"
-    prompt: >
-      Create a 2-panel infographic about "Customer Discovery Funnel for New Ventures".
-      Panel 1 "Problem Validation": hypothesis formation, customer interviews using
-      the 5-why technique, pain point mapping on an impact/frequency matrix, market
-      segment identification, and signals that invalidate the hypothesis.
-      Panel 2 "Solution Validation": MVP prototype types (concierge, Wizard of Oz,
-      prototype), usability testing methods, feedback loop structure, pivot vs
-      persevere decision criteria, and key metrics to track (activation rate,
-      retention, NPS).
-      Modern startup style with gradient blues and bold typography on a white
-      background, funnel shape and flow diagram motifs. 9:16 aspect ratio.
-
-  # ---------------------------------------------------------------------------
-  # 3-panel scenarios (4)
-  # ---------------------------------------------------------------------------
+  # ---- 3-panel (2) ----------------------------------------------------------
 
   - name: neural-networks
     topic: "How Neural Networks Learn"
@@ -175,7 +109,7 @@ scenarios:
     style_direction: "Technical diagram, gradient blues and purples on dark background, glowing node connections"
     prompt: >
       Create a 3-panel infographic about "How Neural Networks Learn".
-      Panel 1 "Forward Pass": input data flows through layers (input → hidden →
+      Panel 1 "Forward Pass": input data flows through layers (input -> hidden ->
       output), weights multiply signals, activation functions fire.
       Panel 2 "Backpropagation": error calculated at output, gradients flow backwards
       through the network, chain rule applies layer by layer.
@@ -183,42 +117,6 @@ scenarios:
       controls step size, training loop repeats until convergence.
       Technical diagram style with gradient blues and purples on a dark background,
       glowing node connections. 9:16 aspect ratio.
-
-  - name: surfing
-    topic: "What Happens When You Drop Into a Wave"
-    panels: 3
-    audience: "Surfing enthusiasts and outdoor sports fans"
-    style_direction: "Vibrant ocean, deep blues and turquoise with white foam accents, dynamic action-oriented feel"
-    prompt: >
-      Create a 3-panel infographic about "What Happens When You Drop Into a Wave".
-      Panel 1 "The Paddle": reading the swell, positioning in the lineup, timing
-      the takeoff, catching the wave's energy.
-      Panel 2 "The Pop-Up": chest push, back foot plants, front foot slides forward,
-      low center of gravity, all in under 2 seconds.
-      Panel 3 "The Ride": trimming the face, bottom turns, cutbacks, how wave energy
-      propels the surfer.
-      Vibrant ocean style with deep blues, turquoise, and white foam accents on a
-      gradient blue background. Dynamic and action-oriented feel. 9:16 aspect ratio.
-
-  - name: incubation-lifecycle
-    topic: "Microsoft Incubation Lifecycle"
-    panels: 3
-    audience: "Microsoft incubation teams and innovation leaders"
-    style_direction: "Professional Microsoft design language, blue gradient palette, milestone markers and gate icons"
-    prompt: >
-      Create a 3-panel infographic about "Microsoft Incubation Lifecycle".
-      Panel 1 "Explore": problem framing using Jobs-to-be-Done, opportunity sizing
-      (TAM/SAM/SOM), founding team formation, research spikes, and the criteria for
-      advancing to the Incubate stage.
-      Panel 2 "Incubate": rapid prototyping cycles, customer co-development
-      partnerships, weekly learning cadence (build-measure-learn), go/no-go reviews
-      at 30/60/90 days, and key metrics (weekly active users, retention).
-      Panel 3 "Scale": product-market fit validation signals, engineering team
-      handoff process, growth metrics dashboard (DAU, revenue, NPS), graduation
-      criteria checklist, and paths forward (spin-in, spin-out, incubate further).
-      Professional design with Microsoft blue gradient palette on a clean white
-      background, milestone markers, stage gates, and directional flow arrows.
-      9:16 aspect ratio.
 
   - name: cicd-pipeline
     topic: "CI/CD Pipeline: From Commit to Production"
@@ -241,9 +139,7 @@ scenarios:
       Technical dark theme with green and teal accents on a near-black background,
       pipeline flow diagram with stage boxes and connector arrows. 9:16 aspect ratio.
 
-  # ---------------------------------------------------------------------------
-  # 4-panel scenarios (2)
-  # ---------------------------------------------------------------------------
+  # ---- 4-panel (2) ----------------------------------------------------------
 
   - name: llm-pipeline
     topic: "The LLM Training Pipeline"
@@ -281,9 +177,7 @@ scenarios:
       Creative music style with warm purple and gold palette on a dark background,
       vinyl/waveform visual motifs. 9:16 aspect ratio.
 
-  # ---------------------------------------------------------------------------
-  # 5-panel scenarios (2)
-  # ---------------------------------------------------------------------------
+  # ---- 5-panel (2) ----------------------------------------------------------
 
   - name: ai-everyday-life
     topic: "AI in Everyday Life"
@@ -292,7 +186,7 @@ scenarios:
     style_direction: "Friendly modern, bright blues and greens on white background, rounded icons, approachable feel"
     prompt: >
       Create a 5-panel infographic about "AI in Everyday Life".
-      Panel 1 "Recommendations": Netflix, Spotify, shopping algorithms —
+      Panel 1 "Recommendations": Netflix, Spotify, shopping algorithms --
       collaborative filtering and content-based matching.
       Panel 2 "Voice Assistants": speech recognition, natural language understanding,
       intent classification, response generation.
@@ -325,9 +219,7 @@ scenarios:
       Warm earthy style with rich browns, cream, and forest greens on a light
       parchment background, illustrated feel. 9:16 aspect ratio.
 
-  # ---------------------------------------------------------------------------
-  # 6-panel scenarios (1)
-  # ---------------------------------------------------------------------------
+  # ---- 6-panel (1) ----------------------------------------------------------
 
   - name: history-of-internet
     topic: "History of the Internet"
@@ -348,6 +240,135 @@ scenarios:
       AWS/cloud computing, streaming services.
       Panel 6 "AI & Beyond (2020s)": large language models, edge computing, IoT,
       decentralized web.
-      Timeline style with a retro-to-modern color progression — muted greens/ambers
+      Timeline style with a retro-to-modern color progression -- muted greens/ambers
       in early panels transitioning to vibrant blues/purples in later panels.
       9:16 aspect ratio.
+
+  # ===========================================================================
+  # NATURAL -- Conversational prompts, no visual spec (6 scenarios)
+  # ===========================================================================
+  #
+  # These read like what a real user would type.  No panel count, no colors,
+  # no aspect ratio.  The agent must decide layout, decomposition, and
+  # aesthetic (presenting the selection menu or auto-detecting).
+  # ---------------------------------------------------------------------------
+
+  - name: dns
+    topic: "How DNS Works"
+    panels: 2
+    audience: "Junior developers and technical learners"
+    style_direction: "Agent-selected"
+    prompt: >
+      How does DNS work? I want an infographic I can use to explain the full
+      lookup process to junior developers on my team.
+
+  - name: campfire
+    topic: "The Science Behind a Perfect Campfire"
+    panels: 2
+    audience: "Outdoor enthusiasts and general audience"
+    style_direction: "Agent-selected"
+    prompt: >
+      Make an infographic about building the perfect campfire. Cover both the
+      science behind combustion and the practical fire-building technique.
+
+  - name: agile-vs-waterfall
+    topic: "Agile vs Waterfall"
+    panels: 2
+    audience: "Non-technical stakeholders and project managers"
+    style_direction: "Agent-selected"
+    prompt: >
+      I need to explain agile vs waterfall to non-technical stakeholders.
+      Can you make a comparison infographic?
+
+  - name: okr-cascade
+    topic: "OKR Cascade: From Company to Team"
+    panels: 2
+    audience: "Microsoft incubation teams and program managers"
+    style_direction: "Agent-selected"
+    prompt: >
+      Help me create an infographic showing how company-level OKRs cascade
+      down to team OKRs. It's for program managers at Microsoft.
+
+  - name: customer-discovery-funnel
+    topic: "Customer Discovery Funnel for New Ventures"
+    panels: 2
+    audience: "Microsoft incubation teams and startup founders"
+    style_direction: "Agent-selected"
+    prompt: >
+      Make an infographic about customer discovery for early-stage startups.
+      Cover both problem validation and solution validation.
+
+  - name: photosynthesis
+    topic: "How Photosynthesis Works"
+    panels: 2
+    audience: "Students and general audience"
+    style_direction: "Agent-selected"
+    prompt: >
+      Make an infographic explaining how photosynthesis works.
+
+  # ===========================================================================
+  # AESTHETIC -- Named curated aesthetic from the style guide (6 scenarios)
+  # ===========================================================================
+  #
+  # Each prompt names a curated aesthetic (step 3d) but does NOT specify
+  # colors, fonts, or panel decomposition.  Tests that the agent loads
+  # the aesthetic template and applies it correctly.
+  # ---------------------------------------------------------------------------
+
+  - name: surfing
+    topic: "What Happens When You Drop Into a Wave"
+    panels: 3
+    audience: "Surfing enthusiasts and outdoor sports fans"
+    style_direction: "Bold Editorial (named aesthetic)"
+    prompt: >
+      Make a Bold Editorial infographic about what happens when you drop into
+      a wave. Cover the paddle, the pop-up, and the ride.
+
+  - name: incubation-lifecycle
+    topic: "Microsoft Incubation Lifecycle"
+    panels: 3
+    audience: "Microsoft incubation teams and innovation leaders"
+    style_direction: "Clean Minimalist (named aesthetic)"
+    prompt: >
+      Create a Clean Minimalist infographic about the Microsoft incubation
+      lifecycle -- from Explore through Incubate to Scale. Include the stage
+      gates and key metrics at each phase.
+
+  - name: devops-lifecycle
+    topic: "The DevOps Infinite Loop"
+    panels: 1
+    audience: "Software engineers and DevOps practitioners"
+    style_direction: "Claymation Studio (named aesthetic)"
+    prompt: >
+      Create a Claymation Studio infographic showing the DevOps infinite loop:
+      plan, code, build, test, release, deploy, operate, monitor.
+
+  - name: sleep-stages
+    topic: "Why Sleep Matters"
+    panels: 2
+    audience: "General public and wellness readers"
+    style_direction: "Hand-Drawn Sketchnote (named aesthetic)"
+    prompt: >
+      Make a Hand-Drawn Sketchnote infographic about why sleep matters and
+      what happens during each stage of sleep. Something I could hang in a
+      doctor's waiting room.
+
+  - name: solar-system
+    topic: "A Tour of the Solar System"
+    panels: 3
+    audience: "Students and space enthusiasts"
+    style_direction: "Lego Brick Builder (named aesthetic)"
+    prompt: >
+      Create a Lego Brick Builder infographic touring the solar system. Cover
+      the inner rocky planets, the outer gas giants, and the dwarf planets
+      and other objects beyond Neptune.
+
+  - name: eisenhower-matrix
+    topic: "The Eisenhower Matrix"
+    panels: 1
+    audience: "Knowledge workers and productivity enthusiasts"
+    style_direction: "Dark Mode Tech (named aesthetic)"
+    prompt: >
+      Create a Dark Mode Tech infographic about the Eisenhower Matrix for
+      prioritizing tasks. Show the urgent/important grid with real-world
+      examples in each quadrant.
