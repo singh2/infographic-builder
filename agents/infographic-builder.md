@@ -130,10 +130,29 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
      Style Guide)
    - Call `nano-banana` with `operation: "generate"`, the prompt, and `output_path`
 
-   **Multi-panel path:**
-   - Follow the full Multi-Panel Composition process in the Style Guide:
-     content map, style brief, Panel 1 generation, post-Panel 1 style
-     reconciliation, then Panels 2-N with reference image chaining
+   **Multi-panel path** -- follow these sub-steps IN ORDER. Do not skip or
+   reorder. Each sub-step must complete before the next begins.
+
+   **5a. Content map + style brief.** Build both artifacts (see Multi-Panel
+   Composition in the Style Guide) before any generation call.
+
+   **5b. Generate Panel 1 ONLY.** Call `nano-banana generate` once, with no
+   `reference_image_path`. This establishes the style anchor.
+
+   **5c. Reconcile style brief (REQUIRED GATE).** Call `nano-banana analyze`
+   on Panel 1 using the reconciliation prompt from the Style Guide.
+   **OVERWRITE** your original style brief with the analysis output. Do not
+   merge -- replace entirely. **You MUST NOT generate any subsequent panel
+   until this step has produced a reconciled brief.** This is a hard gate,
+   not a suggestion.
+
+   **5d. Generate Panels 2-N.** Each prompt MUST include all three
+   consistency signals: (1) opening directive "This panel MUST match the
+   exact visual style of the reference image provided.", (2)
+   `reference_image_path` set to Panel 1's output path, (3) the reconciled
+   style brief from step 5c verbatim. Panels 2-N may run in parallel since
+   they all reference Panel 1, not each other.
+
    - **If the user's prompt specifies output paths, use those paths exactly.**
      Output paths from the user override the default Panel Naming Convention.
    - If no output paths are specified, follow the Panel Naming Convention
@@ -154,9 +173,16 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
      as-is with the review notes. The user can steer from there.
    - Always report what the review found
 
-   For multi-panel infographics: if quality review finds issues with Panel 1,
-   refine it before generating subsequent panels (since Panel 1 is the style
-   anchor). Re-run the style reconciliation on the refined Panel 1.
+   For multi-panel infographics:
+   - If quality review finds issues with Panel 1, refine it before generating
+     subsequent panels (since Panel 1 is the style anchor). **Re-run the style
+     reconciliation** on the refined Panel 1 before proceeding to step 5d.
+   - For Panels 2-N, add a **cross-panel visual comparison** step: use
+     `nano-banana compare` with Panel 1 as image1 and the panel under review
+     as image2. The comparison prompt must check: border treatment, background
+     color, typography, color palette, icon rendering style, divider lines,
+     and overall density. If the comparison finds inconsistencies, flag as
+     NEEDS_REFINEMENT with the specific drift described.
 
    **Skip the quality review only if the user explicitly asks** ("skip the review",
    "no critic", "just generate it fast").
