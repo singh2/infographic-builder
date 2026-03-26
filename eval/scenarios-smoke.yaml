@@ -31,10 +31,11 @@ scenarios:
     topic: "The Science Behind a Perfect Campfire"
     panels: 2
     audience: "Outdoor enthusiasts and general audience"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: warm and illustrated"
     prompt: >
       Make an infographic about building the perfect campfire. Cover both the
       science behind combustion and the practical fire-building technique.
+      Go for a warm, illustrated feel.
 
   # AESTHETIC -- named curated aesthetic, multi-panel
   - name: sleep-stages
