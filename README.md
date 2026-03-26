@@ -39,7 +39,7 @@ You steer with plain English:
 ## Get started
 
 ```bash
-amplifier bundle add "git+https://$(gh auth token)@github.com/singh2/infographic-builder@main" --app
+amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
 ```
 
 Set your Google API key (powers the image generation):
@@ -64,7 +64,7 @@ includes:
 
 No need to separately add `amplifier-foundation` -- it's included.
 
-### Where output goes
+## Where output goes
 
 Generated images are saved to the current working directory:
 
@@ -199,7 +199,9 @@ flowchart TB
 
 The project includes a standalone evaluation system for scoring generated infographics
 against a weighted rubric. This is separate from the Amplifier bundle -- it's a Python
-package (`infographic-eval`) that uses GPT-4o vision to assess quality.
+package (`infographic-eval`) that uses GPT-5.4 vision to assess quality.
+
+Requires `OPENAI_API_KEY` set in your environment.
 
 ![Evaluation process](docs/evaluation.png)
 
@@ -207,7 +209,7 @@ package (`infographic-eval`) that uses GPT-4o vision to assess quality.
 
 1. **18 test scenarios** (`eval/scenarios.yaml`) spanning 1-6 panel infographics
 2. **Generate**: The infographic-builder agent creates images for each scenario
-3. **Score**: GPT-4o vision evaluates each image against a 5-dimension rubric
+3. **Score**: GPT-5.4 vision evaluates each image against a 5-dimension rubric
 4. **Report**: Scores are aggregated into a markdown summary with per-scenario detail
 
 ### Scoring rubric
@@ -303,18 +305,15 @@ infographic-builder/
 
 ## Roadmap
 
-**Next up -- Style System and Browsable Catalog** (design complete, ready to implement):
-Adds 6 curated visual aesthetics (clean minimalist, dark mode tech, bold editorial,
-hand-drawn sketchnote, claymation studio, lego brick builder) plus freeform style
-input, 4 new layout types, and a static catalog website showcasing all combinations.
-See `docs/plans/2026-03-20-style-system-design.md` for the full design.
-
 **Planned -- User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
 pass it as `reference_image_path` to `nano-banana.generate`. The mechanism already
 exists in the tool but the agent workflow doesn't handle user-supplied style
-references yet. Blocked on understanding how Amplifier handles user-provided
-image/file uploads natively.
+references yet.
+
+**Planned -- Browsable Style Catalog**:
+A static site showcasing all aesthetic × layout combinations so users can browse
+what's possible before asking for a specific style.
 
 ## Local development
 
