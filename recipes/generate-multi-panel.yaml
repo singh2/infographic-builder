@@ -83,7 +83,7 @@ steps:
     output: "reconciled_brief"
 
   # ---------------------------------------------------------------------------
-  # Step 3: Generate remaining panels with reference image chaining
+  # Step 4: Generate remaining panels with reference image chaining
   #
   # All three consistency signals are injected: opening directive,
   # reference_image_path = Panel 1, and the reconciled style brief.
@@ -111,7 +111,7 @@ steps:
     output: "remaining_result"
 
   # ---------------------------------------------------------------------------
-  # Step 4: Stitch all panels into a combined image
+  # Step 5: Stitch all panels into a combined image
   # ---------------------------------------------------------------------------
   - id: "stitch-panels"
     agent: "infographic-builder:infographic-builder"
