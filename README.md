@@ -74,41 +74,6 @@ Generated images are saved to the current working directory:
 | Multi-panel set | `./infographic_panel_1.png`, `./infographic_panel_2.png`, ... |
 | Stitched composite | `./infographic.png` (all panels combined vertically) |
 
-## Sample gallery
-
-The repo includes two recipes that batch-generate 14 infographic scenarios across
-different panel counts (1 through 6) and topics. Use these to see what the tool
-can do or to regression-test after changes.
-
-```bash
-# Generate all 14 scenarios with Gemini Pro
-amplifier run
-# Say: "execute recipes/generate-sample-gallery.yaml"
-
-# Same scenarios with Gemini 3.1 Flash (faster, good for comparison)
-amplifier run
-# Say: "execute recipes/generate-sample-gallery-3.1-flash.yaml"
-```
-
-Output lands in `./samples/pro/` and `./samples/3.1-flash/` respectively.
-
-The 14 scenarios cover: mechanical keyboards, noise-canceling headphones, SaaS metrics,
-developer survey results, DNS, campfire building, agile vs waterfall, neural networks,
-surfing, LLM training pipeline, song-to-Spotify, AI in everyday life, coffee bean
-journey, and history of the internet.
-
-## Pitfalls
-
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| Generation fails or "API key" error | Missing Google API key | `export GOOGLE_API_KEY=your-key` -- this is the #1 first-run issue |
-| Wrong layout for your content | Agent's auto-detection missed | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
-| Too many panels (or too few) | Auto-split based on content density | Specify: "make it a 2-panel infographic" -- explicit count always wins |
-| Multi-panel styles don't match | Rare -- Panel 1 is used as style anchor | Ask the agent to regenerate; Panel 1 sets the style for all others |
-| Slow generation | Quality review adds ~10-20s per image | Say "skip the review" for faster output |
-| Image text is garbled or unreadable | Limitation of current image generation models | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
-| Output doesn't match requested aesthetic | Aesthetic fidelity varies by complexity | The critic loop checks aesthetic fidelity -- try regenerating, or simplify the content |
-
 ## How it works
 
 ```
@@ -314,6 +279,16 @@ references yet.
 **Planned -- Browsable Style Catalog**:
 A static site showcasing all aesthetic × layout combinations so users can browse
 what's possible before asking for a specific style.
+
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| "API key" error on first run | `export GOOGLE_API_KEY=your-key` -- the #1 first-run issue |
+| Image text is garbled or unreadable | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
+| Wrong layout for your content | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
+| Too many panels (or too few) | Specify: "make it a 2-panel infographic" -- explicit count always wins |
+| Slow generation | Say "skip the review" to skip the quality check pass |
 
 ## Local development
 
