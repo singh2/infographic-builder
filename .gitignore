@@ -5,6 +5,7 @@
 
 # Keep docs images
 !docs/*.png
+!docs/showcase/*.png
 
 # Amplifier local settings (contains local source overrides)
 .amplifier/settings.yaml
