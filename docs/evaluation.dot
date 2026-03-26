@@ -24,7 +24,7 @@ digraph evaluation_process {
         bgcolor="#fafafa"
 
         scenarios [
-            label="eval/scenarios.yaml\n(18 test scenarios\n1-6 panels each)"
+            label="eval/scenarios.yaml\n(23 test scenarios\n1-6 panels each)"
             shape=note
             fillcolor="#e8f4fd"
             color="#4a90d9"
@@ -47,7 +47,7 @@ digraph evaluation_process {
         bgcolor="#f0faf0"
 
         foreach_gen [
-            label="foreach scenario\n(18 scenarios)"
+            label="foreach scenario\n(23 scenarios)"
             shape=box
             fillcolor="#d4edda"
             color="#28a745"
@@ -74,7 +74,7 @@ digraph evaluation_process {
     // ── Evaluation Phase ────────────────────────────────────────
 
     subgraph cluster_evaluate {
-        label="Phase 2: Score with GPT-4o Vision"
+        label="Phase 2: Score with GPT-5.4 Vision"
         style="rounded"
         color="#4a90d9"
         bgcolor="#f0f4fa"
@@ -109,7 +109,7 @@ digraph evaluation_process {
             ]
 
             gpt4o [
-                label="GPT-4o Vision\n(temperature=0.2)"
+                label="GPT-5.4 Vision\n(temperature=0.2)"
                 shape=cylinder
                 fillcolor="#fce4ec"
                 color="#c62828"

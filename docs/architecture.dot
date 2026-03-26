@@ -99,7 +99,7 @@ digraph infographic_builder {
         ]
 
         style_guide [
-            label="docs/style-guide.md\n(6 aesthetics, 12 layouts,\nreview criteria)"
+            label="docs/style-guide.md\n(6 aesthetics, 14 layouts,\nreview criteria)"
             shape=note
             fillcolor="#e2d9f3"
             color="#7b5ea7"
