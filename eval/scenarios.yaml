@@ -4,7 +4,7 @@
 #
 # 23 infographic test scenarios used by the evaluation harness.
 #
-# Organized into four prompt tiers that mirror real user behavior:
+# Organized into three prompt tiers that mirror real user behavior:
 #
 #   SPECIFIED  -- Full visual spec (colors, panel count, aspect ratio).
 #                 Tests generation quality under precise instructions.
@@ -12,8 +12,6 @@
 #                 Agent decides panel count, layout, and aesthetic.
 #   AESTHETIC  -- Names a curated aesthetic from the style guide.
 #                 Tests step 3d template loading + named aesthetic rendering.
-#   LAYOUT     -- Targets an untested layout type from the style guide.
-#                 Named aesthetic + layout-appropriate topic.
 #
 # Each scenario has:
 #   name            -- unique slug identifier
