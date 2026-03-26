@@ -38,47 +38,31 @@ You steer with plain English:
 
 ## Get started
 
-### Prerequisites
+```bash
+amplifier bundle add "git+https://$(gh auth token)@github.com/singh2/infographic-builder@main" --app
+```
 
-- **Amplifier** installed and working (`amplifier --version`)
-- **Google API key** with Gemini access -- this powers the image generation
-
-### 1. Install
+Set your Google API key (powers the image generation):
 
 ```bash
-amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
+export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
 ```
 
-Or add to an existing bundle's `bundle.md`:
-
-```yaml
-includes:
-  - bundle: git+https://github.com/microsoft/amplifier-foundation@main
-  - bundle: git+https://github.com/singh2/infographic-builder@main
-```
-
-### 2. Set your Google API key
-
-```bash
-export GOOGLE_API_KEY=your-key-here
-```
-
-To make it permanent, add that line to your `~/.zshrc` (or `~/.bashrc`).
-
-### 3. Run
-
-```bash
-amplifier run
-```
-
-Then say something like:
-
-```
-Create an infographic about how DNS works
-```
+That's it. Run `amplifier run` and say "create an infographic about how DNS works".
 
 The agent takes over from there -- you'll get back `.png` file(s), a design rationale,
 and suggestions for refinement.
+
+### For bundle authors
+
+Add to your `bundle.md`:
+
+```yaml
+includes:
+  - bundle: git+https://github.com/singh2/infographic-builder@main
+```
+
+No need to separately add `amplifier-foundation` -- it's included.
 
 ### Where output goes
 
