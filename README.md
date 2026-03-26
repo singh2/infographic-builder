@@ -1,33 +1,50 @@
 # infographic-builder
 
-AI-powered infographic design and generation for Amplifier.
+Say what you want, get a finished infographic.
 
-Say "create an infographic about X" and get a finished `.png` -- the agent handles
-layout, color, typography, and composition automatically.
+<table>
+  <tr>
+    <td><img src="showcase/Xamples/devops-lifecycle.png" width="280"/></td>
+    <td><img src="showcase/Working Multipanel/surfing_combined.png" width="280"/></td>
+    <td><img src="showcase/Xamples/dtu_infographic.png" width="280"/></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Claymation Studio</em></td>
+    <td align="center"><em>Bold Editorial (3 panels)</em></td>
+    <td align="center"><em>Dark Mode Tech</em></td>
+  </tr>
+</table>
 
-## What you can create
+The agent handles layout, color, typography, and multi-panel composition automatically.
+You steer with plain English.
 
-| Say this | You get |
-|----------|---------| 
-| "Create an infographic about the water cycle" | Single-panel infographic with auto-selected layout |
-| "Make an infographic about the history of the internet" | Multi-panel series (auto-splits when content is dense) |
-| "Create a comparison infographic: React vs Vue" | Side-by-side comparison layout |
-| "Visualize our Q3 sales funnel with key metrics" | Statistics layout with large numbers and icons |
-| "Make a 3-panel infographic about climate change" | Exactly 3 panels (your count, your call) |
-| "Create a timeline of the space race" | Horizontal/vertical timeline layout |
-| "Create a claymation infographic about how DNS works" | Claymation-styled infographic (detects style inline, skips selection) |
-| "Make a dark mode tech infographic about CI/CD pipelines" | Dark Mode Tech aesthetic with auto-selected layout |
-| "Create an infographic about quarterly metrics" → pick "Bold Editorial" | Bold editorial magazine-style infographic |
+## Get started
 
-The agent automatically:
-- **Picks the best layout** for your content -- process flow, comparison, timeline, hierarchy, cycle, statistics, and more (14 layout types)
-- **Presents aesthetic options** -- 6 curated styles from Clean Minimalist to Lego Brick Builder, plus freeform
-- **Splits complex topics** into multiple panels when there's too much for one image (up to 6 panels)
-- **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
-- **Stitches multi-panel sets** into a single combined image using the panel-stitching tool
-- **Keeps multi-panel sets visually consistent** using reference image chaining
+```bash
+amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
+export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
+```
 
-You steer with plain English:
+Run `amplifier run` and try it:
+
+```
+"create an infographic about the water cycle"
+```
+
+You'll get back `.png` file(s), a design rationale, and suggestions for refinement.
+
+## Examples
+
+| Say this | What happens |
+|----------|--------------|
+| "Create an infographic about the water cycle" | Single-panel, auto-selected layout |
+| "Make an infographic about the history of the internet" | Auto-splits into multiple panels when content is dense |
+| "Create a claymation infographic about how DNS works" | Detects style inline, skips aesthetic selection |
+| "Create an infographic about quarterly metrics" | Presents 6 aesthetic options + freeform, waits for your pick |
+
+<details>
+<summary>More ways to steer</summary>
+
 - "make it bold and colorful" / "keep it minimal and corporate" -- style direction
 - "use a timeline layout" -- override the automatic layout choice
 - "single panel only" -- force one image even for dense topics
@@ -36,22 +53,16 @@ You steer with plain English:
 - "2" (when prompted) -- pick an aesthetic by number
 - "skip the review" -- faster generation, skip the quality check
 
-## Get started
+</details>
 
-```bash
-amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
-```
+## What the agent does
 
-Set your Google API key (powers the image generation):
-
-```bash
-export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
-```
-
-That's it. Run `amplifier run` and say "create an infographic about how DNS works".
-
-The agent takes over from there -- you'll get back `.png` file(s), a design rationale,
-and suggestions for refinement.
+- **Picks the best layout** for your content (14 layout types: process flow, comparison, timeline, hierarchy, cycle, statistics, and more)
+- **Presents aesthetic options** -- 6 curated styles from Clean Minimalist to Lego Brick Builder, plus freeform
+- **Splits complex topics** into multiple panels when there's too much for one image (up to 6 panels)
+- **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
+- **Stitches multi-panel sets** into a single combined image
+- **Keeps multi-panel sets visually consistent** using reference image chaining
 
 ### For bundle authors
 
