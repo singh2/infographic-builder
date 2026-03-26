@@ -3,11 +3,15 @@ bundle:
   version: 0.1.0
   description: Infographic design capability -- image generation via nano-banana, designer agent, awareness context
 
+context:
+  include:
+    - infographic-builder:context/infographic-awareness.md
+
 tools:
   - module: tool-nano-banana
     source: git+https://github.com/kenotron-ms/amplifier-module-tool-nano-banana@main
   - module: tool-stitch-panels
-    source: ../modules/tool-stitch-panels
+    source: git+https://github.com/singh2/infographic-builder@main#subdirectory=modules/tool-stitch-panels
 
 agents:
   include:
