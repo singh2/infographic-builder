@@ -20,7 +20,7 @@ layout, color, typography, and composition automatically.
 | "Create an infographic about quarterly metrics" → pick "Bold Editorial" | Bold editorial magazine-style infographic |
 
 The agent automatically:
-- **Picks the best layout** for your content -- process flow, comparison, timeline, hierarchy, cycle, statistics, and more (12 layout types)
+- **Picks the best layout** for your content -- process flow, comparison, timeline, hierarchy, cycle, statistics, and more (14 layout types)
 - **Presents aesthetic options** -- 6 curated styles from Clean Minimalist to Lego Brick Builder, plus freeform
 - **Splits complex topics** into multiple panels when there's too much for one image (up to 6 panels)
 - **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
@@ -88,7 +88,7 @@ Generated images are saved to the current working directory:
 ```
 
 The agent's design decisions are guided by a comprehensive style guide
-(`docs/style-guide.md`) covering 12 layout types, prompt engineering rules,
+(`docs/style-guide.md`) covering 14 layout types, prompt engineering rules,
 decomposition heuristics, multi-panel composition protocols, and quality
 review criteria.
 
@@ -101,61 +101,57 @@ review criteria.
 
 ```mermaid
 flowchart TB
-    subgraph bundle ["infographic-builder (bundle)"]
-        direction TB
-        B["bundle.md<br/><i>thin root</i>"]
-        BH["behaviors/infographic.yaml<br/><i>wires tools + agent + context</i>"]
-        AW["context/infographic-awareness.md<br/><i>loaded every session</i>"]
-        SG["docs/style-guide.md<br/><i>6 aesthetics, 12 layouts, review criteria</i>"]
-        AG["agents/infographic-builder.md<br/><i>loaded only when spawned</i>"]
+    subgraph bundle["infographic-builder bundle"]
+        B["bundle.md\nthin root"]
+        BH["behaviors/infographic.yaml\nwires tools + agent + context"]
+        AW["context/infographic-awareness.md\nloaded every session"]
+        SG["docs/style-guide.md\n6 aesthetics, 14 layouts, review criteria"]
+        AG["agents/infographic-builder.md\nloaded only when spawned"]
         B --> BH
         BH --> AW
         BH --> AG
         AG -.-> SG
     end
 
-    subgraph runtime ["Runtime Flow"]
-        direction TB
-        U["User<br/>'create an infographic about X'"]
-        RS["Root Session<br/><i>reads awareness context</i>"]
-        DE["infographic-builder agent<br/><i>auto: layout + aesthetic + review</i>"]
+    subgraph runtime["Runtime Flow"]
+        U(["User\ncreate an infographic about X"])
+        RS["Root Session\nreads awareness context"]
+        DE["infographic-builder agent\nauto: layout + aesthetic + review"]
 
-        subgraph aesthetic ["Aesthetic Selection"]
-            direction TB
-            AD{"Inline style<br/>detected?"}
-            AP["Present 6 options<br/>+ freeform<br/>(halt for user)"]
+        subgraph aesthetic["Aesthetic Selection"]
+            AD{"Inline style\ndetected?"}
+            AP["Present 6 options + freeform\nhalt for user"]
         end
 
-        NB["nano-banana tool<br/><i>Gemini image generation</i>"]
+        NB{{"nano-banana tool\nGemini image generation"}}
 
-        subgraph review ["Quality Review Loop"]
-            direction TB
-            RV["Analyze output<br/>(5 dimensions)"]
-            RC{"Issues<br/>found?"}
-            RF["Refine & regenerate<br/>(max 1x)"]
+        subgraph review["Quality Review Loop"]
+            RV["Analyze output\n5 dimensions"]
+            RC{"Issues\nfound?"}
+            RF["Refine and regenerate\nmax 1x"]
         end
 
-        ST["stitch_panels tool<br/><i>Pillow-based panel assembly</i>"]
-        IMG["Generated image(s)<br/><i>./infographic.png</i>"]
+        ST{{"stitch_panels tool\nPillow-based panel assembly"}}
+        IMG[("Generated images\n./infographic.png")]
 
         U --> RS
-        RS -->|"delegate()"| DE
+        RS -->|delegate| DE
         DE --> AD
-        AD -->|"no"| AP
-        AD -->|"yes (shortcut)"| NB
-        AP -->|"user picks"| NB
+        AD -->|no| AP
+        AD -->|yes shortcut| NB
+        AP -->|user picks| NB
         NB --> RV
         RV --> RC
-        RC -->|"yes"| RF
-        RF -->|"regenerate"| NB
-        RC -->|"no (accept)"| ST
-        ST -->|"combine panels"| IMG
-        DE -->|"path + rationale + suggestions"| RS
-        RS --> U
+        RC -->|yes| RF
+        RF -->|regenerate| NB
+        RC -->|no accept| ST
+        ST -->|combine panels| IMG
+        DE -.->|path + rationale| RS
+        RS -.-> U
     end
 
-    AW -.->|"routing signal"| RS
-    SG -.->|"design guidance"| DE
+    AW -.->|routing signal| RS
+    SG -.->|design guidance| DE
 ```
 
 </details>
@@ -254,7 +250,7 @@ infographic-builder/
 |   |-- __init__.py                        # package marker
 |   |-- __main__.py                        # enables python -m eval
 |   |-- cli.py                             # evaluate + report subcommands
-|   |-- rubric.py                          # scoring rubric, prompt builder, GPT-4o evaluation
+|   |-- rubric.py                          # scoring rubric, prompt builder, GPT-5.4 evaluation
 |   |-- report.py                          # score aggregation + markdown report generation
 |   +-- scenarios.yaml                     # 23 test scenarios (1-6 panels)
 |-- recipes/
@@ -273,7 +269,7 @@ infographic-builder/
 **Shipped -- Style System**:
 Six curated aesthetics (Corporate Clean, Bold Editorial, Claymation 3D, Neon Data,
 Warm Organic, Technical Blueprint) with full prompt templates, wired through agent
-step 3d. Layout selection covers 16+ types.
+step 3d. Layout selection covers 14 types.
 
 **Planned -- User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
