@@ -30,7 +30,7 @@
 scenarios:
 
   # ===========================================================================
-  # SPECIFIED -- Full visual spec in prompt (12 scenarios)
+  # SPECIFIED -- Full visual spec in prompt (11 scenarios)
   # ===========================================================================
   #
   # These prompts include panel count, color palette, and aspect ratio.

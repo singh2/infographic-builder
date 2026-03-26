@@ -172,7 +172,7 @@ Requires `OPENAI_API_KEY` set in your environment.
 
 ### How evaluation works
 
-1. **18 test scenarios** (`eval/scenarios.yaml`) spanning 1-6 panel infographics
+1. **23 test scenarios** (`eval/scenarios.yaml`) spanning 1-6 panel infographics
 2. **Generate**: The infographic-builder agent creates images for each scenario
 3. **Score**: GPT-5.4 vision evaluates each image against a 5-dimension rubric
 4. **Report**: Scores are aggregated into a markdown summary with per-scenario detail
@@ -256,7 +256,7 @@ infographic-builder/
 |   |-- cli.py                             # evaluate + report subcommands
 |   |-- rubric.py                          # scoring rubric, prompt builder, GPT-4o evaluation
 |   |-- report.py                          # score aggregation + markdown report generation
-|   +-- scenarios.yaml                     # 18 test scenarios (1-6 panels)
+|   +-- scenarios.yaml                     # 23 test scenarios (1-6 panels)
 |-- recipes/
 |   |-- evaluate.yaml                      # full evaluation pipeline recipe
 |   |-- generate-sample-gallery.yaml       # batch-generate 14 scenarios (Gemini Pro)
@@ -269,6 +269,11 @@ infographic-builder/
 ```
 
 ## Roadmap
+
+**Shipped -- Style System**:
+Six curated aesthetics (Corporate Clean, Bold Editorial, Claymation 3D, Neon Data,
+Warm Organic, Technical Blueprint) with full prompt templates, wired through agent
+step 3d. Layout selection covers 16+ types.
 
 **Planned -- User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
