@@ -6,7 +6,7 @@ Say what you want, get a finished infographic.
   <tr>
     <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
     <td><img src="docs/showcase/surfing_combined.png" width="280"/></td>
-    <td><img src="docs/showcase/dtu_infographic.png" width="280"/></td>
+    <td><img src="docs/showcase/neural-networks_panel_3.png" width="280"/></td>
   </tr>
   <tr>
     <td align="center"><em>Claymation Studio</em></td>
