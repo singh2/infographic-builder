@@ -7,7 +7,7 @@ tools:
   - module: tool-nano-banana
     source: git+https://github.com/kenotron-ms/amplifier-module-tool-nano-banana@main
   - module: tool-stitch-panels
-    source: ./modules/tool-stitch-panels
+    source: ../modules/tool-stitch-panels
 
 agents:
   include:

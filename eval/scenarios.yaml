@@ -245,66 +245,74 @@ scenarios:
       9:16 aspect ratio.
 
   # ===========================================================================
-  # NATURAL -- Conversational prompts, no visual spec (6 scenarios)
+  # NATURAL -- Conversational prompts, lightweight style hint (6 scenarios)
   # ===========================================================================
   #
   # These read like what a real user would type.  No panel count, no colors,
-  # no aspect ratio.  The agent must decide layout, decomposition, and
-  # aesthetic (presenting the selection menu or auto-detecting).
+  # no aspect ratio.  The agent decides layout and decomposition.  Each
+  # prompt includes a brief style preference (the way a real user might
+  # casually mention "keep it clean" or "something dark and techy") so the
+  # agent can skip the interactive aesthetic menu in batch eval.
   # ---------------------------------------------------------------------------
 
   - name: dns
     topic: "How DNS Works"
     panels: 2
     audience: "Junior developers and technical learners"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: clean and technical"
     prompt: >
       How does DNS work? I want an infographic I can use to explain the full
-      lookup process to junior developers on my team.
+      lookup process to junior developers on my team. Keep it clean and
+      technical looking.
 
   - name: campfire
     topic: "The Science Behind a Perfect Campfire"
     panels: 2
     audience: "Outdoor enthusiasts and general audience"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: warm and illustrated"
     prompt: >
       Make an infographic about building the perfect campfire. Cover both the
       science behind combustion and the practical fire-building technique.
+      Go for a warm, illustrated feel.
 
   - name: agile-vs-waterfall
     topic: "Agile vs Waterfall"
     panels: 2
     audience: "Non-technical stakeholders and project managers"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: clean and corporate"
     prompt: >
       I need to explain agile vs waterfall to non-technical stakeholders.
-      Can you make a comparison infographic?
+      Can you make a comparison infographic? Something clean and corporate
+      I can put in a slide deck.
 
   - name: okr-cascade
     topic: "OKR Cascade: From Company to Team"
     panels: 2
     audience: "Microsoft incubation teams and program managers"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: professional Microsoft style"
     prompt: >
       Help me create an infographic showing how company-level OKRs cascade
-      down to team OKRs. It's for program managers at Microsoft.
+      down to team OKRs. It's for program managers at Microsoft. Keep it
+      professional and on-brand.
 
   - name: customer-discovery-funnel
     topic: "Customer Discovery Funnel for New Ventures"
     panels: 2
     audience: "Microsoft incubation teams and startup founders"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: modern startup feel"
     prompt: >
       Make an infographic about customer discovery for early-stage startups.
-      Cover both problem validation and solution validation.
+      Cover both problem validation and solution validation. Modern startup
+      vibe.
 
   - name: photosynthesis
     topic: "How Photosynthesis Works"
     panels: 2
     audience: "Students and general audience"
-    style_direction: "Agent-selected"
+    style_direction: "User-hinted: bright and friendly"
     prompt: >
-      Make an infographic explaining how photosynthesis works.
+      Make an infographic explaining how photosynthesis works. Something
+      bright and friendly that would work in a classroom.
 
   # ===========================================================================
   # AESTHETIC -- Named curated aesthetic from the style guide (6 scenarios)
