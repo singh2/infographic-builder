@@ -12,5 +12,13 @@
 # OS files
 .DS_Store
 
+# Python artifacts
+__pycache__/
+*.egg-info/
+
+# Presentation / showcase (local only)
+presentation*.html
+showcase/
+
 # Evaluation harness output (timestamped results directories)
 eval-results/
