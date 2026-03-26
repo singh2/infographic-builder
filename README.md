@@ -4,9 +4,9 @@ Say what you want, get a finished infographic.
 
 <table>
   <tr>
-    <td><img src="showcase/Xamples/devops-lifecycle.png" width="280"/></td>
-    <td><img src="showcase/Working Multipanel/surfing_combined.png" width="280"/></td>
-    <td><img src="showcase/Xamples/dtu_infographic.png" width="280"/></td>
+    <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
+    <td><img src="docs/showcase/surfing_combined.png" width="280"/></td>
+    <td><img src="docs/showcase/dtu_infographic.png" width="280"/></td>
   </tr>
   <tr>
     <td align="center"><em>Claymation Studio</em></td>
@@ -22,6 +22,11 @@ You steer with plain English.
 
 ```bash
 amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
+```
+
+Set your Google API key (powers the image generation):
+
+```bash
 export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
 ```
 
