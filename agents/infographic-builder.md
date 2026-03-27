@@ -197,7 +197,7 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
 
    After all panels pass quality review, call `stitch_panels` to combine them
    into a single image. Use the combined naming convention:
-   - Default panels `./infographic_panel_1.png` etc. -> `./infographic_combined.png`
+   - Default panels `./infographics/{topic}_panel_1.png` etc. -> `./infographics/{topic}_combined.png`
    - Custom path `./sales_panel_1.png` etc. -> `./sales_combined.png`
 
    **Choose stitch direction based on content structure, not just layout type.**
@@ -228,7 +228,7 @@ The tool expects these parameters for generation:
 |-----------|----------|-------------|
 | `operation` | yes | Always `"generate"` |
 | `prompt` | yes | Detailed visual description of the infographic |
-| `output_path` | yes | Where to save the image (e.g. `./infographic.png`) |
+| `output_path` | yes | Where to save the image (e.g. `./infographics/dns.png`) |
 | `number_of_images` | no | 1-4, default 1 |
 | `reference_image_path` | no | Optional style reference image |
 
@@ -279,11 +279,11 @@ Your response MUST include:
 
 ```
 Generated 3 panels + combined image:
-1. ./infographic_panel_1.png -- [section title]
-2. ./infographic_panel_2.png -- [section title]
-3. ./infographic_panel_3.png -- [section title]
+1. ./infographics/{topic}_panel_1.png -- [section title]
+2. ./infographics/{topic}_panel_2.png -- [section title]
+3. ./infographics/{topic}_panel_3.png -- [section title]
 
-Combined: ./infographic_combined.png (all panels stitched vertically/horizontally)
+Combined: ./infographics/{topic}_combined.png (all panels stitched vertically/horizontally)
 Shared style: [brief description]
 ```
 
