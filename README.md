@@ -37,31 +37,34 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 
 - `"Show me a diagram of how our app works"` — reads your codebase and generates an architecture visual
 - `"Summarize this repo's last week of commits as a visual timeline"` — analyzes git history, auto-selects a timeline
-- `"Here's retro.md — make an infographic of what went well vs. what didn't"` — consumes the file, picks a comparison layout
+- `"Create a visual changelog from the last 3 releases"` — turns release notes into a visual narrative
+- `"Make an onboarding guide for new engineers joining this repo"` — reads the codebase and generates a visual walkthrough
+- `"Visualize our test coverage by module"` — reads test output, creates a breakdown by area
+- `"Here's our open issues — make an infographic of the top bug themes"` — clusters and ranks issue patterns
+- `"Here's our incident postmortem — make a timeline of what happened"` — turns a doc into a narrative timeline
 
 **Knowledge work** — meetings, decisions, progress
 
 - `"Here's meeting.vtt — visualize the key decisions and action items"` — extracts structure from the transcript, picks the right layout
+- `"Summarize this strategy doc as a one-pager visual"` — condenses a long doc into a scannable infographic
+- `"Here's our quarterly OKR sheet — visualize progress"` — turns a spreadsheet-style doc into a dashboard
+- `"Explain how LLMs work — make it visual"` — breaks down a complex topic into an educational infographic
 
 **For fun**
 
 - `"Make a claymation guide to brewing the perfect espresso"` — detects style inline, auto-picks a process flow
 - `"Infographic ranking every Star Wars movie"` — auto-splits into panels when content is dense
+- `"Create a travel planning infographic for my Japan trip"` — turns an itinerary into a visual journey
 
-<details>
-<summary>More ways to steer</summary>
+### Controls
 
-<br>
-
-- `"make it bold and colorful"` / `"keep it minimal and corporate"` -- style direction
-- `"use a timeline layout"` -- override the automatic layout choice
-- `"single panel only"` -- force one image even for dense topics
-- `"make it a 4-panel infographic"` -- set an explicit panel count (up to 6)
-- `"make it claymation"` / `"dark mode tech"` -- choose a curated aesthetic
-- `"2"` (when prompted) -- pick an aesthetic by number
-- `"skip the review"` -- faster generation, skip the quality check
-
-</details>
+| Control | Example |
+|---------|---------|
+| **Aesthetic** | `"make it claymation"` / `"dark mode tech"` / `"keep it minimal and corporate"` |
+| **Layout** | `"use a timeline layout"` / `"make it a comparison"` |
+| **Panels** | `"single panel only"` / `"make it a 4-panel infographic"` |
+| **Orientation** | `"horizontal panels"` / `"vertical panels"` |
+| **Skip review** | `"skip the review"` — faster generation, no quality check pass |
 
 <br>
 
@@ -199,9 +202,11 @@ evaluate each scenario -> generate summary report.
 
 | Output | Filename |
 |--------|----------|
-| Single-panel infographic | `./infographic.png` |
-| Multi-panel set | `./infographic_panel_1.png`, `./infographic_panel_2.png`, ... |
-| Stitched composite | `./infographic.png` (all panels combined vertically) |
+| Single-panel infographic | `./infographics/water-cycle.png` |
+| Multi-panel set | `./infographics/water-cycle_panel_1.png`, `_panel_2.png`, ... |
+| Stitched composite | `./infographics/water-cycle_combined.png` |
+
+The filename is derived from your topic automatically. If you specify an output path explicitly, it's used as-is.
 
 ## Troubleshooting
 
@@ -258,7 +263,7 @@ flowchart TB
         end
 
         ST{{"stitch_panels tool\nPillow-based panel assembly"}}
-        IMG[("Generated images\n./infographic.png")]
+        IMG[("Generated images\n./infographics/{topic}.png")]
 
         U --> RS
         RS -->|delegate| DE
