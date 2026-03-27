@@ -31,7 +31,32 @@ Run `amplifier run` and try it:
 
 You'll get back `.png` file(s), a design rationale, and suggestions for refinement.
 
+### Controls
+
+| Control | Example |
+|---------|---------|
+| **Aesthetic** | `"make it claymation"` / `"dark mode tech"` / `"keep it minimal and corporate"` |
+| **Layout** | `"use a timeline layout"` / `"make it a comparison"` |
+| **Panels** | `"single panel only"` / `"make it a 4-panel infographic"` |
+| **Orientation** | `"horizontal panels"` / `"vertical panels"` |
+| **Skip review** | `"skip the review"` — faster generation, no quality check pass |
+
 ## Examples
+
+<table>
+  <tr>
+    <td><img src="docs/showcase/devops-lifecycle.png" width="200"/></td>
+    <td><img src="docs/showcase/surfing_combined.png" width="340"/></td>
+    <td><img src="docs/examples/infobuilder_combined.png" width="340"/></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Claymation Studio</em></td>
+    <td align="center"><em>Bold Editorial (3 panels)</em></td>
+    <td align="center"><em>Dark Mode Tech (3 panels)</em></td>
+  </tr>
+</table>
+
+<br>
 
 **Dev teams** — feed it the artifacts you already have
 
@@ -55,31 +80,6 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 - `"Make a claymation guide to brewing the perfect espresso"` — detects style inline, auto-picks a process flow
 - `"Infographic ranking every Star Wars movie"` — auto-splits into panels when content is dense
 - `"Create a travel planning infographic for my Japan trip"` — turns an itinerary into a visual journey
-
-### Controls
-
-| Control | Example |
-|---------|---------|
-| **Aesthetic** | `"make it claymation"` / `"dark mode tech"` / `"keep it minimal and corporate"` |
-| **Layout** | `"use a timeline layout"` / `"make it a comparison"` |
-| **Panels** | `"single panel only"` / `"make it a 4-panel infographic"` |
-| **Orientation** | `"horizontal panels"` / `"vertical panels"` |
-| **Skip review** | `"skip the review"` — faster generation, no quality check pass |
-
-<br>
-
-<table>
-  <tr>
-    <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
-    <td><img src="docs/showcase/surfing_combined.png" width="280"/></td>
-    <td><img src="docs/examples/infobuilder_combined.png" width="280"/></td>
-  </tr>
-  <tr>
-    <td align="center"><em>Claymation Studio</em></td>
-    <td align="center"><em>Bold Editorial (3 panels)</em></td>
-    <td align="center"><em>Dark Mode Tech (3 panels)</em></td>
-  </tr>
-</table>
 
 ### Pick your style
 
