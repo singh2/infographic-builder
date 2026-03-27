@@ -50,9 +50,9 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
     <td><img src="docs/examples/infobuilder_combined.png" width="340"/></td>
   </tr>
   <tr>
-    <td align="center"><em>Claymation Studio</em></td>
-    <td align="center"><em>Bold Editorial (3 panels)</em></td>
-    <td align="center"><em>Dark Mode Tech (3 panels)</em></td>
+    <td align="center"><em>DevOps Lifecycle<br/>Claymation Studio</em></td>
+    <td align="center"><em>How Surfing Works<br/>Bold Editorial · 3 panels</em></td>
+    <td align="center"><em>How Infographic-Builder Works<br/>Dark Mode Tech · 3 panels</em></td>
   </tr>
 </table>
 
