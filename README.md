@@ -22,7 +22,7 @@
 - [Pick your style](#pick-your-style)
 - [The right layout, picked automatically](#the-right-layout-picked-automatically)
 - [Every panel matches](#every-panel-matches)
-- [Reviewed before it reaches you](#reviewed-before-it-reaches-you)
+- [Vetted for quality](#vetted-for-quality)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -155,7 +155,7 @@ Dense topics are automatically split into up to 6 panels. The hard part is keepi
 
 ---
 
-## Reviewed before it reaches you
+## Vetted for quality
 
 <div align="center">
   <img src="docs/readme/eval-flow-claymation.png" width="600" alt="Evaluation pipeline: load scenarios, generate, score on 5 dimensions, review, report"/>
