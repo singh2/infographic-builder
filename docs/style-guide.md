@@ -284,9 +284,18 @@ exactly that path. If they say "Save as `./samples/mechanical-keyboard.png`"
 for a single-panel infographic, save to exactly `./samples/mechanical-keyboard.png`.
 
 **Default convention** (only when no output path is specified):
-- `./infographic_panel_1.png`
-- `./infographic_panel_2.png`
-- etc.
+
+Derive a short filename from the topic -- lowercase, hyphens for spaces,
+no special characters. For example:
+- "How DNS Works" -> `dns`
+- "The History of the Internet" -> `history-of-internet`
+- "Agile vs Waterfall" -> `agile-vs-waterfall`
+
+Save into an `./infographics/` subdirectory of the current working directory.
+
+- Single panel: `./infographics/{topic}.png`
+- Multi-panel: `./infographics/{topic}_panel_1.png`, `./infographics/{topic}_panel_2.png`, etc.
+- Combined: `./infographics/{topic}_combined.png`
 
 If the user specified a custom stem like `./sales.png` without panel suffixes, adapt:
 - `./sales_panel_1.png`
