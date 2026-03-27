@@ -11,21 +11,6 @@
 
 <br>
 
-<table>
-  <tr>
-    <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
-    <td><img src="docs/showcase/surfing_combined.png" width="280"/></td>
-    <td><img src="docs/showcase/neural-networks_panel_3.png" width="280"/></td>
-  </tr>
-  <tr>
-    <td align="center"><em>Claymation Studio</em></td>
-    <td align="center"><em>Bold Editorial (3 panels)</em></td>
-    <td align="center"><em>Dark Mode Tech</em></td>
-  </tr>
-</table>
-
-<br>
-
 ## Get started
 
 ```bash
@@ -48,12 +33,21 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 
 ## Examples
 
-| Say this | What happens |
-|----------|--------------|
-| "Create an infographic about the water cycle" | Single-panel, auto-selected layout |
-| "Make an infographic about the history of the internet" | Auto-splits into multiple panels when content is dense |
-| "Create a claymation infographic about how DNS works" | Detects style inline, skips aesthetic selection |
-| "Create an infographic about quarterly metrics" | Presents 6 aesthetic options + freeform, waits for your pick |
+**Dev teams** — feed it the artifacts you already have
+
+- `"Show me a diagram of how our app works"` — reads your codebase and generates an architecture visual
+- `"Here's retro.md — make an infographic of what went well vs. what didn't"` — consumes the file, picks a comparison layout
+- `"Summarize this repo's last week of commits as a visual timeline"` — analyzes git history, auto-selects a timeline
+
+**Knowledge work** — meetings, decisions, progress
+
+- `"Here's meeting.vtt — visualize the key decisions and action items"` — extracts structure from the transcript, picks the right layout
+- `"Turn these weekly updates into a team progress dashboard"` — synthesizes multiple inputs into one visual
+
+**For fun**
+
+- `"Make a claymation guide to brewing the perfect espresso"` — detects style inline, auto-picks a process flow
+- `"Infographic ranking every Star Wars movie"` — auto-splits into panels when content is dense
 
 <details>
 <summary>More ways to steer</summary>
@@ -69,6 +63,21 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 - `"skip the review"` -- faster generation, skip the quality check
 
 </details>
+
+<br>
+
+<table>
+  <tr>
+    <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
+    <td><img src="docs/showcase/surfing_combined.png" width="280"/></td>
+    <td><img src="docs/examples/infobuilder_combined.png" width="280"/></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Claymation Studio</em></td>
+    <td align="center"><em>Bold Editorial (3 panels)</em></td>
+    <td align="center"><em>Infographic Builder</em></td>
+  </tr>
+</table>
 
 ### Pick your style
 
