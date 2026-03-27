@@ -1,7 +1,7 @@
 # infographic-builder
 
 <div align="center">
-  <img src="samples/readme/hero-overview.png" width="800" alt="How It Works: 1. Describe what you want, 2. Pick a style, 3. Get your infographic"/>
+  <img src="docs/readme/hero-overview.png" width="800" alt="How It Works: 1. Describe what you want, 2. Pick a style, 3. Get your infographic"/>
   <br><br>
   <strong>Say what you want, get a finished infographic.</strong>
   <br>
@@ -73,7 +73,7 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 ### Pick your style
 
 <div align="center">
-  <img src="samples/readme/pick-your-vibe-claymation.png" width="600" alt="Pick Your Vibe: 6 curated aesthetics plus freeform"/>
+  <img src="docs/readme/pick-your-vibe-claymation.png" width="600" alt="Pick Your Vibe: 6 curated aesthetics plus freeform"/>
 </div>
 
 <br>
@@ -87,7 +87,7 @@ Say it inline (`"make a claymation infographic about..."`) and the agent skips s
 ## 14 layout types
 
 <div align="center">
-  <img src="samples/readme/layout-gallery-sketchnote.png" width="800" alt="14 Layout Types: process flows, comparisons, timelines, hierarchies, data, and more"/>
+  <img src="docs/readme/layout-gallery-sketchnote.png" width="800" alt="14 Layout Types: process flows, comparisons, timelines, hierarchies, data, and more"/>
 </div>
 
 <br>
@@ -101,7 +101,7 @@ You never need to think about this. But if you want to override: `"use a timelin
 ## Multi-panel consistency
 
 <div align="center">
-  <img src="samples/readme/style-anchor-lego.png" width="600" alt="The Style Anchor: how Panel 1 anchors visual consistency across all panels"/>
+  <img src="docs/readme/style-anchor-lego.png" width="600" alt="The Style Anchor: how Panel 1 anchors visual consistency across all panels"/>
 </div>
 
 <br>
@@ -117,7 +117,7 @@ Dense topics are automatically split into up to 6 panels. The hard part is keepi
 ## Built-in quality evaluation
 
 <div align="center">
-  <img src="samples/readme/eval-flow-claymation.png" width="600" alt="Evaluation pipeline: load scenarios, generate, score on 5 dimensions, review, report"/>
+  <img src="docs/readme/eval-flow-claymation.png" width="600" alt="Evaluation pipeline: load scenarios, generate, score on 5 dimensions, review, report"/>
 </div>
 
 <br>
@@ -312,6 +312,9 @@ infographic-builder/
 |   |-- architecture.png                   # rendered architecture diagram
 |   |-- evaluation.dot                     # Graphviz source for evaluation process diagram
 |   |-- evaluation.png                     # rendered evaluation process diagram
+|   |-- readme/                            # infographics used in this README
+|   |-- showcase/                          # hero showcase images
+|   |-- examples/                          # curated example outputs
 |   +-- plans/                             # design documents
 |-- modules/
 |   +-- tool-stitch-panels/                # Python module: combines panels into one image

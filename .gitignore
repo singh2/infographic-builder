@@ -6,6 +6,11 @@
 # Keep docs images
 !docs/*.png
 !docs/showcase/*.png
+!docs/readme/*.png
+!docs/examples/*.png
+
+# Sample gallery output (keep locally, not in git)
+samples/
 
 # Amplifier local settings (contains local source overrides)
 .amplifier/settings.yaml
