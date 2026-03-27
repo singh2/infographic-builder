@@ -1,5 +1,9 @@
 # infographic-builder
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Requires Amplifier](https://img.shields.io/badge/runtime-Amplifier-blue)](https://github.com/microsoft/amplifier)
+[![Powered by Gemini](https://img.shields.io/badge/image_gen-Gemini-orange)](https://ai.google.dev/)
+
 <div align="center">
   <img src="docs/readme/hero-overview.png" width="800" alt="How It Works: 1. Describe what you want, 2. Pick a style, 3. Get your infographic"/>
   <br><br>
@@ -11,7 +15,21 @@
 
 <br>
 
+## Contents
+
+- [Get started](#get-started)
+- [Examples](#examples)
+- [Pick your style](#pick-your-style)
+- [The right layout, picked automatically](#the-right-layout-picked-automatically)
+- [Every panel matches](#every-panel-matches)
+- [Reviewed before it reaches you](#reviewed-before-it-reaches-you)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Get started
+
+infographic-builder runs inside [Amplifier](https://github.com/microsoft/amplifier) — an open-source AI agent runtime. Install Amplifier first, then add this bundle:
 
 ```bash
 amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
@@ -23,7 +41,7 @@ Set your Google API key (powers the image generation):
 export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
 ```
 
-Run `amplifier run` and try it:
+Start a session and try it:
 
 ```
 "create an infographic about the water cycle"
@@ -41,11 +59,21 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 | **Orientation** | `"horizontal panels"` / `"vertical panels"` |
 | **Skip review** | `"skip the review"` — faster generation, no quality check pass |
 
+### Where output goes
+
+| Output | Filename |
+|--------|----------|
+| Single-panel infographic | `./infographics/{topic}.png` |
+| Multi-panel set | `./infographics/{topic}_panel_1.png`, `{topic}_panel_2.png`, ... |
+| Stitched composite | `./infographics/{topic}_combined.png` |
+
+The filename is derived from your topic automatically. If you specify an output path explicitly, it's used as-is.
+
 ## Examples
 
 <table>
   <tr>
-    <td><img src="docs/showcase/devops-lifecycle.png" width="200"/></td>
+    <td><img src="docs/showcase/devops-lifecycle.png" width="280"/></td>
     <td><img src="docs/showcase/surfing_combined.png" width="340"/></td>
     <td><img src="docs/examples/infobuilder_combined.png" width="340"/></td>
   </tr>
@@ -57,6 +85,8 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 </table>
 
 <br>
+
+### What to ask for
 
 **Dev teams** — feed it the artifacts you already have
 
@@ -81,7 +111,7 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 - `"Infographic ranking every Star Wars movie"` — auto-splits into panels when content is dense
 - `"Create a travel planning infographic for my Japan trip"` — turns an itinerary into a visual journey
 
-### Pick your style
+## Pick your style
 
 <div align="center">
   <img src="docs/readme/pick-your-vibe-claymation.png" width="600" alt="Pick Your Vibe: 6 curated aesthetics plus freeform"/>
@@ -89,13 +119,13 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 
 <br>
 
-Six curated aesthetics -- from **Clean Minimalist** (boardroom-ready) to **Lego Brick Builder** (plastic studs and tilt-shift macro photography) -- plus **Freeform** for anything you can describe.
+Six curated aesthetics — from **Clean Minimalist** (boardroom-ready) to **Lego Brick Builder** (plastic studs and tilt-shift macro photography) — plus **Freeform** for anything you can describe.
 
 Say it inline (`"make a claymation infographic about..."`) and the agent skips straight to generation. Or leave it open and you'll get a menu to choose from.
 
 ---
 
-## 14 layout types
+## The right layout, picked automatically
 
 <div align="center">
   <img src="docs/readme/layout-gallery-sketchnote.png" width="800" alt="14 Layout Types: process flows, comparisons, timelines, hierarchies, data, and more"/>
@@ -103,13 +133,13 @@ Say it inline (`"make a claymation infographic about..."`) and the agent skips s
 
 <br>
 
-The agent analyzes your content and picks the best layout automatically -- process flow, comparison grid, timeline, hierarchy, funnel, mind map, and more.
+The agent analyzes your content and picks the best layout automatically — process flow, comparison grid, timeline, hierarchy, funnel, mind map, and more.
 
 You never need to think about this. But if you want to override: `"use a timeline layout"` or `"make it a comparison"`.
 
 ---
 
-## Multi-panel consistency
+## Every panel matches
 
 <div align="center">
   <img src="docs/readme/style-anchor-lego.png" width="600" alt="The Style Anchor: how Panel 1 anchors visual consistency across all panels"/>
@@ -119,13 +149,13 @@ You never need to think about this. But if you want to override: `"use a timelin
 
 Dense topics are automatically split into up to 6 panels. The hard part is keeping them visually consistent.
 
-**Panel 1 is the style anchor.** After it renders, the agent analyzes what Gemini *actually produced* -- not what was planned -- and overwrites the style brief. Every subsequent panel is generated with Panel 1's image as a reference. After generation, each panel is compared against Panel 1 across 8 visual dimensions.
+**Panel 1 is the style anchor.** After it renders, the agent analyzes what Gemini *actually produced* — not what was planned — and overwrites the style brief. Every subsequent panel is generated with Panel 1's image as a reference. After generation, each panel is compared against Panel 1 across 8 visual dimensions.
 
 > *The render wins. Not the plan.*
 
 ---
 
-## Built-in quality evaluation
+## Reviewed before it reaches you
 
 <div align="center">
   <img src="docs/readme/eval-flow-claymation.png" width="600" alt="Evaluation pipeline: load scenarios, generate, score on 5 dimensions, review, report"/>
@@ -135,7 +165,7 @@ Dense topics are automatically split into up to 6 panels. The hard part is keepi
 
 Every infographic goes through a self-critique loop on 5 dimensions before delivery. If issues are found, the agent refines and regenerates (max once).
 
-The project also includes a **standalone evaluation harness** for batch-testing across 23 scenarios using GPT vision scoring.
+The project also includes a **standalone evaluation harness** for batch-testing across 23 scenarios using OpenAI vision scoring.
 
 <details>
 <summary>Scoring rubric and running evaluations</summary>
@@ -154,8 +184,8 @@ The project also includes a **standalone evaluation harness** for batch-testing 
 
 Plus an unweighted **prompt fidelity** score (1-5) measuring adherence to the original brief.
 
-The model's own composite estimate is always discarded -- `parse_scores()` recalculates
-it from dimension scores x weights as a guard against model self-reporting bias.
+The model's own composite estimate is always discarded — `parse_scores()` recalculates
+it from dimension scores × weights as a guard against model self-reporting bias.
 
 ### Quality bands
 
@@ -198,21 +228,11 @@ evaluate each scenario -> generate summary report.
 
 ---
 
-## Where output goes
-
-| Output | Filename |
-|--------|----------|
-| Single-panel infographic | `./infographics/water-cycle.png` |
-| Multi-panel set | `./infographics/water-cycle_panel_1.png`, `_panel_2.png`, ... |
-| Stitched composite | `./infographics/water-cycle_combined.png` |
-
-The filename is derived from your topic automatically. If you specify an output path explicitly, it's used as-is.
-
 ## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
-| "API key" error on first run | `export GOOGLE_API_KEY=your-key` -- the #1 first-run issue |
+| "API key" error on first run | `export GOOGLE_API_KEY=your-key` — the #1 first-run issue |
 | Image text is garbled or unreadable | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
 | Wrong layout for your content | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
 | Too many panels (or too few) | Specify: "make it a 2-panel infographic" -- explicit count always wins |
@@ -301,7 +321,7 @@ includes:
   - bundle: git+https://github.com/singh2/infographic-builder@main
 ```
 
-No need to separately add `amplifier-foundation` -- it's included.
+No need to separately add `amplifier-foundation` — it's included.
 
 </details>
 
@@ -338,7 +358,7 @@ infographic-builder/
 |   |-- __init__.py                        # package marker
 |   |-- __main__.py                        # enables python -m eval
 |   |-- cli.py                             # evaluate + report subcommands
-|   |-- rubric.py                          # scoring rubric, prompt builder, GPT-5.4 evaluation
+|   |-- rubric.py                          # scoring rubric, prompt builder, OpenAI vision evaluation
 |   |-- report.py                          # score aggregation + markdown report generation
 |   +-- scenarios.yaml                     # 23 test scenarios (1-6 panels)
 |-- recipes/
@@ -360,17 +380,17 @@ infographic-builder/
 
 <br>
 
-**Shipped -- Style System**:
+**Shipped — Style System**:
 Six curated aesthetics (Clean Minimalist, Bold Editorial, Claymation Studio, Dark Mode Tech,
 Hand-Drawn Sketchnote, Lego Brick Builder) with full prompt templates. Layout selection covers 14 types.
 
-**Planned -- User-Provided Reference Images**:
+**Planned — User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
 pass it as `reference_image_path` to `nano-banana.generate`. The mechanism already
 exists in the tool but the agent workflow doesn't handle user-supplied style
 references yet.
 
-**Planned -- Browsable Style Catalog**:
+**Planned — Browsable Style Catalog**:
 A static site showcasing all aesthetic x layout combinations so users can browse
 what's possible before asking for a specific style.
 
@@ -462,6 +482,10 @@ amplifier run
 
 <br>
 
+## Contributing
+
+Issues and PRs are welcome. See the [Local development](#local-development) section to get set up.
+
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 Gurkaran Singh
