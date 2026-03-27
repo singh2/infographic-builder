@@ -36,13 +36,12 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 **Dev teams** — feed it the artifacts you already have
 
 - `"Show me a diagram of how our app works"` — reads your codebase and generates an architecture visual
-- `"Here's retro.md — make an infographic of what went well vs. what didn't"` — consumes the file, picks a comparison layout
 - `"Summarize this repo's last week of commits as a visual timeline"` — analyzes git history, auto-selects a timeline
+- `"Here's retro.md — make an infographic of what went well vs. what didn't"` — consumes the file, picks a comparison layout
 
 **Knowledge work** — meetings, decisions, progress
 
 - `"Here's meeting.vtt — visualize the key decisions and action items"` — extracts structure from the transcript, picks the right layout
-- `"Turn these weekly updates into a team progress dashboard"` — synthesizes multiple inputs into one visual
 
 **For fun**
 
@@ -75,7 +74,7 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
   <tr>
     <td align="center"><em>Claymation Studio</em></td>
     <td align="center"><em>Bold Editorial (3 panels)</em></td>
-    <td align="center"><em>Infographic Builder</em></td>
+    <td align="center"><em>Dark Mode Tech (3 panels)</em></td>
   </tr>
 </table>
 
