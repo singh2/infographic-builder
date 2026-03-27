@@ -1,6 +1,15 @@
 # infographic-builder
 
-Say what you want, get a finished infographic.
+<div align="center">
+  <img src="samples/readme/hero-overview.png" width="800" alt="How It Works: 1. Describe what you want, 2. Pick a style, 3. Get your infographic"/>
+  <br><br>
+  <strong>Say what you want, get a finished infographic.</strong>
+  <br>
+  The agent handles layout, color, typography, and multi-panel composition automatically.
+  <br>You steer with plain English.
+</div>
+
+<br>
 
 <table>
   <tr>
@@ -15,8 +24,7 @@ Say what you want, get a finished infographic.
   </tr>
 </table>
 
-The agent handles layout, color, typography, and multi-panel composition automatically.
-You steer with plain English.
+<br>
 
 ## Get started
 
@@ -50,39 +58,136 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 <details>
 <summary>More ways to steer</summary>
 
-- "make it bold and colorful" / "keep it minimal and corporate" -- style direction
-- "use a timeline layout" -- override the automatic layout choice
-- "single panel only" -- force one image even for dense topics
-- "make it a 4-panel infographic" -- set an explicit panel count (up to 6)
-- "make it claymation" / "dark mode tech" -- choose a curated aesthetic
-- "2" (when prompted) -- pick an aesthetic by number
-- "skip the review" -- faster generation, skip the quality check
+<br>
+
+- `"make it bold and colorful"` / `"keep it minimal and corporate"` -- style direction
+- `"use a timeline layout"` -- override the automatic layout choice
+- `"single panel only"` -- force one image even for dense topics
+- `"make it a 4-panel infographic"` -- set an explicit panel count (up to 6)
+- `"make it claymation"` / `"dark mode tech"` -- choose a curated aesthetic
+- `"2"` (when prompted) -- pick an aesthetic by number
+- `"skip the review"` -- faster generation, skip the quality check
 
 </details>
 
-## What the agent does
+### Pick your style
 
-- **Picks the best layout** for your content (14 layout types: process flow, comparison, timeline, hierarchy, cycle, statistics, and more)
-- **Presents aesthetic options** -- 6 curated styles from Clean Minimalist to Lego Brick Builder, plus freeform
-- **Splits complex topics** into multiple panels when there's too much for one image (up to 6 panels)
-- **Reviews its own output** and refines if it spots issues (missing content, poor readability, wrong layout)
-- **Stitches multi-panel sets** into a single combined image
-- **Keeps multi-panel sets visually consistent** using reference image chaining
+<div align="center">
+  <img src="samples/readme/pick-your-vibe-claymation.png" width="600" alt="Pick Your Vibe: 6 curated aesthetics plus freeform"/>
+</div>
 
-### For bundle authors
+<br>
 
-Add to your `bundle.md`:
+Six curated aesthetics -- from **Clean Minimalist** (boardroom-ready) to **Lego Brick Builder** (plastic studs and tilt-shift macro photography) -- plus **Freeform** for anything you can describe.
 
-```yaml
-includes:
-  - bundle: git+https://github.com/singh2/infographic-builder@main
+Say it inline (`"make a claymation infographic about..."`) and the agent skips straight to generation. Or leave it open and you'll get a menu to choose from.
+
+---
+
+## 14 layout types
+
+<div align="center">
+  <img src="samples/readme/layout-gallery-sketchnote.png" width="800" alt="14 Layout Types: process flows, comparisons, timelines, hierarchies, data, and more"/>
+</div>
+
+<br>
+
+The agent analyzes your content and picks the best layout automatically -- process flow, comparison grid, timeline, hierarchy, funnel, mind map, and more.
+
+You never need to think about this. But if you want to override: `"use a timeline layout"` or `"make it a comparison"`.
+
+---
+
+## Multi-panel consistency
+
+<div align="center">
+  <img src="samples/readme/style-anchor-lego.png" width="600" alt="The Style Anchor: how Panel 1 anchors visual consistency across all panels"/>
+</div>
+
+<br>
+
+Dense topics are automatically split into up to 6 panels. The hard part is keeping them visually consistent.
+
+**Panel 1 is the style anchor.** After it renders, the agent analyzes what Gemini *actually produced* -- not what was planned -- and overwrites the style brief. Every subsequent panel is generated with Panel 1's image as a reference. After generation, each panel is compared against Panel 1 across 8 visual dimensions.
+
+> *The render wins. Not the plan.*
+
+---
+
+## Built-in quality evaluation
+
+<div align="center">
+  <img src="samples/readme/eval-flow-claymation.png" width="600" alt="Evaluation pipeline: load scenarios, generate, score on 5 dimensions, review, report"/>
+</div>
+
+<br>
+
+Every infographic goes through a self-critique loop on 5 dimensions before delivery. If issues are found, the agent refines and regenerates (max once).
+
+The project also includes a **standalone evaluation harness** for batch-testing across 23 scenarios using GPT vision scoring.
+
+<details>
+<summary>Scoring rubric and running evaluations</summary>
+
+<br>
+
+### Scoring rubric
+
+| Dimension | Weight | What it measures |
+|-----------|--------|------------------|
+| Visual Explanation | 25% | How effectively visuals communicate the core idea |
+| Content Accuracy | 20% | Factual correctness, absence of hallucinated data |
+| Typography & Legibility | 20% | Font hierarchy, contrast, readability |
+| Visual Quality & Consistency | 20% | Polish, palette coherence, icon consistency |
+| Narrative Structure | 15% | Logical flow, entry/exit points, story progression |
+
+Plus an unweighted **prompt fidelity** score (1-5) measuring adherence to the original brief.
+
+The model's own composite estimate is always discarded -- `parse_scores()` recalculates
+it from dimension scores x weights as a guard against model self-reporting bias.
+
+### Quality bands
+
+| Score | Band |
+|-------|------|
+| 4.0 - 5.0 | High quality |
+| 3.0 - 3.9 | Acceptable |
+| 2.0 - 2.9 | Below bar |
+| 1.0 - 1.9 | Failed |
+
+### Running evaluations
+
+Requires `OPENAI_API_KEY` set in your environment.
+
+```bash
+# Score a single scenario
+python -m eval evaluate \
+  --scenario-file eval/scenarios.yaml \
+  --scenario-name dns \
+  --image-dir eval-results/run-name/dns/ \
+  --output eval-results/run-name/dns/dns_scores.json
+
+# Generate a markdown report from all scored scenarios
+python -m eval report \
+  --run-dir eval-results/run-name/ \
+  --baseline-dir eval-results/previous-run/   # optional: adds trend deltas
 ```
 
-No need to separately add `amplifier-foundation` -- it's included.
+Or run the full pipeline as an Amplifier recipe:
+
+```bash
+amplifier run
+# Say: "execute recipes/evaluate.yaml"
+```
+
+The recipe automates: setup -> load scenarios -> generate infographics (foreach) ->
+evaluate each scenario -> generate summary report.
+
+</details>
+
+---
 
 ## Where output goes
-
-Generated images are saved to the current working directory:
 
 | Output | Filename |
 |--------|----------|
@@ -90,30 +195,27 @@ Generated images are saved to the current working directory:
 | Multi-panel set | `./infographic_panel_1.png`, `./infographic_panel_2.png`, ... |
 | Stitched composite | `./infographic.png` (all panels combined vertically) |
 
-## How it works
+## Troubleshooting
 
-```
-1. You describe what you want
-2. Agent analyzes content density --> picks single or multi-panel
-3. Agent recommends a layout and presents 6 aesthetic options (or detects your inline style)
-4. Agent designs layout, palette, typography using your chosen aesthetic template
-5. Agent generates image(s) via Gemini (nano-banana tool)
-6. Agent reviews output (including aesthetic fidelity) and refines if needed
-7. For multi-panel: agent stitches panels into a combined image
-8. You get the .png file(s) + design rationale + suggestions
-```
+| Problem | Fix |
+|---------|-----|
+| "API key" error on first run | `export GOOGLE_API_KEY=your-key` -- the #1 first-run issue |
+| Image text is garbled or unreadable | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
+| Wrong layout for your content | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
+| Too many panels (or too few) | Specify: "make it a 2-panel infographic" -- explicit count always wins |
+| Slow generation | Say "skip the review" to skip the quality check pass |
 
-The agent's design decisions are guided by a comprehensive style guide
-(`docs/style-guide.md`) covering 14 layout types, prompt engineering rules,
-decomposition heuristics, multi-panel composition protocols, and quality
-review criteria.
+---
 
-## Architecture
+<details>
+<summary><strong>Architecture</strong></summary>
+
+<br>
 
 ![Architecture diagram](docs/architecture.png)
 
 <details>
-<summary>Mermaid version (click to expand)</summary>
+<summary>Mermaid version</summary>
 
 ```mermaid
 flowchart TB
@@ -172,74 +274,28 @@ flowchart TB
 
 </details>
 
-## Evaluation harness
+</details>
 
-The project includes a standalone evaluation system for scoring generated infographics
-against a weighted rubric. This is separate from the Amplifier bundle -- it's a Python
-package (`infographic-eval`) that uses GPT-5.4 vision to assess quality.
+<details>
+<summary><strong>For bundle authors</strong></summary>
 
-Requires `OPENAI_API_KEY` set in your environment.
+<br>
 
-![Evaluation process](docs/evaluation.png)
+Add to your `bundle.md`:
 
-### How evaluation works
-
-1. **23 test scenarios** (`eval/scenarios.yaml`) spanning 1-6 panel infographics
-2. **Generate**: The infographic-builder agent creates images for each scenario
-3. **Score**: GPT-5.4 vision evaluates each image against a 5-dimension rubric
-4. **Report**: Scores are aggregated into a markdown summary with per-scenario detail
-
-### Scoring rubric
-
-| Dimension | Weight | What it measures |
-|-----------|--------|------------------|
-| Visual Explanation | 25% | How effectively visuals communicate the core idea |
-| Content Accuracy | 20% | Factual correctness, absence of hallucinated data |
-| Typography & Legibility | 20% | Font hierarchy, contrast, readability |
-| Visual Quality & Consistency | 20% | Polish, palette coherence, icon consistency |
-| Narrative Structure | 15% | Logical flow, entry/exit points, story progression |
-
-Plus an unweighted **prompt fidelity** score (1-5) measuring adherence to the original brief.
-
-The model's own composite estimate is always discarded -- `parse_scores()` recalculates
-it from dimension scores × weights as a guard against model self-reporting bias.
-
-### Quality bands
-
-| Score | Band |
-|-------|------|
-| 4.0 - 5.0 | High quality |
-| 3.0 - 3.9 | Acceptable |
-| 2.0 - 2.9 | Below bar |
-| 1.0 - 1.9 | Failed |
-
-### Running evaluations
-
-```bash
-# Score a single scenario
-python -m eval evaluate \
-  --scenario-file eval/scenarios.yaml \
-  --scenario-name dns \
-  --image-dir eval-results/run-name/dns/ \
-  --output eval-results/run-name/dns/dns_scores.json
-
-# Generate a markdown report from all scored scenarios
-python -m eval report \
-  --run-dir eval-results/run-name/ \
-  --baseline-dir eval-results/previous-run/   # optional: adds trend deltas
+```yaml
+includes:
+  - bundle: git+https://github.com/singh2/infographic-builder@main
 ```
 
-Or run the full pipeline as an Amplifier recipe:
+No need to separately add `amplifier-foundation` -- it's included.
 
-```bash
-amplifier run
-# Say: "execute recipes/evaluate.yaml"
-```
+</details>
 
-The recipe automates: setup → load scenarios → generate infographics (foreach) →
-evaluate each scenario → generate summary report.
+<details>
+<summary><strong>Project structure</strong></summary>
 
-## Project structure
+<br>
 
 ```
 infographic-builder/
@@ -275,17 +331,22 @@ infographic-builder/
 |   +-- generate-sample-gallery-3.1-flash.yaml  # same scenarios (Gemini 3.1 Flash)
 |-- tests/                                 # pytest test suite
 |-- eval-results/                          # persisted evaluation runs
-+-- samples/                               # generated gallery output (gitignored)
++-- samples/                               # generated gallery output
+    |-- readme/                            # infographics used in this README
     |-- pro/                               # Gemini Pro outputs
     +-- 3.1-flash/                         # Gemini 3.1 Flash outputs
 ```
 
-## Roadmap
+</details>
+
+<details>
+<summary><strong>Roadmap</strong></summary>
+
+<br>
 
 **Shipped -- Style System**:
-Six curated aesthetics (Corporate Clean, Bold Editorial, Claymation 3D, Neon Data,
-Warm Organic, Technical Blueprint) with full prompt templates, wired through agent
-step 3d. Layout selection covers 14 types.
+Six curated aesthetics (Clean Minimalist, Bold Editorial, Claymation Studio, Dark Mode Tech,
+Hand-Drawn Sketchnote, Lego Brick Builder) with full prompt templates. Layout selection covers 14 types.
 
 **Planned -- User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
@@ -294,20 +355,15 @@ exists in the tool but the agent workflow doesn't handle user-supplied style
 references yet.
 
 **Planned -- Browsable Style Catalog**:
-A static site showcasing all aesthetic × layout combinations so users can browse
+A static site showcasing all aesthetic x layout combinations so users can browse
 what's possible before asking for a specific style.
 
-## Troubleshooting
+</details>
 
-| Problem | Fix |
-|---------|-----|
-| "API key" error on first run | `export GOOGLE_API_KEY=your-key` -- the #1 first-run issue |
-| Image text is garbled or unreadable | Simplify: fewer data points, shorter labels, larger text emphasis in your prompt |
-| Wrong layout for your content | Tell it explicitly: "use a timeline layout" or "make it a comparison" |
-| Too many panels (or too few) | Specify: "make it a 2-panel infographic" -- explicit count always wins |
-| Slow generation | Say "skip the review" to skip the quality check pass |
+<details>
+<summary><strong>Local development</strong></summary>
 
-## Local development
+<br>
 
 ### Setup
 
@@ -385,6 +441,10 @@ amplifier run
 | Aesthetic selection | Agent presents 6 options + freeform and waits for user choice |
 | Inline style shortcut | Specifying aesthetic in the request skips the proposal turn |
 | Aesthetic fidelity | Quality review includes aesthetic match as a review dimension |
+
+</details>
+
+<br>
 
 ## License
 
