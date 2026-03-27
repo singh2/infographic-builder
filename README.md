@@ -5,7 +5,7 @@
 [![Powered by Gemini](https://img.shields.io/badge/image_gen-Gemini-orange)](https://ai.google.dev/)
 
 <div align="center">
-  <img src="docs/readme/hero-overview.png" width="800" alt="How It Works: 1. Describe what you want, 2. Pick a style, 3. Get your infographic"/>
+  <img src="docs/readme/hero-overview-comic.png" width="800" alt="How Infographic Builder Works: 1. User types prompt, 2. AI selects layout and style, 3. Panels generated with Gemini, 4. Stitched into final infographic"/>
   <br><br>
   <strong>Say what you want, get a finished infographic.</strong>
   <br>
