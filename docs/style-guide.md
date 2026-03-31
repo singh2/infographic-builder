@@ -94,7 +94,7 @@ Engineering below).
 
 > Whimsical, tactile, plasticine textures
 
-- **Background:** Cardboard or craft paper set, visible texture and slight wrinkles
+- **Background:** Choose based on content — for narrative, story-driven, or physical topics (daily routines, journeys, recipes, environments), build a **full 3D claymation environment** with sculpted clay scenery, props, and depth (rooms, forests, kitchens, landscapes). For abstract or conceptual topics (definitions, comparisons, data), use a **simple studio backdrop** — a cardboard-box diorama stage or craft-paper set with visible texture. The richer the subject's real-world setting, the richer the environment should be
 - **Typography:** Rounded playful sans-serif; letters may appear sculpted from clay or extruded
 - **Icons:** 3D sculpted plasticine/clay figures, fingerprint texture visible, rounded organic shapes
 - **Color palette:** Warm saturated primaries — clay red, cobalt blue, sunshine yellow, grass green — like real plasticine
