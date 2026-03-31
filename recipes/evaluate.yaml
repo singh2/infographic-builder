@@ -33,6 +33,7 @@ tags: ["evaluation", "quality", "rubric", "batch"]
 
 context:
   scenarios_file: "eval/scenarios.yaml"
+  run_suffix: ""
 
 steps:
   # ---------------------------------------------------------------------------
@@ -41,7 +42,8 @@ steps:
   - id: "setup"
     type: "bash"
     command: >
-      RUN_DIR="eval-results/$(date +%Y-%m-%d_%H%M%S)" &&
+      SUFFIX="{{run_suffix}}" &&
+      RUN_DIR="eval-results/$(date +%Y-%m-%d_%H%M%S)${SUFFIX:+-$SUFFIX}" &&
       mkdir -p "$RUN_DIR" &&
       printf "%s" "$RUN_DIR"
     output: "run_dir"

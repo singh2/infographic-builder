@@ -44,7 +44,7 @@ export GOOGLE_API_KEY=your-key-here   # add to ~/.zshrc to make permanent
 Start a session and try it:
 
 ```
-"create an infographic about the water cycle"
+"create an infographic in claymation style about brewing a perfect espresso"
 ```
 
 You'll get back `.png` file(s), a design rationale, and suggestions for refinement.
@@ -430,10 +430,10 @@ amplifier --version
 ```bash
 cd /path/to/infographic-builder
 
-# Test 1: Simple topic (should auto single-panel)
+# Test 1: Inline aesthetic + simple topic
 amplifier run
-# Say: "Create an infographic about the water cycle"
-# Expected: single panel, auto layout, quality review, design rationale
+# Say: "Create an infographic in claymation style about brewing a perfect espresso"
+# Expected: skips aesthetic proposal, auto layout, quality review, design rationale
 
 # Test 2: Complex topic (should auto multi-panel)
 amplifier run
