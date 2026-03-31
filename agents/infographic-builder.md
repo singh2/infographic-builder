@@ -200,18 +200,8 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    - Default panels `./infographics/{topic}_panel_1.png` etc. -> `./infographics/{topic}_combined.png`
    - Custom path `./sales_panel_1.png` etc. -> `./sales_combined.png`
 
-   **Choose stitch direction based on content structure, not just layout type.**
-   Apply this test: "Are the panels showing parallel/comparable subjects, or
-   sequential/progressive steps?"
-
-   - **Parallel subjects** (one league per panel, one product per panel, one
-     option per panel) -> `horizontal`. The panels are columns being compared.
-   - **Sequential steps** (step 1 then step 2, phase A then phase B) ->
-     `vertical`. Top-to-bottom reading order.
-   - **Timeline with era-per-panel** -> `horizontal`. Left-to-right chronology.
-   - **Unsure** -> `vertical` (safer default).
-
-   See the full direction table in the Style Guide under "Using stitch_panels".
+   **Choose stitch direction** using the decision rule in "Using stitch_panels"
+   below. Do not default to vertical without applying the rule.
 
    Deliver both the individual panels and the combined image. Some users want
    pieces for slides; others want a single file to share.
@@ -250,19 +240,31 @@ After generating multiple panels, combine them into a single image:
 |-----------|----------|-------------|
 | `panel_paths` | yes | Ordered list of PNG file paths to combine |
 | `output_path` | yes | File path for the combined output PNG |
-| `direction` | no | `"vertical"` (default) or `"horizontal"` |
+| `direction` | **yes** | `"vertical"` or `"horizontal"` -- always specify explicitly |
 
-Choose direction based on content structure -- ask: "Are the panels showing
-parallel/comparable subjects, or sequential/progressive steps?"
+### Choosing stitch direction
 
-| Content structure | Direction | Why |
-|-------------------|-----------|-----|
-| Parallel subjects (one per panel: leagues, products, options, regions) | `horizontal` | Panels are columns being compared side-by-side |
-| Side-by-side comparison (vs., pros/cons, before/after) | `horizontal` | Natural comparison reading pattern |
-| Timeline with era-per-panel | `horizontal` | Left-to-right chronological flow |
-| Sequential steps (step 1 then step 2, phase A then phase B) | `vertical` | Natural top-to-bottom reading order |
-| Process flow, how-to | `vertical` | Top-to-bottom progression |
-| Unsure | `vertical` | Safer default |
+**Core principle:** Horizontal means *peers viewed at once*. Vertical means
+*sequence read in order*. Apply this test before every stitch call:
+
+> "Are these panels peers the viewer should compare simultaneously, or steps
+> they should read top-to-bottom?"
+
+**Panel count gate:** 5+ panels -> always vertical. A horizontal strip of 5+
+panels is unreadable regardless of content relationship.
+
+| Relationship between panels | Direction |
+|-----------------------------|-----------|
+| Comparison / vs. / pros-cons / before-after | `horizontal` |
+| Parallel peers (one product, region, or category per panel) | `horizontal` |
+| Timeline with one era per panel (sparse, 2-4 panels) | `horizontal` |
+| Sequential steps, phases, or stages | `vertical` |
+| Hierarchical (overview panel -> detail panels) | `vertical` |
+| Narrative or storytelling flow | `vertical` |
+| Dense timeline with many events | `vertical` |
+
+When content could go either way, `vertical` is the safer default -- it works
+on mobile, in scroll contexts, and with any panel count.
 
 If panels have different sizes, smaller panels are aligned to the top-left
 against a white background.
