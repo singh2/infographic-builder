@@ -42,6 +42,63 @@ User input
 
 The infographic-builder agent is completely unchanged. The diagram-beautifier agent shares the aesthetic system, nano-banana tool, and stitch_panels tool but has its own workflow, decomposition logic, and quality review dimensions.
 
+## Invocation
+
+### How users invoke the diagram beautifier
+
+There is no separate command or entry point. Users interact with the same bundle as always. The root session detects the input type and routes invisibly.
+
+**Three invocation patterns:**
+
+**1. Paste source inline**
+```
+User: "Can you beautify this in Dark Mode Tech style?
+
+graph TD
+    A[Load Balancer] --> B[API Gateway]
+    B --> C[Auth Service]
+    B --> D[User Service]
+    C --> E[(Database)]
+    D --> E"
+```
+Root session detects Mermaid syntax → two-turn shortcut (style specified inline) → routes to diagram-beautifier → renders immediately.
+
+**2. Reference a file**
+```
+User: "Beautify my architecture diagram at ./architecture.dot"
+```
+Root session detects `.dot` extension → routes to diagram-beautifier → presents aesthetic menu.
+
+**3. Paste source, no style specified**
+```
+User: "Make this look nicer: [pastes Mermaid source]"
+```
+Root session detects Mermaid keywords → routes to diagram-beautifier → presents aesthetic menu and halts for selection.
+
+### How this differs from infographic-builder invocation
+
+| Dimension | infographic-builder | diagram-beautifier |
+|---|---|---|
+| **What you provide** | Natural language topic or data description | Structured diagram source (.dot / Mermaid) |
+| **Root session role** | Pure passthrough — delegates everything immediately | Light classifier — detects input type first, then routes |
+| **Aesthetic selection** | Identical — same 6 options, same two-turn shortcut | Identical |
+| **Output format** | PNG(s) + rationale + review summary | Identical |
+| **New failure mode** | None | `dot`/`mmdc` not installed → clear error with install instructions |
+| **Layout decision** | Agent chooses from 14 layout types | Layout is given — it's the input diagram |
+| **"Design from scratch" step** | Yes — content analysis, layout selection, visual metaphors | No — structure is fixed; only aesthetic treatment is chosen |
+
+From the user's perspective, invocation is identical. The routing is invisible.
+
+### Root session detection logic
+
+The root session (`bundle.md` + `context/infographic-awareness.md`) detects diagram input by checking:
+
+- File path ending in `.dot`, `.mmd`, or `.mermaid`
+- Inline text matching Graphviz keywords: `digraph`, `graph {`, `strict graph`, `strict digraph`
+- Inline text matching Mermaid keywords: `flowchart`, `graph TD`, `graph LR`, `graph TB`, `graph RL`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`, `gantt`, `gitgraph`
+
+Everything else routes to infographic-builder unchanged.
+
 ## Components
 
 ### Root Session Routing
@@ -167,76 +224,221 @@ If the source has high node count but no subgraph declarations, the agent uses t
 
 ### Beautification (nano-banana generate)
 
-Each panel is generated with three inputs:
+Each panel is generated with four inputs working together:
 
-1. **`reference_image_path`**: the plain rendered PNG (or the relevant subgraph portion for multi-panel)
-2. **Aesthetic template**: the full prompt template from the selected aesthetic (same templates as infographic-builder)
-3. **Structural preservation modifier**: an additional prompt directive specific to diagram beautification
+1. **Structural preservation directive** — at the very top of every prompt, before any aesthetic content
+2. **Textual structure enumeration** — explicit node/edge/label description derived from the parser output
+3. **`reference_image_path`** — the plain rendered PNG anchoring the visual layout
+4. **Aesthetic template** — the full prompt template from the selected aesthetic
 
-The structural preservation modifier is appended to every diagram generation prompt:
+#### Structural Preservation Directive
+
+This directive opens every diagram generation prompt, before the aesthetic template:
 
 ```
-STRUCTURAL PRESERVATION REQUIREMENTS:
-- This is a diagram beautification. The reference image shows the exact topology to preserve.
-- Maintain all node positions, connections, and directional flow from the reference image.
-- Reproduce every text label EXACTLY as shown — spelling, capitalization, and content must match.
-- Preserve the directed/undirected nature of all edges.
-- Enhance the visual presentation (colors, shapes, textures, lighting) without altering the structure.
-- Node shapes may be stylized to match the aesthetic but must remain visually distinct and readable.
+You are rendering an exact visual interpretation of a diagram. The topology —
+nodes, connections, labels, and flow direction — is sacred and must be faithfully
+reproduced. Only the visual treatment (style, colors, textures, rendering) is
+yours to interpret creatively.
 ```
 
-**Multi-panel consistency** follows the same reference-image-chaining pattern as infographic-builder:
-- Panel 1 is generated first (with the plain PNG as reference), establishing the style anchor.
-- Post-Panel 1 style reconciliation is performed (same analyze call as infographic-builder).
-- Panels 2–N reference Panel 1 for style consistency AND their own subgraph plain PNG for structural fidelity. Both reference signals are encoded in the prompt — Panel 1's path as `reference_image_path` and the subgraph structure described textually with the structural preservation modifier.
+#### Dual-Anchoring: Visual + Textual
+
+Reference images alone are not sufficient — Gemini treats `reference_image_path`
+as compositional inspiration, not a strict structural constraint. To anchor both
+visually and semantically, every prompt includes an explicit text description of
+the diagram's structure after the preservation directive:
+
+```
+DIAGRAM STRUCTURE (preserve exactly):
+Nodes ({node_count} total): {node_label_1}, {node_label_2}, {node_label_3}, ...
+Connections: {label_A} → {label_B}, {label_B} → {label_C} (label: "{edge_label}"), ...
+Flow direction: {top-to-bottom | left-to-right | radial}
+Reproduce all node labels exactly as listed — spelling, capitalization, and
+spacing must match. All connections shown in the reference image must appear
+in the output.
+```
+
+This gives Gemini two ways to get the structure right: visual (reference image)
+and semantic (explicit text). Either one alone is fallible. Together they are
+substantially more reliable.
+
+#### Aesthetic-Specific Physical Metaphor Mappings
+
+For infographics, aesthetic templates work because Gemini generates freely. For
+diagrams, Gemini needs to map abstract elements (nodes, edges, subgraphs) to
+physical objects within the aesthetic. Each aesthetic template is extended with
+a diagram-specific physical metaphor mapping:
+
+**1. Clean Minimalist**
+Closest to the plain source. No physical metaphor needed — nodes render as clean
+rounded-rect boxes, edges as precise lines with arrowheads. Most structurally
+faithful aesthetic. Prompt addition:
+```
+Nodes: clean rounded rectangles with bold sans-serif labels inside.
+Edges: thin directional lines with arrowheads. No decorative elements.
+```
+
+**2. Dark Mode Tech**
+Maps most naturally to system/architecture diagrams. Prompt addition:
+```
+Nodes: glowing holographic panels or frosted-glass terminal windows, each
+labeled in monospace neon text. Subgraph clusters: frosted-glass containers
+with neon border glow. Edges: neon data-stream lines with directional arrows
+and subtle animated-flow effect. Camera: straight-on or slight isometric.
+```
+
+**3. Bold Editorial**
+Works best for high-level overview diagrams, not dense technical graphs. Prompt addition:
+```
+Nodes: bold color-block shapes with high-contrast serif labels. Edges: thick
+graphic lines or arrows as editorial design elements. Each node's color block
+is distinct within the primary palette.
+```
+
+**4. Hand-Drawn Sketchnote**
+Very natural for flowcharts and decision trees. Prompt addition:
+```
+Nodes: hand-drawn boxes or circles with marker-written labels inside (slightly
+imperfect, natural pen pressure variation). Edges: sketched arrows with
+hand-drawn arrowheads. Edge labels in handwritten annotation style nearby.
+```
+
+**5. Claymation Studio**
+Prompt addition:
+```
+Nodes: distinct clay sculptures on a flat surface, each labeled with a small
+handmade clay sign or painted label. Edges: rolled clay tubes or strips
+connecting the sculptures, with directional clay arrows at endpoints.
+Subgraph clusters: separate clay platform stages. Camera: top-down aerial
+view at a slight 10–15° isometric angle so all node connections are fully
+visible. Shallow depth of field focused on the diagram surface.
+```
+⚠️ Camera angle directive is required for Claymation — steep angles hide connections.
+
+**6. Lego Brick Builder**
+Prompt addition:
+```
+Nodes: Lego brick platform tiles with printed text labels on the top face
+(as if on a printed Lego tile piece). Decision nodes (diamond shape): diamond
+tile arrangements. Database nodes (cylinder shape): Lego drum/cylinder builds.
+Edges: Lego Technic connector channels or axle lines between platforms.
+Subgraph clusters: different colored Lego base plates. Camera: slight
+15° isometric top-down so all studs and connections are visible. Macro
+photography lighting with plastic specular highlights.
+```
+⚠️ Camera angle directive is required for Lego — a straight-on perspective
+obscures which nodes connect to which.
+
+#### Multi-Panel Consistency
+
+Follows the same reference-image-chaining pattern as infographic-builder:
+- Panel 1 is generated first (plain PNG as reference), establishing the style anchor.
+- Post-Panel 1 style reconciliation is performed (same `analyze` call as infographic-builder).
+- Panels 2–N reference Panel 1 for style consistency AND include their own subgraph's
+  textual structure description for structural fidelity. Both signals are required —
+  Panel 1's path as `reference_image_path` and the subgraph structure enumerated in text.
 
 ### Quality Review
 
-The diagram beautifier extends the standard 5-dimension quality review with two diagram-specific dimensions:
+The diagram beautifier runs **two verification calls** per panel rather than the
+infographic-builder's single analyze call. The calls are deliberately kept to two
+to stay within a reasonable latency budget.
 
-#### Standard dimensions (shared with infographic-builder):
-1. **Content Accuracy** — are the requested elements present?
-2. **Layout Quality** — is the structure clear and well-organized?
-3. **Visual Clarity** — is text readable, contrast sufficient?
-4. **Prompt Fidelity** — does output match the generation prompt?
-5. **Aesthetic Fidelity** — does the output match the selected aesthetic?
+#### Call 1: Combined Analyze (labels + aesthetic)
 
-#### Diagram-specific dimensions (new):
+One `nano-banana analyze` call covers the standard 5 dimensions plus label fidelity.
+Combining label fidelity into the same call as aesthetic review avoids a redundant
+round-trip:
 
-6. **Label Fidelity** — are all text labels from the source diagram accurately reproduced?
+```
+Evaluate this beautified diagram. For each dimension, give PASS or NEEDS_REFINEMENT
+and a brief explanation.
 
-   This is the hardest problem. Even with render-first + reference image, Gemini may distort, truncate, or hallucinate node labels. The review extracts all labels from the parsed source (ground truth) and checks each one against the generated output.
+ORIGINAL SOURCE LABELS (ground truth):
+  Node labels: {list of all node labels from parser output}
+  Edge labels: {list of all edge labels from parser output, if any}
 
-   Evaluation prompt addition:
-   ```
-   LABEL FIDELITY CHECK:
-   The source diagram contains these exact labels (ground truth):
-   Nodes: {list of all node labels from parser output}
-   Edge labels: {list of all edge labels from parser output}
+Dimensions:
 
-   Check EVERY label in the generated image against this ground truth.
-   Are any labels misspelled, truncated, missing, or replaced with
-   different text? List each discrepancy.
-   Rating: PASS (all labels correct) or NEEDS_REFINEMENT (any label wrong).
-   ```
+1. LABEL FIDELITY: Can you read each of the listed node labels in the image?
+   Are any misspelled, truncated, missing, or replaced with different text?
+   Note: assess by recognizability, not pixel-exact matching — minor rendering
+   imperfections are acceptable; wrong words or missing labels are not.
+   List any discrepancies found.
 
-7. **Structural Accuracy** — are all nodes present and are the major connections represented?
+2. LAYOUT QUALITY: Is the node arrangement clear? Can a viewer follow the
+   connection flow? Are clusters visually distinct?
 
-   Checks the generated diagram's topology against the parsed source:
+3. VISUAL CLARITY: Is text readable at normal viewing size? Sufficient contrast?
 
-   Evaluation prompt addition:
-   ```
-   STRUCTURAL ACCURACY CHECK:
-   The source diagram has {node_count} nodes and {edge_count} connections.
-   Major nodes: {list of node labels}
-   Key connections: {list of "A → B" edges}
+4. PROMPT FIDELITY: Does the output reflect the style, aesthetic, and structural
+   instructions in the generation prompt?
 
-   Verify: Are all major nodes visible in the output? Are the primary
-   connection paths represented? Is the directional flow preserved?
-   Rating: PASS (topology preserved) or NEEDS_REFINEMENT (nodes/edges missing).
-   ```
+5. AESTHETIC FIDELITY: Does the output match the selected aesthetic
+   ({aesthetic_name})? Check background, node rendering style, typography
+   feel, lighting, and overall mood.
 
-**Refinement rules** follow the same pattern as infographic-builder: max 1 refinement pass per panel, only if the analysis says NEEDS_REFINEMENT, targeting only the specific issues identified.
+Summary: Overall PASS or NEEDS_REFINEMENT. If NEEDS_REFINEMENT, list specific
+changes to fix each failing dimension.
+```
+
+**On label verification honesty:** VLM analysis of text in generated images is
+reliable for gross errors (wrong words, missing nodes, completely garbled text)
+but not for subtle character-level differences. The LABEL FIDELITY check catches
+what matters — recognizably wrong labels — not pixel-exact character matching,
+which is not achievable through VLM analysis alone. The dual-anchoring strategy
+(render-first + textual structure enumeration) is where label accuracy is
+primarily won, not in the verification step.
+
+#### Call 2: Structural Compare (plain PNG vs. beautified)
+
+One `nano-banana compare` call compares the rendered plain PNG (image1) against
+the beautified output (image2). This catches structural drift — nodes that
+disappeared, connections that got rerouted, clusters that merged or split:
+
+```
+Compare these two versions of the same diagram.
+Image 1 is the plain rendered source (ground truth structure).
+Image 2 is the beautified version.
+
+Check each dimension:
+1. NODE COUNT — approximately the same number of nodes visible?
+2. CONNECTION STRUCTURE — are the same major connections represented?
+   Any connections missing or pointing to wrong nodes?
+3. FLOW DIRECTION — same overall directionality (top-to-bottom / left-to-right)?
+4. CLUSTER BOUNDARIES — if subgraph clusters exist in Image 1, are they
+   visually distinguishable in Image 2?
+
+For each: MATCH or DRIFT.
+Overall verdict: PASS (structure preserved) or NEEDS_REFINEMENT (structural drift).
+List specific drifts if NEEDS_REFINEMENT.
+```
+
+**Skip compare for simple diagrams (≤10 nodes):** For small diagrams, the
+dual-anchored prompt reliably preserves structure and the analyze call covers
+label presence. The compare call adds ~15–30s of latency for minimal additional
+signal. Skip it when `node_count ≤ 10`.
+
+#### Tool call budget per panel
+
+| Diagram size | Calls (no refinement) | Calls (with refinement) |
+|---|---|---|
+| ≤10 nodes | 1 generate + 1 analyze | + 1 generate |
+| >10 nodes | 1 generate + 1 analyze + 1 compare | + 1 generate |
+
+Worst case for a 3-panel complex diagram: 3 generates + 3 analyzes + 3 compares
++ up to 3 refinement generates = 12 nano-banana calls. This matches the
+infographic-builder's worst-case budget for a 3-panel infographic.
+
+#### Refinement rules
+
+Same pattern as infographic-builder:
+- Only refine if either call returns NEEDS_REFINEMENT
+- When refining, address ONLY the specific issues identified — do not rewrite the full prompt
+- Max 1 refinement pass per panel
+- If the second generation still has issues, return it with the review notes — the user steers from there
+- Always report what both calls found, even when no refinement was triggered
 
 ### Output Assembly
 
