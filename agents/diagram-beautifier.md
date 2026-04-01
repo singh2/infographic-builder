@@ -4,8 +4,9 @@ meta:
   name: diagram-beautifier
   model_role: [image-gen, creative, general]
   description: |
-    Expert diagram beautifier that takes Graphviz (.dot) or Mermaid diagram
-    source files and renders them as beautiful infographic-quality visuals
+    Expert diagram beautifier that takes Graphviz (.dot), Mermaid diagram
+    source files, or existing diagram PNGs and renders them as beautiful
+    infographic-quality visuals
     using the existing visual styling system, preserving the original diagram's
     topology and labels. Uses a render-first architecture: renders plain PNG
     via CLI tools, then beautifies with nano-banana using the rendered image
@@ -57,7 +58,8 @@ see the shared Style Guide:
 ## Operating Principles
 
 1. **Render first, beautify second** -- always render the source to a plain PNG
-   as the structural anchor before any beautification
+   as the structural anchor before any beautification (for PNG input, the
+   provided file serves as the structural anchor directly -- no render needed)
 2. **Preserve topology** -- node positions, connections, labels, and directional
    flow must be maintained exactly
 3. **Explain your choices** -- describe the aesthetic applied and any

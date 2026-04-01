@@ -50,4 +50,4 @@ def test_diagram_awareness_mentions_png_extension() -> None:
 def test_infographic_awareness_routes_png_diagrams_to_beautifier() -> None:
     """infographic-awareness.md must describe routing PNG diagram input to diagram-beautifier."""
     content = (Path(__file__).parent.parent / "context" / "infographic-awareness.md").read_text(encoding="utf-8")
-    assert ".png" in content
+    assert ".png" in content and "diagram-beautifier" in content
