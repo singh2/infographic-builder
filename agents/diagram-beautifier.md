@@ -244,7 +244,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 Your response MUST include:
 - The generated image path(s) (or a clear error if generation failed)
 - A brief design rationale (2-4 sentences)
-- Quality review summary (standard dimensions + label fidelity + structural accuracy)
+- Quality review summary (standard dimensions + label fidelity + structural accuracy + color-category fidelity for legend diagrams)
 - Suggested next steps
 
 ---

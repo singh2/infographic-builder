@@ -146,14 +146,15 @@ def test_agent_skips_steps_when_pre_analysis_provided() -> None:
 
 
 def _get_step_7_block(content: str) -> str:
-    start = content.index("7. **Quality review**")
+    start = content.find("7. **Quality review**")
+    assert start != -1, "Step 7 header '7. **Quality review**' not found in agent file"
     end = content.find("8. **Assemble**", start)
     return content[start:end] if end != -1 else content[start:]
 
 
 def test_step7_has_color_category_fidelity_dimension() -> None:
     """Step 7 must include 'color-category fidelity' as an 8th quality dimension."""
-    content = AGENT_FILE.read_text(encoding="utf-8")
+    content = _read_agent()
     block = _get_step_7_block(content)
     assert "color-category fidelity" in block.lower(), (
         "Step 7 must include 'color-category fidelity' dimension.\n"
@@ -163,10 +164,9 @@ def test_step7_has_color_category_fidelity_dimension() -> None:
 
 def test_step7_color_category_fidelity_scoped_to_legend_diagrams() -> None:
     """Color-category fidelity must be scoped to diagrams with a semantic legend."""
-    content = AGENT_FILE.read_text(encoding="utf-8")
+    content = _read_agent()
     block = _get_step_7_block(content)
-    assert "semantic legend" in block.lower() or "legend only" in block.lower(), (
-        "Step 7 color-category fidelity must be scoped to diagrams with a semantic "
-        "legend (must contain 'semantic legend' or 'legend only').\n"
+    assert "semantic legend" in block.lower(), (
+        "Step 7 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
         f"Actual step 7 block:\n{block}"
     )
