@@ -158,18 +158,24 @@ def test_field_order_after_aesthetic():
 # Task: reference_image_paths (plural) in Reference Image Chaining
 # ---------------------------------------------------------------------------
 
+
 def _get_reference_chaining_block(content: str) -> str:
-    start = content.index("### Reference Image Chaining")
+    """Extract the ### Reference Image Chaining section from the guide."""
+    heading = "### Reference Image Chaining"
+    assert heading in content, f"Could not find '{heading}' in style guide"
+    start = content.index(heading)
     next_h3 = content.find("\n### ", start + 1)
     return content[start:next_h3] if next_h3 != -1 else content[start:]
 
 
 def test_reference_chaining_documents_plural_paths():
+    """reference_image_paths (plural) must appear in the chaining section."""
     block = _get_reference_chaining_block(read_guide())
     assert "reference_image_paths" in block
 
 
 def test_reference_chaining_two_anchor_pattern():
+    """The two-anchor pattern must mention cross-panel consistency and aesthetic fidelity."""
     block = _get_reference_chaining_block(read_guide())
     lower = block.lower()
     assert "cross-panel consistency" in lower
@@ -177,5 +183,6 @@ def test_reference_chaining_two_anchor_pattern():
 
 
 def test_reference_chaining_mentions_image_path():
+    """image_path (the single-anchor reference parameter) must appear in the chaining section."""
     block = _get_reference_chaining_block(read_guide())
     assert "image_path" in block
