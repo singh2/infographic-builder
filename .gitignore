@@ -1,7 +1,9 @@
-# Generated infographic images (in working directory)
+# Generated infographic images and working output directories
 /infographic*.png
 /infographic*.jpg
 *.jpeg
+infographics/
+mockups/
 
 # Keep docs images
 !docs/*.png
@@ -12,8 +14,8 @@
 # Sample gallery output (keep locally, not in git)
 samples/
 
-# Amplifier local settings (contains local source overrides)
-.amplifier/settings.yaml
+# Amplifier local settings (entire directory — settings, cache, etc.)
+.amplifier/
 
 # OS files
 .DS_Store
