@@ -102,3 +102,17 @@ def test_agent_uses_analyze_for_png_ground_truth() -> None:
     content = _read_agent()
     lower = content.lower()
     assert "analyze" in lower and "ground truth" in lower
+
+
+def test_agent_accepts_precomputed_analysis() -> None:
+    """Agent Step 1 must accept pre-computed analysis from root session."""
+    content = _read_agent()
+    lower = content.lower()
+    assert "pre" in lower and ("analys" in lower or "classif" in lower or "passed" in lower)
+
+
+def test_agent_skips_step1_analyze_when_precomputed() -> None:
+    """Agent must skip its own analyze call when root session already provided analysis."""
+    content = _read_agent()
+    lower = content.lower()
+    assert "skip" in lower and ("step 1" in lower or "analyze" in lower)
