@@ -131,31 +131,23 @@ provides a freeform description:
 
 ## Representation Mode
 
-Infographics have two representation modes. This is independent of aesthetic.
+When using a 3D-capable aesthetic (Lego, Claymation, or freeform 3D styles),
+there are two ways to represent the content:
 
-### Diagram Mode (Default)
+**Default: content materialized in the medium.** The information structures
+become physical objects — lists become walls of bricks, checklists become
+clipboards, sections become rooms or stations. Characters may be present as
+decorative or metaphorical elements but aren't acting out a process. This is
+what happens naturally and needs no special prompting.
 
-Abstract, schematic representation faithful to topology. Works with all
-aesthetics and all layout types. Handles branching, conditionals, and high
-node counts well.
+**Diorama: characters act out a process in a scene.** An opt-in mode where
+the steps of a workflow become a living narrative — characters physically
+performing each step. Include the word "diorama" in the prompt and the model
+will get it.
 
-### Diorama Mode
-
-A 3D scene where characters act out each step. Compatible with **3D-capable
-aesthetics** only: Lego Brick Builder, Claymation Studio, or freeform 3D
-styles (e.g., "wooden toy diorama", "miniature model").
-
-Best for **linear sequential workflows** — the simpler the flow, the stronger
-the diorama. Frame the prompt as a 3D scene and let the model determine how
-to structure it.
-
-### When to Use Which
-
-> **Dioramas** shine when the workflow is simple and linear (A → B → C → Done).
-> **Diagrams** win once branching, conditions, or high node counts appear.
-
-Heuristic: *"Can I imagine someone physically doing this step?"* If yes for
-every step, and the flow is linear → diorama is a strong candidate.
+Dioramas work best for **linear sequential workflows**. The simpler the flow,
+the stronger the result. Once branching or conditionals appear, the default
+materialized approach handles complexity better.
 
 ## Layout Types
 
