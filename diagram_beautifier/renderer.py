@@ -1,4 +1,5 @@
 """Render diagram source to a plain PNG using CLI tools."""
+
 from __future__ import annotations
 import subprocess
 import tempfile
@@ -45,12 +46,26 @@ def render_plain_png(
     if fmt == "dot":
         cmd = ["dot", "-Tpng", "-Gdpi=150", source_path, "-o", output_path]
     elif fmt == "mermaid":
-        cmd = ["mmdc", "-i", source_path, "-o", output_path, "-w", "2048", "-H", "1536", "--scale", "2"]
+        cmd = [
+            "mmdc",
+            "-i",
+            source_path,
+            "-o",
+            output_path,
+            "-w",
+            "2048",
+            "-H",
+            "1536",
+            "--scale",
+            "2",
+        ]
     else:
         raise ValueError(f"Unsupported format: {fmt!r}")
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        raise RenderError(f"{cmd[0]} exited with code {result.returncode}: {result.stderr}")
+        raise RenderError(
+            f"{cmd[0]} exited with code {result.returncode}: {result.stderr}"
+        )
 
     return output_path

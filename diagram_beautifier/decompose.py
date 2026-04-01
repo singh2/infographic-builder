@@ -1,4 +1,5 @@
 """Panel decomposition for diagrams based on graph structure."""
+
 from __future__ import annotations
 from typing import Any
 
@@ -42,7 +43,9 @@ def _single_panel_result(subgraphs: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _split_by_subgraphs(subgraphs: list[dict[str, Any]], max_panels: int) -> dict[str, Any]:
+def _split_by_subgraphs(
+    subgraphs: list[dict[str, Any]], max_panels: int
+) -> dict[str, Any]:
     if len(subgraphs) <= max_panels:
         panels = [
             {"panel_number": i + 1, "subgraph_names": [sg["name"]]}
@@ -55,7 +58,9 @@ def _split_by_subgraphs(subgraphs: list[dict[str, Any]], max_panels: int) -> dic
         for i, sg in enumerate(subgraphs):
             current.append(sg["name"])
             if len(current) >= per_panel and len(panels) < max_panels - 1:
-                panels.append({"panel_number": len(panels) + 1, "subgraph_names": current})
+                panels.append(
+                    {"panel_number": len(panels) + 1, "subgraph_names": current}
+                )
                 current = []
         if current:
             panels.append({"panel_number": len(panels) + 1, "subgraph_names": current})

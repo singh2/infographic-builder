@@ -1,4 +1,5 @@
 """Quality review prompt builders for diagram-specific dimensions."""
+
 from __future__ import annotations
 
 

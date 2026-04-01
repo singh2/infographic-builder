@@ -1,4 +1,5 @@
 """Build nano-banana generate prompts for diagram beautification."""
+
 from __future__ import annotations
 
 STRUCTURAL_PRESERVATION_MODIFIER = """\

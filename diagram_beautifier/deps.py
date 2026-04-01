@@ -1,4 +1,5 @@
 """Check for required CLI tools (dot for Graphviz, mmdc for Mermaid)."""
+
 from __future__ import annotations
 import shutil
 
