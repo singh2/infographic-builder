@@ -74,6 +74,12 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
 
 1. **Parse the request**: subject matter, data to include, tone, target medium
 
+   If `content_summary` is provided by the root session, it becomes the subject
+   matter. The user's text prompt supplies intent and modifiers (tone, format,
+   constraints); `content_summary` supplies the topic. When the text prompt
+   already fully specifies the topic, treat `content_summary` as supplementary
+   detail.
+
 2. **Analyze content density** to decide single vs multi-panel using the
    Decomposition Heuristics in the Style Guide, unless the user specifies a
    count explicitly.

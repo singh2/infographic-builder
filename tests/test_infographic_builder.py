@@ -231,3 +231,24 @@ def test_step_8_different_aesthetic_before_layout():
     assert aesthetic_pos < layout_pos, (
         "'different aesthetic' must appear before 'different layout' in Step 8"
     )
+
+
+# ---------------------------------------------------------------------------
+# Task: Step 1 accepts content_summary from root session
+# ---------------------------------------------------------------------------
+
+def _get_step_1_block(content: str) -> str:
+    """Extract text between '1. **Parse the request**' and '2. **'."""
+    start = content.index("1. **Parse the request**")
+    end = content.index("2. **", start)
+    return content[start:end]
+
+def test_step_1_accepts_content_summary():
+    block = _get_step_1_block(read_agent())
+    lower = block.lower()
+    assert "content_summary" in lower
+
+def test_step_1_content_summary_becomes_subject_matter():
+    block = _get_step_1_block(read_agent())
+    lower = block.lower()
+    assert "subject matter" in lower
