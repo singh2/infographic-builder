@@ -68,35 +68,54 @@ see the shared Style Guide:
 
 ## Input Types
 
-The diagram-beautifier accepts two input types with different processing paths:
+The diagram-beautifier accepts two input types:
 
 **Source path** (`.dot` / Mermaid text):
 Steps 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (full workflow)
 
 **PNG path** (`.png` file):
-- Step 1: `nano-banana analyze` on the PNG extracts nodes/edges/labels (ground truth for quality review)
+- Step 1: Check for pre-computed analysis from root session first (see below)
 - Step 2: **Skip** -- no CLI dependency needed
 - Step 3: Aesthetic selection (same as source path)
 - Step 4: **Skip render** -- use the `.png` directly as `reference_image_path`
 - Steps 5 → 6 → 7 → 8 → 9: same as source path
 
-When input is a `.png` file path, detect this at the start of the workflow and
-branch accordingly. The PNG is passed directly to nano-banana as
-`reference_image_path` -- no `dot` or `mmdc` subprocess is needed.
+### Pre-computed analysis (PNG path only)
+
+The root session runs `nano-banana analyze` on the PNG to classify it before
+routing. When delegating, the root session passes this analysis result in the
+instruction context.
+
+**If a pre-computed analysis result is present in the instruction:**
+- Use it directly as Step 1 ground truth (node labels, node count, diagram type)
+- Skip the Step 1 `nano-banana analyze` call entirely
+- Proceed directly to Step 3 (aesthetic selection)
+
+This avoids a duplicate analyze call — the root session's classification serves
+double duty as both the routing decision AND the Step 1 ground truth extraction.
+
+**If no pre-computed result is present** (agent invoked directly without root routing):
+- Run `nano-banana analyze` in Step 1 as normal
 
 ## Workflow
 
 1. **Parse the source / analyze the image**: Determine input type first.
 
-   **If input is a `.png` file path:**
-   Run `nano-banana analyze` on the PNG with the prompt:
+   **If a `PRE-ANALYSIS:` block was passed in the instruction (root session already
+   classified this PNG):**
+   Use that analysis as your ground truth for quality review. Extract node labels
+   and node count from it. Proceed directly to Step 3 (aesthetic selection) —
+   skip Steps 2 and 4.
+
+   **If input is a `.png` file path with no pre-analysis:**
+   Run `nano-banana analyze` on the PNG:
    ```
    Describe all nodes and connections in this diagram. List every node label,
    every edge label, and the approximate node count. Format: nodes: [list],
    edges: [from → to (label)], node_count: N
    ```
-   Use the analysis output as ground truth for the quality review steps.
-   Skip Step 2 and Step 4 -- proceed directly to Step 3 (aesthetic selection).
+   Use the analysis output as ground truth for quality review.
+   Skip Steps 2 and 4 — proceed directly to Step 3 (aesthetic selection).
 
    **If input is `.dot` or Mermaid source text:**
    Use `diagram_beautifier.parser.parse_diagram_source()` to produce the
