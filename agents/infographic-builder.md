@@ -91,9 +91,6 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **b. Check for inline style specification.** If the user already described
    an aesthetic in their original request (e.g., "make a claymation infographic
    about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
-   If they also specified diorama mode inline (e.g., "make a lego diorama
-   about...", "claymation diorama of..."), skip straight to step 4 with both
-   the aesthetic and representation mode set.
    This is the **two-turn shortcut** — no proposal needed.
 
    **c. If no style was specified**, present the aesthetic options and halt:
@@ -121,20 +118,15 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    reasonable defaults for background, typography, icon style, color palette,
    lighting, texture, and mood.
 
-   **e. Diorama option.** If the user selected a diorama-compatible aesthetic
-   (Lego, Claymation, or a freeform 3D style) and the content is a linear
-   sequential workflow, offer diorama mode — a 3D scene where characters act
-   out the steps instead of an abstract diagram. Skip if diorama was already
-   specified inline (step 3b) or if the aesthetic is 2D.
-
 4. **Plan the design**: Apply the selected aesthetic template from the Aesthetics
    section of the Style Guide to set color palette, typography, and icon style.
    The aesthetic drives these decisions — not ad-hoc choices. Choose layout type
    from the Layout Types table. Plan visual metaphors appropriate to the content.
 
-   **If diorama mode is active**, frame the prompt as a 3D scene rather than an
-   abstract diagram. See Representation Mode in the Style Guide for guidance.
-   Let the model determine how to structure the scene — don't over-constrain.
+   **For 3D aesthetics** (Lego, Claymation, freeform 3D), decide representation
+   mode based on the content. See Representation Mode in the Style Guide — use
+   diorama for linear processes, materialized for everything else. If the user
+   explicitly says "diorama", use diorama regardless.
 
 5. **Generate the image(s)**:
 
