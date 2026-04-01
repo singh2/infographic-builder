@@ -116,6 +116,18 @@ Engineering below).
 - **Mood:** Playful, structural, childhood delight, tilt-shift perspective
 - **Diorama compatible:** Yes — see Representation Mode above
 
+### Style Reference Mode
+
+When the root session provides an `aesthetic_description` (extracted from a
+user-provided reference image), the 6-option menu is skipped entirely. The
+agent translates the aesthetic description into the same 7 style dimensions
+used by the curated templates above: palette, typography, icons, background,
+lighting, texture, and mood.
+
+This produces the same shape of input that downstream steps (4–8) always
+expect — no special casing required. The reference image's visual character
+drives the aesthetic instead of a curated template or freeform description.
+
 ### Freeform Aesthetics
 
 Users can describe any aesthetic beyond the featured six — "vintage travel poster",

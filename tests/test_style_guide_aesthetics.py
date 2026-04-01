@@ -206,3 +206,33 @@ def test_layout_types_content_intact():
     assert "Step-by-step process" in content, "Layout Types table content corrupted"
     assert "Comparison" in content, "Layout Types table content corrupted"
     assert "Statistics" in content, "Layout Types table content corrupted"
+
+
+# ---------------------------------------------------------------------------
+# Task: Style Reference Mode subsection in ## Aesthetics
+# ---------------------------------------------------------------------------
+
+def test_style_reference_mode_subsection_in_aesthetics():
+    content = read_guide()
+    aesthetics_idx = content.index(H2_AESTHETICS)
+    layout_idx = content.index(H2_LAYOUT_TYPES)
+    block = content[aesthetics_idx:layout_idx]
+    assert "### Style Reference Mode" in block
+
+def test_style_reference_mode_skips_menu():
+    content = read_guide()
+    start = content.index("### Style Reference Mode")
+    next_h3 = content.find("\n### ", start + 1)
+    block = content[start:next_h3] if next_h3 != -1 else content[start:]
+    lower = block.lower()
+    assert "skip" in lower
+    assert "menu" in lower or "6-option" in lower
+
+def test_style_reference_mode_translates_7_dimensions():
+    content = read_guide()
+    start = content.index("### Style Reference Mode")
+    next_h3 = content.find("\n### ", start + 1)
+    block = content[start:next_h3] if next_h3 != -1 else content[start:]
+    lower = block.lower()
+    for dim in ["palette", "typography", "icons", "background", "lighting", "texture", "mood"]:
+        assert dim in lower
