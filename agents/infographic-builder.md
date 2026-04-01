@@ -123,10 +123,9 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    The aesthetic drives these decisions — not ad-hoc choices. Choose layout type
    from the Layout Types table. Plan visual metaphors appropriate to the content.
 
-   **For 3D aesthetics** (Lego, Claymation, freeform 3D), decide representation
-   mode based on the content. See Representation Mode in the Style Guide — use
-   diorama for linear processes, materialized for everything else. If the user
-   explicitly says "diorama", use diorama regardless.
+   **For 3D aesthetics** (Lego, Claymation, freeform 3D), if the user asks for
+   a "diorama", frame the prompt as characters acting out a scene. See Diorama
+   Mode in the Style Guide.
 
 5. **Generate the image(s)**:
 

@@ -129,25 +129,14 @@ provides a freeform description:
 3. Use your best design judgment — there is no failure mode, only best-effort
    interpretation
 
-## Representation Mode
+## Diorama Mode
 
-When using a 3D-capable aesthetic (Lego, Claymation, or freeform 3D styles),
-there are two ways to represent the content:
+3D-capable aesthetics (Lego, Claymation, freeform 3D) naturally materialize
+content in the medium — information structures become physical objects. This
+is the default and needs no special prompting.
 
-**Default: content materialized in the medium.** The information structures
-become physical objects — lists become walls of bricks, checklists become
-clipboards, sections become rooms or stations. Characters may be present as
-decorative or metaphorical elements but aren't acting out a process. This is
-what happens naturally and needs no special prompting.
-
-**Diorama: characters act out a process in a scene.** An opt-in mode where
-the steps of a workflow become a living narrative — characters physically
-performing each step. Include the word "diorama" in the prompt and the model
-will get it.
-
-Dioramas work best for **linear sequential workflows**. The simpler the flow,
-the stronger the result. Once branching or conditionals appear, the default
-materialized approach handles complexity better.
+If the user asks for a **"diorama"**, frame the prompt as characters acting
+out a scene. Dioramas work best for linear sequential workflows.
 
 ## Layout Types
 
