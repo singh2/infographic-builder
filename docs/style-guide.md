@@ -101,6 +101,8 @@ Engineering below).
 - **Lighting:** Soft diffused studio lighting with realistic cast shadows, shallow depth of field
 - **Texture:** Visible clay fingerprints, slightly lumpy sculpted surfaces
 - **Mood:** Whimsical, tactile, handmade, warm
+- **Diorama compatible:** Yes — clay characters at assembly line stations, sculpted props,
+  miniature set pieces. Wallace & Gromit energy. See Representation Mode above.
 
 ### 6. Lego Brick Builder
 
@@ -113,6 +115,9 @@ Engineering below).
 - **Lighting:** Macro photography lighting with shallow depth of field, plastic specular highlights
 - **Texture:** Smooth injection-molded plastic, visible stud geometry
 - **Mood:** Playful, structural, childhood delight, tilt-shift perspective
+- **Diorama compatible:** Yes — minifigures at assembly line stations, conveyor belts,
+  Lego machinery with gears and levers, macro photography of a built scene. See
+  Representation Mode above.
 
 ### Freeform Aesthetics
 
@@ -126,6 +131,63 @@ provides a freeform description:
    sections, text, aspect ratio) — only the visual treatment is freeform
 3. Use your best design judgment — there is no failure mode, only best-effort
    interpretation
+
+## Representation Mode
+
+Every infographic has a **representation mode** that determines how content is
+visualized. This is independent of aesthetic — it sits between layout and style.
+
+### Diagram Mode (Default)
+
+Abstract, schematic representation. Faithful to topology — every node, edge,
+branch, and condition maps precisely. This is the default for all infographics.
+
+- Works with **all aesthetics** and **all layout types**
+- Best for: branching logic, conditionals, fan-out/fan-in, high node count (7+),
+  abstract relationships (type hierarchies, dependency graphs, state machines)
+- Scales well — adding nodes doesn't degrade clarity
+
+### Diorama Mode
+
+Characters act out each step in a physical scene — assembly lines, workstations,
+conveyor belts, environmental storytelling. Transforms an abstract process into
+a living narrative.
+
+- Only compatible with **3D-capable aesthetics**: Lego Brick Builder, Claymation
+  Studio, or freeform 3D styles (e.g., "wooden toy diorama", "miniature model")
+- Best for: **linear sequential workflows** (≤6 steps, no branching)
+- Characters should perform contextual actions at each station (searching files,
+  operating machines, presenting reports — not just standing next to labels)
+
+**Diorama prompt construction differs from diagram mode:**
+
+| Prompt Element | Diagram Mode | Diorama Mode |
+|----------------|-------------|--------------|
+| Layout framing | "flowchart", "numbered vertical flow" | "assembly line scene", "diorama with stations" |
+| Content elements | Nodes, arrows, labels | Characters, props, stations, conveyor belts |
+| Spatial logic | Abstract topology (top-down, left-right) | Physical scene (workbench, factory floor, workshop) |
+| Color coding | Applied to node fills/borders | Applied to station materials (brick color, clay color) |
+| Text placement | Inside or adjacent to nodes | On signage, labels, banners within the scene |
+
+### The Crossover Rule
+
+> **Dioramas beat diagrams when the workflow is simple and linear** (A → B → C →
+> Done). Characters and environmental storytelling make a simple pipeline feel
+> dynamic without obscuring any logic.
+>
+> **Diagrams beat dioramas once branching, conditions, or varying path types
+> appear.** Skip-vs-active paths, dead ends, fan-out/fan-in merge points — these
+> are abstract relationships that a simple line + dash pattern encodes effortlessly,
+> but physical metaphors (conveyor belts, chutes) struggle with.
+
+**Decision heuristic:** *"Can I imagine someone physically doing this step?"*
+If yes for every step, and the flow is linear → diorama is a strong candidate.
+If any step involves invisible forking, conceptual state changes, or conditional
+branching → stay in diagram mode.
+
+**Complexity guard:** If content has branching or conditionals and the user
+requests diorama mode, warn them that diagram mode would be more structurally
+accurate and ask to confirm before proceeding.
 
 ## Layout Types
 
