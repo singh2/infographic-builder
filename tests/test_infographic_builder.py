@@ -237,16 +237,19 @@ def test_step_8_different_aesthetic_before_layout():
 # Task: Step 1 accepts content_summary from root session
 # ---------------------------------------------------------------------------
 
+
 def _get_step_1_block(content: str) -> str:
     """Extract text between '1. **Parse the request**' and '2. **'."""
     start = content.index("1. **Parse the request**")
     end = content.index("2. **", start)
     return content[start:end]
 
+
 def test_step_1_accepts_content_summary():
     block = _get_step_1_block(read_agent())
     lower = block.lower()
     assert "content_summary" in lower
+
 
 def test_step_1_content_summary_becomes_subject_matter():
     block = _get_step_1_block(read_agent())
@@ -258,10 +261,12 @@ def test_step_1_content_summary_becomes_subject_matter():
 # Task: Step 3 — aesthetic_description from root session skips menu
 # ---------------------------------------------------------------------------
 
+
 def test_step_3_has_subpart_e():
     """Step 3 must contain sub-part e (load aesthetic template)."""
     block = _get_step_3_block(read_agent())
     assert "**e." in block or "**e. " in block
+
 
 def test_step_3_aesthetic_description_skips_menu():
     """Step 3b must reference aesthetic_description and skip the menu."""
@@ -270,9 +275,18 @@ def test_step_3_aesthetic_description_skips_menu():
     assert "aesthetic_description" in lower
     assert "skip" in lower
 
+
 def test_step_3_style_reference_translates_7_dimensions():
     """Step 3b must name all 7 style dimensions for translation."""
     block = _get_step_3_block(read_agent())
     lower = block.lower()
-    for dim in ["palette", "typography", "icons", "background", "lighting", "texture", "mood"]:
+    for dim in [
+        "palette",
+        "typography",
+        "icons",
+        "background",
+        "lighting",
+        "texture",
+        "mood",
+    ]:
         assert dim in lower
