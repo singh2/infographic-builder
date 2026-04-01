@@ -170,3 +170,53 @@ def test_step7_color_category_fidelity_scoped_to_legend_diagrams() -> None:
         "Step 7 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
         f"Actual step 7 block:\n{block}"
     )
+
+
+def _get_step_6_block(content: str) -> str:
+    start = content.find("6. **Beautify**")
+    assert start != -1, "Step 6 header '6. **Beautify**' not found in agent file"
+    end = content.find("7. **Quality review**", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step6_has_quality_bar_directive() -> None:
+    """Step 6 must include a quality bar directive about being dramatically more
+    visually impressive or publication quality."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert (
+        "dramatically more visually impressive" in block
+        or "publication quality" in block
+    ), (
+        "Step 6 must include a quality bar directive "
+        "('dramatically more visually impressive' or 'publication quality').\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_prompt_construction_order_aesthetic_before_structural() -> None:
+    """Step 6 must describe aesthetic properties before structural preservation,
+    and both must be present."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "aesthetic properties" in block.lower(), (
+        f"Step 6 must mention 'aesthetic properties'.\nActual step 6 block:\n{block}"
+    )
+    assert "structural preservation" in block.lower(), (
+        f"Step 6 must mention 'structural preservation'.\nActual step 6 block:\n{block}"
+    )
+    aesthetic_pos = block.lower().find("aesthetic properties")
+    structural_pos = block.lower().find("structural preservation")
+    assert aesthetic_pos < structural_pos, (
+        "Step 6 must list 'aesthetic properties' before 'structural preservation'.\n"
+        f"aesthetic_pos={aesthetic_pos}, structural_pos={structural_pos}\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_references_diagram_style_guide() -> None:
+    """The agent file must reference 'diagram-style-guide.md' in the Design Knowledge section."""
+    content = _read_agent()
+    assert "diagram-style-guide.md" in content, (
+        "Agent file must reference 'diagram-style-guide.md' in Design Knowledge section."
+    )

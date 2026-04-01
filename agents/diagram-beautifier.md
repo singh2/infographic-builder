@@ -55,6 +55,11 @@ see the shared Style Guide:
 
 @infographic-builder:docs/style-guide.md
 
+For diagram-specific generation guidance (node shapes, connector styles, quality
+bar, and per-aesthetic prompt patterns), see:
+
+@infographic-builder:docs/diagram-style-guide.md
+
 ## Operating Principles
 
 1. **Render first, beautify second** -- always render the source to a plain PNG
@@ -176,10 +181,28 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
 6. **Beautify**: Generate beautified image(s) via `nano-banana generate`:
 
+   **Prompt construction — order matters for VLM quality:**
+
+   Always construct the generation prompt in this order:
+
+   1. **Quality bar** (always first): "This should be dramatically more visually
+      impressive than the source — publication quality, not a recolored version."
+   2. **Aesthetic properties** (second): background, node style, typography, color
+      palette, lighting, texture, mood from the selected aesthetic template
+   3. **Node shape and connector guidance** (third): use the per-aesthetic
+      shape and connector table in the Diagram Style Guide. Apply the exact shape
+      and connector spec for the selected aesthetic.
+   4. **Color-category mapping** (fourth): if the source has a semantic color
+      legend, explicitly list every category and its node names. Do not rely on
+      the reference image alone — state it explicitly.
+   5. **Structural preservation** (last): "Preserve exact topology: N nodes,
+      [layout direction] flow. Labels: [all node labels listed]. All connections
+      must be maintained."
+
    **Single-panel path:**
-   - Use `reference_image_path` = plain rendered PNG
-   - Prompt = aesthetic template + structural preservation modifier
-   - Include all node/edge labels in the prompt for text accuracy
+   - Use `reference_image_path` = plain rendered PNG (or source PNG for PNG input)
+   - Construct prompt following the five-part order above
+   - Include all node/edge labels explicitly in part 5
 
    **Multi-panel path:**
    - Panel 1 generated first with plain PNG as reference (style anchor)
