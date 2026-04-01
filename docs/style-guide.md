@@ -101,6 +101,7 @@ Engineering below).
 - **Lighting:** Soft diffused studio lighting with realistic cast shadows, shallow depth of field
 - **Texture:** Visible clay fingerprints, slightly lumpy sculpted surfaces
 - **Mood:** Whimsical, tactile, handmade, warm
+- **Diorama compatible:** Yes — see Representation Mode above
 
 ### 6. Lego Brick Builder
 
@@ -113,6 +114,7 @@ Engineering below).
 - **Lighting:** Macro photography lighting with shallow depth of field, plastic specular highlights
 - **Texture:** Smooth injection-molded plastic, visible stud geometry
 - **Mood:** Playful, structural, childhood delight, tilt-shift perspective
+- **Diorama compatible:** Yes — see Representation Mode above
 
 ### Freeform Aesthetics
 
@@ -126,6 +128,15 @@ provides a freeform description:
    sections, text, aspect ratio) — only the visual treatment is freeform
 3. Use your best design judgment — there is no failure mode, only best-effort
    interpretation
+
+## Diorama Mode
+
+3D-capable aesthetics (Lego, Claymation, freeform 3D) naturally materialize
+content in the medium — information structures become physical objects. This
+is the default and needs no special prompting.
+
+If the user asks for a **"diorama"**, frame the prompt as characters acting
+out a scene. Dioramas work best for linear sequential workflows.
 
 ## Layout Types
 
