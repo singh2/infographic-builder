@@ -94,3 +94,26 @@ def test_infographic_awareness_no_keyword_dependency_for_png() -> None:
     lower = content.lower()
     # The routing section must instruct to analyze the image, not check keywords
     assert "do not" in lower or "always analyze" in lower or "regardless" in lower
+
+
+# ---------------------------------------------------------------------------
+# Enriched analyze prompt: content_summary + aesthetic_description
+# ---------------------------------------------------------------------------
+
+def test_analyze_prompt_extracts_content_summary() -> None:
+    """The enriched analyze prompt must instruct extraction of content_summary."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "content summary" in lower or "content_summary" in lower, (
+        "Analyze prompt must mention content summary extraction.\n"
+        f"File content:\n{content}"
+    )
+
+def test_analyze_prompt_extracts_aesthetic_description() -> None:
+    """The enriched analyze prompt must instruct extraction of aesthetic_description."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "aesthetic description" in lower or "aesthetic_description" in lower, (
+        "Analyze prompt must mention aesthetic description extraction.\n"
+        f"File content:\n{content}"
+    )

@@ -61,10 +61,17 @@ Do NOT guess from keywords or filenames. Always analyze the image directly:
 
 1. Run `nano-banana analyze` on the PNG with this exact prompt:
    ```
-   Is this image a structured diagram — such as a flowchart, architecture diagram,
-   sequence diagram, network diagram, ER diagram, or process flow?
-   Answer YES or NO. If YES: list all visible node/step labels and estimate the
-   node count.
+   1. DIAGRAM CLASSIFICATION: Is this image a structured diagram — such as a
+   flowchart, architecture diagram, sequence diagram, network diagram, ER diagram,
+   or process flow? Answer YES or NO. If YES: list all visible node/step labels
+   and estimate the node count.
+
+   2. CONTENT SUMMARY: What is this image about? Describe the subject matter, key
+   elements, data, and concepts depicted.
+
+   3. AESTHETIC DESCRIPTION: What does this image look like visually? Describe the
+   color palette, typography character, mood, visual style, layout approach, and
+   any distinctive design elements.
    ```
 
 2. Route based on the result:
