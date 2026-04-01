@@ -28,6 +28,9 @@ __pycache__/
 presentation*.html
 showcase/
 
+# Git worktrees (local only)
+.worktrees/
+
 # Evaluation harness output (timestamped results directories)
 eval-results/
 
