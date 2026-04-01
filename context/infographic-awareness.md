@@ -51,12 +51,15 @@ in the delegated sub-session.
 patterns are present, delegate to `infographic-builder:diagram-beautifier`
 instead of `infographic-builder:infographic-builder`:
 
-- **File extensions:** `.dot`, `.mmd`, `.mermaid`
+- **File extensions:** `.dot`, `.mmd`, `.mermaid`, `.png` (with diagram-beautification intent)
 - **Inline source patterns:** Input text starting with `digraph`, `graph {`,
   `flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`,
   `graph TD`, `graph LR`
 - **Intent keywords:** "beautify this diagram", "make this diagram pretty",
   "style this graph", or any combination of diagram source + visual enhancement
+- **PNG diagrams:** A `.png` file path combined with keywords like "beautify",
+  "diagram", "make it look nice", "style this" → diagram-beautifier. A `.png`
+  without diagram intent → infographic-builder (treats image as content reference).
 
 **Routing rule:**
 - Diagram source detected -> delegate to `infographic-builder:diagram-beautifier`
