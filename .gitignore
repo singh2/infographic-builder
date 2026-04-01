@@ -28,3 +28,6 @@ showcase/
 
 # Evaluation harness output (timestamped results directories)
 eval-results/
+
+# Git worktrees (local only)
+.worktrees/
