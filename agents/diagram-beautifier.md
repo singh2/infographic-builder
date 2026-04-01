@@ -17,7 +17,7 @@ meta:
     **MUST be used for:**
     - Any request to beautify, style, or enhance a .dot or Mermaid diagram
     - Requests that provide diagram source (digraph, graph, flowchart, etc.)
-    - Requests mentioning diagram files (.dot, .mmd, .mermaid extensions)
+    - Requests mentioning diagram files (.dot, .mmd, .mermaid, .png extensions)
 
     <example>
     user: 'Beautify this architecture diagram in claymation style' (with .dot file)
@@ -64,14 +64,44 @@ see the shared Style Guide:
    decomposition decisions
 4. **Iterate if given feedback** -- treat follow-up messages as refinement requests
 
+## Input Types
+
+The diagram-beautifier accepts two input types with different processing paths:
+
+**Source path** (`.dot` / Mermaid text):
+Steps 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (full workflow)
+
+**PNG path** (`.png` file):
+- Step 1: `nano-banana analyze` on the PNG extracts nodes/edges/labels (ground truth for quality review)
+- Step 2: **Skip** -- no CLI dependency needed
+- Step 3: Aesthetic selection (same as source path)
+- Step 4: **Skip render** -- use the `.png` directly as `reference_image_path`
+- Steps 5 → 6 → 7 → 8 → 9: same as source path
+
+When input is a `.png` file path, detect this at the start of the workflow and
+branch accordingly. The PNG is passed directly to nano-banana as
+`reference_image_path` -- no `dot` or `mmdc` subprocess is needed.
+
 ## Workflow
 
-1. **Parse the source**: Extract nodes, edges, labels, and subgraphs from the
-   Graphviz (.dot) or Mermaid input. Determine the diagram format and type.
+1. **Parse the source / analyze the image**: Determine input type first.
+
+   **If input is a `.png` file path:**
+   Run `nano-banana analyze` on the PNG with the prompt:
+   ```
+   Describe all nodes and connections in this diagram. List every node label,
+   every edge label, and the approximate node count. Format: nodes: [list],
+   edges: [from → to (label)], node_count: N
+   ```
+   Use the analysis output as ground truth for the quality review steps.
+   Skip Step 2 and Step 4 -- proceed directly to Step 3 (aesthetic selection).
+
+   **If input is `.dot` or Mermaid source text:**
    Use `diagram_beautifier.parser.parse_diagram_source()` to produce the
    normalized structure: nodes, edges, subgraphs, node_count, edge_count.
+   Proceed through all 9 steps.
 
-2. **Dependency check**: Verify the required CLI tool is available.
+2. **Dependency check** (source path only -- skip for PNG input): Verify the required CLI tool is available.
    - `.dot` input -> check for `dot` (Graphviz) via `which dot`
    - Mermaid input -> check for `mmdc` (Mermaid CLI) via `which mmdc`
 
@@ -104,12 +134,14 @@ see the shared Style Guide:
 
    **Then stop and wait for the user's selection.**
 
-4. **Render to plain PNG**: Render the source to a structurally faithful but
-   visually plain PNG using the appropriate CLI tool:
+4. **Render to plain PNG** (source path only -- skip for PNG input): Render the
+   source to a structurally faithful but visually plain PNG using the appropriate
+   CLI tool:
    - Graphviz: `dot -Tpng -Gdpi=150 input.dot -o /tmp/diagram_plain.png`
    - Mermaid: `mmdc -i input.mmd -o /tmp/diagram_plain.png -w 2048 -H 1536 --scale 2`
 
-   This plain PNG becomes the `reference_image_path` for nano-banana generation.
+   **For PNG input:** use the provided `.png` file directly as `reference_image_path`.
+   No rendering step is needed -- the PNG is already the structural reference.
 
 5. **Panel decomposition**: Based on node count and subgraph structure, decide
    single vs. multi-panel layout:

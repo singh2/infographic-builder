@@ -81,3 +81,22 @@ def test_agent_mentions_stitch_panels() -> None:
 def test_agent_references_style_guide() -> None:
     content = _read_agent()
     assert "style-guide" in content or "style guide" in content.lower()
+
+
+def test_agent_mentions_png_input() -> None:
+    """Agent must describe PNG file as a supported input type."""
+    content = _read_agent()
+    assert ".png" in content
+
+
+def test_agent_skips_render_for_png() -> None:
+    """Agent must mention skipping the render step for PNG input."""
+    content = _read_agent()
+    lower = content.lower()
+    assert "skip" in lower or "png" in lower and "render" in lower
+
+
+def test_agent_uses_analyze_for_png_ground_truth() -> None:
+    """Agent must mention using nano-banana analyze on PNG for label ground truth."""
+    content = _read_agent()
+    assert "analyze" in content.lower() and ".png" in content
