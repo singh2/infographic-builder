@@ -34,8 +34,8 @@ def test_gitignore_preserves_existing_content():
         "*.jpeg",
         "# Keep docs images",
         "!docs/*.png",
-        "# Amplifier local settings (contains local source overrides)",
-        ".amplifier/settings.yaml",
+        "# Amplifier local settings (entire directory",
+        ".amplifier/",
         "# OS files",
         ".DS_Store",
     ]
