@@ -177,6 +177,26 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    - If no output paths are specified, follow the Panel Naming Convention
      in the Style Guide
 
+   **Image input modes** (when the root session provides an image):
+
+   | Mode | Panel 1 | Panels 2-N |
+   |---|---|---|
+   | Style reference, single panel | `reference_image_path = image_path` | — |
+   | Style reference, multi-panel | `reference_image_path = image_path` | `reference_image_paths = [panel_1_path, image_path]` |
+   | Content source (no style reference) | No reference image passed | Panel 1 for chaining only (existing) |
+
+   In **style reference mode**, the user's original image anchors the aesthetic:
+   - Single panel: set `reference_image_path` to the original `image_path`.
+   - Multi-panel: Panel 1 uses `reference_image_path = image_path`. Panels
+     2-N use `reference_image_paths = [panel_1_path, image_path]` — two
+     anchors for cross-panel consistency (Panel 1) and aesthetic fidelity
+     (original image).
+
+   In **content source mode**, `image_path` is intentionally NOT passed to
+   nano-banana generate. The content summary (text) is sufficient, and
+   passing a raw whiteboard photo or screenshot would pollute the generated
+   aesthetic.
+
 6. **Quality review**:
 
    Analyze each generated image using nano-banana `analyze` with the evaluation

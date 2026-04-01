@@ -290,3 +290,39 @@ def test_step_3_style_reference_translates_7_dimensions():
         "mood",
     ]:
         assert dim in lower
+
+
+# ---------------------------------------------------------------------------
+# Task: Step 5 — reference_image_path modes for image input
+# ---------------------------------------------------------------------------
+
+
+def _get_step_5_block(content: str) -> str:
+    start = content.index("5. **Generate the image(s)**")
+    end = content.index("6. **", start)
+    return content[start:end]
+
+
+def test_step_5_describes_style_reference_mode():
+    block = _get_step_5_block(read_agent())
+    lower = block.lower()
+    assert "style reference" in lower
+
+
+def test_step_5_describes_content_source_mode():
+    block = _get_step_5_block(read_agent())
+    lower = block.lower()
+    assert "content source" in lower
+    assert "intentionally not" in lower or "not passed" in lower
+
+
+def test_step_5_multi_panel_uses_reference_image_paths_plural():
+    block = _get_step_5_block(read_agent())
+    assert "reference_image_paths" in block
+
+
+def test_step_5_two_anchors_panel_1_and_image_path():
+    block = _get_step_5_block(read_agent())
+    lower = block.lower()
+    assert "cross-panel consistency" in lower
+    assert "aesthetic fidelity" in lower
