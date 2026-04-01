@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from diagram_beautifier.parser import parse_diagram_source
 
 
@@ -82,7 +84,7 @@ def test_parse_dot_subgraphs() -> None:
     result = parse_diagram_source(DOT_WITH_SUBGRAPHS, "dot")
     assert len(result["subgraphs"]) == 2
     names = {sg["name"] for sg in result["subgraphs"]}
-    assert "Frontend" in names or "cluster_frontend" in names
+    assert names == {"Frontend", "Backend"}
 
 
 def test_parse_dot_implicit_labels() -> None:
@@ -184,3 +186,9 @@ def test_parse_preserves_raw_source() -> None:
     """Parser includes the original source text in the result."""
     result = parse_diagram_source(SIMPLE_DIGRAPH, "dot")
     assert result["raw_source"] == SIMPLE_DIGRAPH
+
+
+def test_parse_unsupported_format_raises() -> None:
+    """Parser raises ValueError for unknown format identifiers."""
+    with pytest.raises(ValueError, match="Unsupported format"):
+        parse_diagram_source("some source", "svg")
