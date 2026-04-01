@@ -124,7 +124,9 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    from the Layout Types table. Plan visual metaphors appropriate to the content.
 
    **For 3D aesthetics** (Lego, Claymation, freeform 3D), if the user asks for
-   a "diorama", frame the prompt as characters acting out a scene. See Diorama
+   a "diorama", frame the prompt as characters acting out a scene. Otherwise,
+   let the content materialize naturally in the medium — information structures
+   become physical objects built from the aesthetic's materials. See Diorama
    Mode in the Style Guide.
 
 5. **Generate the image(s)**:
