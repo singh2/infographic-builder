@@ -116,3 +116,17 @@ def test_agent_skips_step1_analyze_when_precomputed() -> None:
     content = _read_agent()
     lower = content.lower()
     assert "skip" in lower and ("step 1" in lower or "analyze" in lower)
+
+
+def test_agent_accepts_pre_analysis_from_root_session() -> None:
+    """Agent must describe using PRE-ANALYSIS block when passed from root session."""
+    content = _read_agent()
+    assert "PRE-ANALYSIS" in content
+
+
+def test_agent_skips_steps_when_pre_analysis_provided() -> None:
+    """Agent must skip Steps 2 and 4 when pre-analysis is available."""
+    content = _read_agent()
+    lower = content.lower()
+    # Must mention skipping when pre-analysis exists
+    assert "pre-analysis" in lower and "skip" in lower

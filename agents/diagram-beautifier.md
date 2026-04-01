@@ -101,19 +101,21 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
 1. **Parse the source / analyze the image**: Determine input type first.
 
-   **If input is a `.png` file path:**
-   First, check if the root session passed a pre-computed classification result.
-   Look for analysis content in the instruction (node labels, node count, YES/NO
-   classification). If found, use it as ground truth and skip to Step 3.
+   **If a `PRE-ANALYSIS:` block was passed in the instruction (root session already
+   classified this PNG):**
+   Use that analysis as your ground truth for quality review. Extract node labels
+   and node count from it. Proceed directly to Step 3 (aesthetic selection) —
+   skip Steps 2 and 4.
 
-   If no pre-computed result is available, run `nano-banana analyze` on the PNG:
+   **If input is a `.png` file path with no pre-analysis:**
+   Run `nano-banana analyze` on the PNG:
    ```
    Describe all nodes and connections in this diagram. List every node label,
    every edge label, and the approximate node count. Format: nodes: [list],
    edges: [from → to (label)], node_count: N
    ```
-   Use the analysis output as ground truth for the quality review steps.
-   Skip Step 2 and Step 4 -- proceed directly to Step 3 (aesthetic selection).
+   Use the analysis output as ground truth for quality review.
+   Skip Steps 2 and 4 — proceed directly to Step 3 (aesthetic selection).
 
    **If input is `.dot` or Mermaid source text:**
    Use `diagram_beautifier.parser.parse_diagram_source()` to produce the
