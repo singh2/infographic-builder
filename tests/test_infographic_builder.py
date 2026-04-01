@@ -252,3 +252,24 @@ def test_step_1_content_summary_becomes_subject_matter():
     block = _get_step_1_block(read_agent())
     lower = block.lower()
     assert "subject matter" in lower
+
+
+# ---------------------------------------------------------------------------
+# Task: Step 3 — aesthetic_description from root session skips menu
+# ---------------------------------------------------------------------------
+
+def test_step_3_has_subpart_e():
+    block = _get_step_3_block(read_agent())
+    assert "**e." in block or "**e. " in block
+
+def test_step_3_aesthetic_description_skips_menu():
+    block = _get_step_3_block(read_agent())
+    lower = block.lower()
+    assert "aesthetic_description" in lower
+    assert "skip" in lower
+
+def test_step_3_style_reference_translates_7_dimensions():
+    block = _get_step_3_block(read_agent())
+    lower = block.lower()
+    for dim in ["palette", "typography", "icons", "background", "lighting", "texture", "mood"]:
+        assert dim in lower

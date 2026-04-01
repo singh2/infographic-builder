@@ -94,12 +94,19 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **a. Recommend a layout** based on content analysis from step 2 — reference
    the Layout Types table in the Style Guide.
 
-   **b. Check for inline style specification.** If the user already described
+   **b. Check for `aesthetic_description` from root session.** If the root
+   session provided an `aesthetic_description` (via style reference mode),
+   translate it into the same 7 style dimensions used by existing templates:
+   palette, typography, icons, background, lighting, texture, and mood. Skip
+   the 6-option menu entirely and proceed to step 4. This is the **style
+   reference shortcut** — the user's reference image drives the aesthetic.
+
+   **c. Check for inline style specification.** If the user already described
    an aesthetic in their original request (e.g., "make a claymation infographic
    about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
    This is the **two-turn shortcut** — no proposal needed.
 
-   **c. If no style was specified**, present the aesthetic options and halt:
+   **d. If no style was specified**, present the aesthetic options and halt:
 
    ```
    For "[topic]," I'd recommend [Layout Name].
@@ -118,7 +125,7 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **Then stop and wait for the user's selection.** Do not proceed to design
    or generation until the user has chosen.
 
-   **d. Load the aesthetic template.** If the user picks a numbered option,
+   **e. Load the aesthetic template.** If the user picks a numbered option,
    load the corresponding template from the Aesthetics section of the Style
    Guide. If they describe a freeform style, translate their description into
    reasonable defaults for background, typography, icon style, color palette,
