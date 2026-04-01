@@ -39,3 +39,15 @@ def test_infographic_awareness_routes_diagrams_to_beautifier() -> None:
 def test_infographic_awareness_preserves_existing_delegation() -> None:
     content = AWARENESS_FILE.read_text(encoding="utf-8")
     assert "infographic-builder" in content
+
+
+def test_diagram_awareness_mentions_png_extension() -> None:
+    """diagram-beautifier-awareness.md must mention .png as a detectable input."""
+    content = (Path(__file__).parent.parent / "context" / "diagram-beautifier-awareness.md").read_text(encoding="utf-8")
+    assert ".png" in content
+
+
+def test_infographic_awareness_routes_png_diagrams_to_beautifier() -> None:
+    """infographic-awareness.md must describe routing PNG diagram input to diagram-beautifier."""
+    content = (Path(__file__).parent.parent / "context" / "infographic-awareness.md").read_text(encoding="utf-8")
+    assert ".png" in content and "diagram-beautifier" in content
