@@ -55,6 +55,7 @@ You'll get back `.png` file(s), a design rationale, and suggestions for refineme
 |---------|---------|
 | **Aesthetic** | `"make it claymation"` / `"dark mode tech"` / `"keep it minimal and corporate"` |
 | **Layout** | `"use a timeline layout"` / `"make it a comparison"` |
+| **Diorama** | `"make it a diorama"` / `"lego diorama"` — characters act out each step in a physical scene |
 | **Panels** | `"single panel only"` / `"make it a 4-panel infographic"` |
 | **Orientation** | `"horizontal panels"` / `"vertical panels"` |
 | **Skip review** | `"skip the review"` — faster generation, no quality check pass |
@@ -122,6 +123,12 @@ The filename is derived from your topic automatically. If you specify an output 
 Six curated aesthetics — from **Clean Minimalist** (boardroom-ready) to **Lego Brick Builder** (plastic studs and tilt-shift macro photography) — plus **Freeform** for anything you can describe.
 
 Say it inline (`"make a claymation infographic about..."`) and the agent skips straight to generation. Or leave it open and you'll get a menu to choose from.
+
+### Diorama mode
+
+For **Lego** and **Claymation** styles, you can switch from a standard diagram to a **diorama** — characters acting out each step in a physical scene with assembly lines, workstations, and props.
+
+Say `"make a lego diorama about..."` or choose it when prompted. Dioramas work best for linear workflows (≤6 steps, no branching). For complex branching diagrams, the agent will recommend sticking with a standard layout.
 
 ---
 
@@ -383,6 +390,11 @@ infographic-builder/
 **Shipped — Style System**:
 Six curated aesthetics (Clean Minimalist, Bold Editorial, Claymation Studio, Dark Mode Tech,
 Hand-Drawn Sketchnote, Lego Brick Builder) with full prompt templates. Layout selection covers 14 types.
+
+**Shipped — Diorama Mode**:
+For Lego and Claymation styles, switch from abstract diagrams to living scenes where characters
+act out each step. Assembly lines, workstations, conveyor belts, environmental storytelling. Best
+for linear workflows (≤6 steps). The agent auto-detects when diorama is a good fit and offers it.
 
 **Planned — User-Provided Reference Images**:
 When a user says "make it look like this" and provides an image, the agent should
