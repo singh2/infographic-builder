@@ -121,48 +121,20 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    reasonable defaults for background, typography, icon style, color palette,
    lighting, texture, and mood.
 
-   **e. Diorama option (for compatible aesthetics).** After the user selects
-   a diorama-compatible aesthetic (Lego Brick Builder, Claymation Studio, or
-   a freeform 3D style), AND the content is a linear sequential workflow (≤6
-   steps, no branching), offer the diorama option:
-
-   ```
-   This workflow is linear — perfect for a diorama version where
-   characters act out each step in a physical scene (assembly line,
-   workstations, conveyor belts).
-
-   Would you like:
-     • Standard infographic — clean diagram layout
-     • Diorama — characters acting out each step in a [Lego/Claymation/...] scene
-   ```
-
-   **Skip this sub-step if:**
-   - The user already specified diorama inline (handled in step 3b)
-   - The aesthetic is not diorama-compatible (flat/2D styles)
-   - The content has branching, conditionals, or 7+ steps
-
-   **Complexity guard:** If the content has branching or conditionals and the
-   user explicitly requests diorama mode, warn them: *"This workflow has
-   branching logic — a standard diagram would represent the structure more
-   accurately. Want to proceed with diorama anyway, or switch to diagram?"*
-   Proceed with their choice either way.
+   **e. Diorama option.** If the user selected a diorama-compatible aesthetic
+   (Lego, Claymation, or a freeform 3D style) and the content is a linear
+   sequential workflow, offer diorama mode — a 3D scene where characters act
+   out the steps instead of an abstract diagram. Skip if diorama was already
+   specified inline (step 3b) or if the aesthetic is 2D.
 
 4. **Plan the design**: Apply the selected aesthetic template from the Aesthetics
    section of the Style Guide to set color palette, typography, and icon style.
    The aesthetic drives these decisions — not ad-hoc choices. Choose layout type
    from the Layout Types table. Plan visual metaphors appropriate to the content.
 
-   **If diorama mode is active**, shift prompt construction from abstract layout
-   to scene description. See the Representation Mode section of the Style Guide
-   for the full prompt element mapping. Key differences:
-   - Frame as "assembly line scene" or "diorama with stations" instead of
-     "flowchart" or "numbered vertical flow"
-   - Design characters performing contextual actions at each station (searching
-     files, operating machines, presenting reports — not just standing by labels)
-   - Use conveyor belts, workbenches, or factory floors as spatial connectors
-     instead of arrows
-   - Apply color coding to physical materials (brick colors, clay colors, station
-     materials) rather than node fills
+   **If diorama mode is active**, frame the prompt as a 3D scene rather than an
+   abstract diagram. See Representation Mode in the Style Guide for guidance.
+   Let the model determine how to structure the scene — don't over-constrain.
 
 5. **Generate the image(s)**:
 
