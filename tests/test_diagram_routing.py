@@ -124,3 +124,32 @@ def test_analyze_prompt_extracts_aesthetic_description() -> None:
         "Analyze prompt must mention aesthetic description extraction.\n"
         f"File content:\n{content}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Style intent detection routing
+# ---------------------------------------------------------------------------
+
+
+def test_style_intent_detection_section_exists() -> None:
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "style intent" in lower
+
+
+def test_style_intent_signals_listed() -> None:
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "in the style of" in lower
+    assert "make it look like" in lower
+
+
+def test_no_style_signal_discards_aesthetic() -> None:
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "discard" in lower
+
+
+def test_style_signal_passes_image_path() -> None:
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    assert "image_path" in content

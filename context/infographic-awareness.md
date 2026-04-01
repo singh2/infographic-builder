@@ -78,7 +78,22 @@ Do NOT guess from keywords or filenames. Always analyze the image directly:
    - Answer is **YES** → delegate to `infographic-builder:diagram-beautifier`,
      passing the full analysis result as context in your instruction so the
      agent can use it as Step 1 ground truth
-   - Answer is **NO** → delegate to `infographic-builder:infographic-builder`
+   - Answer is **NO** → proceed to step 3 (style intent detection)
+
+3. **Style intent detection** (only when routing to infographic-builder):
+
+   Check the user's text prompt for explicit style intent signals:
+   - "feels like this"
+   - "in the style of"
+   - "make it look like"
+   - "matching this aesthetic"
+
+   **If no style signal detected** (default): pass only `content_summary` to
+   the infographic-builder. Discard `aesthetic_description` silently. Do NOT
+   pass `image_path` to the agent.
+
+   **If style signal detected**: pass `content_summary`, `aesthetic_description`,
+   AND `image_path` to the infographic-builder.
 
 **This analyze step takes ~10 seconds and happens before the aesthetic menu appears,
 so the user does not experience it as generation latency.**
