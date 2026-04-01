@@ -51,3 +51,46 @@ def test_infographic_awareness_routes_png_diagrams_to_beautifier() -> None:
     """infographic-awareness.md must describe routing PNG diagram input to diagram-beautifier."""
     content = (Path(__file__).parent.parent / "context" / "infographic-awareness.md").read_text(encoding="utf-8")
     assert ".png" in content and "diagram-beautifier" in content
+
+
+def test_infographic_awareness_analyze_before_routing_png() -> None:
+    """infographic-awareness.md must instruct analyzing PNG before routing, not using keywords."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    # Must mention analyzing the image, not just keywords
+    assert "analyze" in lower and ".png" in lower
+
+
+def test_infographic_awareness_mandatory_routing_language() -> None:
+    """infographic-awareness.md must use mandatory/imperative routing language for PNG."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    # Should have strong mandatory language, not advisory
+    assert "MANDATORY" in content or "DO NOT" in content or "NEVER" in content
+
+
+def test_infographic_awareness_passes_analysis_to_beautifier() -> None:
+    """infographic-awareness.md must describe passing pre-analysis to diagram-beautifier."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "pre-analysis" in lower or "pre_analysis" in lower or "ground truth" in lower
+
+
+def test_infographic_awareness_analyze_before_routing_png() -> None:
+    """Routing must instruct analyzing the PNG before making routing decision."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    assert "analyze" in lower and "png" in lower
+
+
+def test_infographic_awareness_passes_analysis_to_agent() -> None:
+    """Routing must instruct passing the analysis result to diagram-beautifier."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    assert "passing" in content.lower() or "pass" in content.lower()
+
+
+def test_infographic_awareness_no_keyword_dependency_for_png() -> None:
+    """Routing must not rely on user keywords for PNG — must use image analysis."""
+    content = AWARENESS_FILE.read_text(encoding="utf-8")
+    lower = content.lower()
+    # The routing section must instruct to analyze the image, not check keywords
+    assert "do not" in lower or "always analyze" in lower or "regardless" in lower

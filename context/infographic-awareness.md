@@ -45,25 +45,45 @@ The agent automatically handles:
 No configuration or flags needed. The user steers with natural language
 in the delegated sub-session.
 
-## Diagram Input Detection
+## Routing Decision
 
-**Before delegating, check if the input is diagram source.** If any of these
-patterns are present, delegate to `infographic-builder:diagram-beautifier`
-instead of `infographic-builder:infographic-builder`:
+### Source files (.dot / .mmd / .mermaid / inline Graphviz or Mermaid syntax)
 
-- **File extensions:** `.dot`, `.mmd`, `.mermaid`, `.png` (with diagram-beautification intent)
-- **Inline source patterns:** Input text starting with `digraph`, `graph {`,
-  `flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`,
-  `graph TD`, `graph LR`
-- **Intent keywords:** "beautify this diagram", "make this diagram pretty",
-  "style this graph", or any combination of diagram source + visual enhancement
-- **PNG diagrams:** A `.png` file path combined with keywords like "beautify",
-  "diagram", "make it look nice", "style this" → diagram-beautifier. A `.png`
-  without diagram intent → infographic-builder (treats image as content reference).
+Route immediately to `infographic-builder:diagram-beautifier`. No analysis needed.
 
-**Routing rule:**
-- Diagram source detected -> delegate to `infographic-builder:diagram-beautifier`
-- Natural language topic (no diagram source) -> delegate to `infographic-builder:infographic-builder`
+Detection patterns:
+- File extensions: `.dot`, `.mmd`, `.mermaid`
+- Inline text starting with: `digraph`, `graph {`, `flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`, `graph TD`, `graph LR`
+
+### PNG files (`.png`) — ALWAYS analyze first, regardless of user wording
+
+Do NOT guess from keywords or filenames. Always analyze the image directly:
+
+1. Run `nano-banana analyze` on the PNG with this exact prompt:
+   ```
+   Is this image a structured diagram — such as a flowchart, architecture diagram,
+   sequence diagram, network diagram, ER diagram, or process flow?
+   Answer YES or NO. If YES: list all visible node/step labels and estimate the
+   node count.
+   ```
+
+2. Route based on the result:
+   - Answer is **YES** → delegate to `infographic-builder:diagram-beautifier`,
+     passing the full analysis result as context in your instruction so the
+     agent can use it as Step 1 ground truth
+   - Answer is **NO** → delegate to `infographic-builder:infographic-builder`
+
+**This analyze step takes ~10 seconds and happens before the aesthetic menu appears,
+so the user does not experience it as generation latency.**
+
+### All other input (natural language, data descriptions)
+
+Route to `infographic-builder:infographic-builder`.
+
+### Important
+
+Do NOT attempt to determine routing from the user's wording, the filename, or the
+folder name. For PNG files, the image analysis result is the only reliable signal.
 
 ## Prerequisites
 
