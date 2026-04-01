@@ -192,6 +192,11 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
      prompt fidelity, aesthetic fidelity)
    - **Label fidelity** -- check all text labels against source ground truth
    - **Structural accuracy** -- verify node count and major connections
+   - **Color-category fidelity** (diagrams with a semantic legend only): for
+     each category in the original legend (e.g. Script Step, AI Agent Step,
+     Condition, Start/End), verify that the same node names appear under the
+     same category in the output. Flag any node whose category assignment
+     changed from the source.
 
    Max 1 refinement pass per panel, targeting only specific issues identified.
 

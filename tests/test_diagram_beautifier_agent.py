@@ -1,4 +1,5 @@
 """Tests for agents/diagram-beautifier.md structure and correctness."""
+
 from pathlib import Path
 
 AGENT_FILE = Path(__file__).parent.parent / "agents" / "diagram-beautifier.md"
@@ -41,7 +42,17 @@ def test_workflow_has_9_steps() -> None:
 
 def test_workflow_step_order() -> None:
     content = _read_agent()
-    keywords_in_order = ["parse", "dependency", "aesthetic", "render", "decompos", "beautif", "review", "assembl", "return"]
+    keywords_in_order = [
+        "parse",
+        "dependency",
+        "aesthetic",
+        "render",
+        "decompos",
+        "beautif",
+        "review",
+        "assembl",
+        "return",
+    ]
     lower = content.lower()
     last_pos = -1
     for keyword in keywords_in_order:
@@ -108,7 +119,9 @@ def test_agent_accepts_precomputed_analysis() -> None:
     """Agent Step 1 must accept pre-computed analysis from root session."""
     content = _read_agent()
     lower = content.lower()
-    assert "pre" in lower and ("analys" in lower or "classif" in lower or "passed" in lower)
+    assert "pre" in lower and (
+        "analys" in lower or "classif" in lower or "passed" in lower
+    )
 
 
 def test_agent_skips_step1_analyze_when_precomputed() -> None:
@@ -130,3 +143,30 @@ def test_agent_skips_steps_when_pre_analysis_provided() -> None:
     lower = content.lower()
     # Must mention skipping when pre-analysis exists
     assert "pre-analysis" in lower and "skip" in lower
+
+
+def _get_step_7_block(content: str) -> str:
+    start = content.index("7. **Quality review**")
+    end = content.find("8. **Assemble**", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step7_has_color_category_fidelity_dimension() -> None:
+    """Step 7 must include 'color-category fidelity' as an 8th quality dimension."""
+    content = AGENT_FILE.read_text(encoding="utf-8")
+    block = _get_step_7_block(content)
+    assert "color-category fidelity" in block.lower(), (
+        "Step 7 must include 'color-category fidelity' dimension.\n"
+        f"Actual step 7 block:\n{block}"
+    )
+
+
+def test_step7_color_category_fidelity_scoped_to_legend_diagrams() -> None:
+    """Color-category fidelity must be scoped to diagrams with a semantic legend."""
+    content = AGENT_FILE.read_text(encoding="utf-8")
+    block = _get_step_7_block(content)
+    assert "semantic legend" in block.lower() or "legend only" in block.lower(), (
+        "Step 7 color-category fidelity must be scoped to diagrams with a semantic "
+        "legend (must contain 'semantic legend' or 'legend only').\n"
+        f"Actual step 7 block:\n{block}"
+    )
