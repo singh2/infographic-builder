@@ -261,6 +261,20 @@ Panel 1 is the style anchor. All subsequent panels reference it:
 Panel 1 MUST be generated first and alone. Panels 2-N may be generated in
 parallel since they all reference Panel 1, not each other.
 
+**Style reference mode (multi-panel):** When the root session provides an
+`image_path` for style reference, the reference image chaining uses a
+two-anchor pattern:
+
+- **Panel 1**: `reference_image_path = image_path` (user's reference image
+  anchors the aesthetic)
+- **Panels 2-N**: `reference_image_paths = [panel_1_path, image_path]` — two
+  anchors: Panel 1 for cross-panel consistency, and the original `image_path`
+  for aesthetic fidelity
+
+This is the first use of `reference_image_paths` (plural) in the project.
+The two-anchor approach ensures Panels 2-N stay consistent with both Panel 1
+and the original style reference.
+
 ### Post-Panel 1 Style Reconciliation
 
 After Panel 1 is generated, analyze it with nano-banana `analyze` using this

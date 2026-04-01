@@ -152,3 +152,30 @@ def test_field_order_after_aesthetic():
     assert fields == expected_order, (
         f"Field order mismatch.\nExpected: {expected_order}\nGot:      {fields}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Task: reference_image_paths (plural) in Reference Image Chaining
+# ---------------------------------------------------------------------------
+
+def _get_reference_chaining_block(content: str) -> str:
+    start = content.index("### Reference Image Chaining")
+    next_h3 = content.find("\n### ", start + 1)
+    return content[start:next_h3] if next_h3 != -1 else content[start:]
+
+
+def test_reference_chaining_documents_plural_paths():
+    block = _get_reference_chaining_block(read_guide())
+    assert "reference_image_paths" in block
+
+
+def test_reference_chaining_two_anchor_pattern():
+    block = _get_reference_chaining_block(read_guide())
+    lower = block.lower()
+    assert "cross-panel consistency" in lower
+    assert "aesthetic fidelity" in lower
+
+
+def test_reference_chaining_mentions_image_path():
+    block = _get_reference_chaining_block(read_guide())
+    assert "image_path" in block
