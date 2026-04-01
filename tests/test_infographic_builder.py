@@ -4,8 +4,8 @@ Tests for agents/infographic-builder.md structure and correctness.
 Covers (task-6 quality fix suggestions):
 1. Execution model banner has parenthetical caveat about aesthetic selection
 2. Steps 1–8 are present in order with no gaps or duplicates
-3. Step 3 contains sub-parts a, b, c, d
-4. Step 3c ends with the halt instruction
+3. Step 3 contains sub-parts a, b, c, d, e
+4. Step 3d ends with the halt instruction
 5. Cross-reference in step 2 says 'step 6' (not 'step 5')
 
 Covers (task-8 output contract suggestions):
@@ -78,7 +78,7 @@ def test_no_step_9_or_higher():
 
 
 # ---------------------------------------------------------------------------
-# Step 3: Aesthetic selection — sub-parts a, b, c, d
+# Step 3: Aesthetic selection — sub-parts a, b, c, d, e
 # ---------------------------------------------------------------------------
 
 
@@ -96,7 +96,7 @@ def test_step_3_has_subpart_a():
 
 
 def test_step_3_has_subpart_b():
-    """Step 3 must contain sub-part b (inline style check / two-turn shortcut)."""
+    """Step 3 must contain sub-part b (aesthetic_description from root session)."""
     block = _get_step_3_block(read_agent())
     assert "**b." in block or "**b. " in block, "Step 3 sub-part b missing"
 
@@ -259,16 +259,19 @@ def test_step_1_content_summary_becomes_subject_matter():
 # ---------------------------------------------------------------------------
 
 def test_step_3_has_subpart_e():
+    """Step 3 must contain sub-part e (load aesthetic template)."""
     block = _get_step_3_block(read_agent())
     assert "**e." in block or "**e. " in block
 
 def test_step_3_aesthetic_description_skips_menu():
+    """Step 3b must reference aesthetic_description and skip the menu."""
     block = _get_step_3_block(read_agent())
     lower = block.lower()
     assert "aesthetic_description" in lower
     assert "skip" in lower
 
 def test_step_3_style_reference_translates_7_dimensions():
+    """Step 3b must name all 7 style dimensions for translation."""
     block = _get_step_3_block(read_agent())
     lower = block.lower()
     for dim in ["palette", "typography", "icons", "background", "lighting", "texture", "mood"]:
