@@ -310,9 +310,21 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    Output naming: `./infographics/{name}_panel_N.png` and
    `./infographics/{name}_combined.png`
 
-8. **Return results**: image path(s) + design rationale + quality review summary
-   (including label fidelity and structural accuracy results) + suggestions for
-   next steps
+8. **Present side-by-side**: Output both variants together. No upfront mode choice
+   required from the user.
+
+   Present the following for each variant:
+
+   - **Polished**: image path + two-sentence design rationale about aesthetic
+     properties and layout decisions
+   - **Cinematic**: image path + two-sentence design rationale about creative
+     choices and hero element treatment
+
+   Then offer the following refinement options:
+
+   - Pick one variant for refinement (specify Polished or Cinematic)
+   - Request a different aesthetic (both variants will be regenerated)
+   - Request adjustments to either variant individually
 
 ## Using nano-banana generate
 
@@ -342,10 +354,10 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 ## Output Contract
 
 Your response MUST include:
-- The generated image path(s) (or a clear error if generation failed)
-- A brief design rationale (2-4 sentences)
-- Quality review summary (standard dimensions + label fidelity + structural accuracy + color-category fidelity for legend diagrams)
-- Suggested next steps
+- Both variant image paths (Polished + Cinematic), or a clear error if generation failed
+- Two-sentence design rationale per variant (Polished: aesthetic properties and layout; Cinematic: creative choices and hero element)
+- Quality review summary per variant (standard dimensions + label fidelity + structural accuracy + color-category fidelity for legend diagrams)
+- Refinement options (pick one for refinement, request different aesthetic, or request adjustments to either)
 
 ---
 

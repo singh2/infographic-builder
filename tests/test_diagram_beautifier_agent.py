@@ -50,7 +50,7 @@ def test_workflow_step_order() -> None:
         "beautif",
         "review",
         "assembl",
-        "return",
+        "present",
     ]
     lower = content.lower()
     last_pos = -1
@@ -373,4 +373,46 @@ def test_step6_cinematic_has_missing_node_refinement_instruction() -> None:
         "Step 6b Cinematic review must describe a missing node refinement process "
         "(e.g. 'absent from the output' with re-prompt instruction).\n"
         f"Actual step 6 block:\n{block}"
+    )
+
+
+def _get_step_8_block(content: str) -> str:
+    start = content.find("8. **Present side-by-side**")
+    assert start != -1, "Step 8 header '8. **Present side-by-side**' not found in agent file"
+    # Find the next section after step 8 (e.g., "## Using nano-banana")
+    end = content.find("\n## ", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step8_is_present_side_by_side() -> None:
+    """Step 8 header must be 'Present side-by-side'."""
+    content = _read_agent()
+    assert "8. **Present side-by-side**" in content, (
+        "Step 8 header must be '8. **Present side-by-side**'. "
+        "The 'Return results' step should have been replaced."
+    )
+
+
+def test_step8_mentions_both_variants() -> None:
+    """Step 8 must mention both Polished and Cinematic variants."""
+    content = _read_agent()
+    block = _get_step_8_block(content)
+    assert "Polished" in block, (
+        "Step 8 must mention 'Polished' variant.\n"
+        f"Actual step 8 block:\n{block}"
+    )
+    assert "Cinematic" in block, (
+        "Step 8 must mention 'Cinematic' variant.\n"
+        f"Actual step 8 block:\n{block}"
+    )
+
+
+def test_step8_offers_refinement_options() -> None:
+    """Step 8 must offer refinement options to the user."""
+    content = _read_agent()
+    block = _get_step_8_block(content)
+    lower = block.lower()
+    assert "refin" in lower, (
+        "Step 8 must offer refinement options (e.g. 'pick one for refinement').\n"
+        f"Actual step 8 block:\n{block}"
     )
