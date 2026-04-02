@@ -267,3 +267,68 @@ def test_no_render_step() -> None:
         "Agent file must not contain 'Render to plain PNG' — "
         "the render step has been removed from the workflow."
     )
+
+
+def test_step5_has_polished_subsection() -> None:
+    """Step 5 must contain a '5a' Polished generation subsection."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    assert "5a" in block, (
+        "Step 5 must contain a '5a' Polished subsection.\n"
+        f"Actual step 5 block:\n{block}"
+    )
+
+
+def test_step5_has_cinematic_subsection() -> None:
+    """Step 5 must contain a '5b' Cinematic generation subsection."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    assert "5b" in block, (
+        "Step 5 must contain a '5b' Cinematic subsection.\n"
+        f"Actual step 5 block:\n{block}"
+    )
+
+
+def test_step5_cinematic_has_no_reference_image() -> None:
+    """Step 5b Cinematic must explicitly state no reference_image_path is used."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    lower = block.lower()
+    assert "never" in lower or "no reference" in lower, (
+        "Step 5b Cinematic must explicitly state no reference image is used "
+        "('never' or 'no reference').\n"
+        f"Actual step 5 block:\n{block}"
+    )
+
+
+def test_step5_cinematic_has_hero_element_instruction() -> None:
+    """Step 5b Cinematic must mention hero element as focal point."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    lower = block.lower()
+    assert "hero" in lower and "focal point" in lower, (
+        "Step 5b Cinematic must mention hero element as focal point.\n"
+        f"Actual step 5 block:\n{block}"
+    )
+
+
+def test_step5_cinematic_has_spatial_freedom_statement() -> None:
+    """Step 5b Cinematic must mention spatial freedom or 'not bound by original layout'."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    lower = block.lower()
+    assert "spatial freedom" in lower or "not bound" in lower, (
+        "Step 5b Cinematic must mention spatial freedom or 'not bound by original layout'.\n"
+        f"Actual step 5 block:\n{block}"
+    )
+
+
+def test_step5_polished_has_reference_image_guard() -> None:
+    """Step 5a Polished must include a completeness guard for PNG reference image."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
+    lower = block.lower()
+    assert "completeness" in lower or "no nodes or connections were missed" in lower, (
+        "Step 5a Polished must include a completeness guard for the PNG reference image.\n"
+        f"Actual step 5 block:\n{block}"
+    )

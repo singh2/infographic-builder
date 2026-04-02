@@ -188,19 +188,21 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
    Run once. The result applies to both Polished and Cinematic variants.
 
-5. **Beautify**: Generate beautified image(s) via `nano-banana generate`:
+5. **Beautify**: Generate beautified images via `nano-banana generate`. Step 5
+   produces two variants — **5a Polished** and **5b Cinematic** — from the same
+   topology manifest and panel decomposition.
+
+   ### 5a. Polished
 
    **Prompt construction — order matters for VLM quality:**
-
-   Always construct the generation prompt in this order:
 
    1. **Quality bar** (always first): "This should be dramatically more visually
       impressive than the source — publication quality, not a recolored version."
    2. **Aesthetic properties** (second): background, node style, typography, color
       palette, lighting, texture, mood from the selected aesthetic template
-   3. **Node shape and connector guidance** (third): use the per-aesthetic
-      shape and connector table in the Diagram Style Guide. Apply the exact shape
-      and connector spec for the selected aesthetic.
+   3. **Node shape and connector guidance** (third): use the per-aesthetic shape
+      and connector table in the Diagram Style Guide. Apply the exact shape and
+      connector spec for the selected aesthetic.
    4. **Color-category mapping** (fourth): if the source has a semantic color
       legend, explicitly list every category and its node names. Do not rely on
       the reference image alone — state it explicitly.
@@ -208,17 +210,58 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
       [layout direction] flow. Labels: [all node labels listed]. All connections
       must be maintained."
 
-   **Single-panel path:**
-   - For PNG input: `reference_image_path` = source PNG (structural anchor)
-   - For .dot / Mermaid source: omit `reference_image_path` — topology manifest provides structure
-   - Construct prompt following the five-part order above
-   - Include all node/edge labels explicitly in part 5
+   **Reference image for PNG input only (completeness guard):**
+   For PNG input: pass the source PNG as `reference_image_path` with this
+   completeness-only guard in the prompt:
+   "Use this image ONLY to verify that no nodes or connections were missed.
+   Do not replicate its proportions, spacing, arrow lengths, visual style,
+   or layout algorithm. Draw this fresh."
 
-   **Multi-panel path:**
-   - Panel 1 generated first; for PNG input, use source PNG as reference (style anchor); for .dot/Mermaid source, omit `reference_image_path`
+   For .dot / Mermaid source input: omit `reference_image_path` — the topology
+   manifest provides structure.
+
+   **Multi-panel Polished:**
+   - Generate Panel 1 first as the style anchor; for PNG input pass the source
+     PNG as `reference_image_path` with the completeness guard above; for
+     .dot/Mermaid source omit `reference_image_path`
    - Call `nano-banana analyze` on Panel 1 for style reconciliation
-   - Panels 2-N reference Panel 1 for style consistency AND their own
+   - Panels 2-N reference Panel 1 for visual consistency plus their own
      subgraph structure via the structural preservation modifier
+
+   ### 5b. Cinematic
+
+   No `reference_image_path` ever — Cinematic generates from pure prompt
+   imagination. Never pass any reference image regardless of input type.
+
+   **Prompt construction — order matters for VLM quality:**
+
+   1. **Quality bar** (always first): "This should be visually striking and
+      memorable — a single image that communicates the entire diagram's essence."
+   2. **Hero element as focal point** (second): identify the hero candidate from
+      the topology manifest. Make it the dominant visual element — larger, more
+      detailed, central or prominently emphasized in the composition.
+   3. **Aesthetic properties** (third): background, node style, typography, color
+      palette, lighting, texture, mood from the selected aesthetic template
+   4. **Connector vocabulary** (fourth): use the per-aesthetic connector style:
+      - Clean Minimalist: sweeping arcs
+      - Dark Mode Tech: glowing bezier curves
+      - Hand-Drawn Sketchnote: wobbly gestural ink arrows
+      - Claymation Studio: rope or ribbon connectors
+      - Lego Brick Builder: rigid brick-peg connector rods
+      - Bold Editorial: heavy directional strokes
+   5. **Color-category mapping** (fifth): if the source has a semantic color
+      legend, explicitly list every category and its node names.
+   6. **Spatial freedom** (sixth): "The layout is not bound by the original
+      diagram's layout — reinterpret space for maximum visual impact."
+   7. **Structural preservation** (last): "Preserve exact topology: N nodes,
+      [layout direction] flow. Labels: [all node labels listed]. All connections
+      must be maintained."
+
+   **Multi-panel Cinematic:**
+   Same decomposition as Polished. Generate Panel 1 first as the style anchor
+   (no `reference_image_path` from source for any panel). Call `nano-banana
+   analyze` on Panel 1 for style reconciliation. Panels 2-N reference Panel 1
+   for visual consistency plus their own subgraph structure.
 
 6. **Quality review**: Analyze each panel using `nano-banana analyze` with:
    - Standard 5 dimensions (content accuracy, layout quality, visual clarity,
@@ -254,7 +297,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 | `operation` | yes | Always `"generate"` |
 | `prompt` | yes | Aesthetic template + structural preservation modifier |
 | `output_path` | yes | Where to save the image |
-| `reference_image_path` | PNG: **yes** / source: no | Source PNG (PNG input, structural anchor); omit for .dot/Mermaid — topology manifest in prompt provides structure |
+| `reference_image_path` | conditional | Polished + PNG input only (completeness guard). Never for Cinematic. |
 
 ## Using nano-banana analyze
 
