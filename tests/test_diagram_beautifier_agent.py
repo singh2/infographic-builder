@@ -124,7 +124,7 @@ def test_agent_accepts_pre_analysis_from_root_session() -> None:
 
 
 def test_agent_skips_steps_when_pre_analysis_provided() -> None:
-    """Agent must skip Steps 2 and 4 when pre-analysis is available."""
+    """Agent must skip Step 2 when pre-analysis is available."""
     content = _read_agent()
     lower = content.lower()
     # Must mention skipping when pre-analysis exists
@@ -378,7 +378,9 @@ def test_step6_cinematic_has_missing_node_refinement_instruction() -> None:
 
 def _get_step_8_block(content: str) -> str:
     start = content.find("8. **Present side-by-side**")
-    assert start != -1, "Step 8 header '8. **Present side-by-side**' not found in agent file"
+    assert start != -1, (
+        "Step 8 header '8. **Present side-by-side**' not found in agent file"
+    )
     # Find the next section after step 8 (e.g., "## Using nano-banana")
     end = content.find("\n## ", start)
     return content[start:end] if end != -1 else content[start:]
@@ -398,12 +400,10 @@ def test_step8_mentions_both_variants() -> None:
     content = _read_agent()
     block = _get_step_8_block(content)
     assert "Polished" in block, (
-        "Step 8 must mention 'Polished' variant.\n"
-        f"Actual step 8 block:\n{block}"
+        f"Step 8 must mention 'Polished' variant.\nActual step 8 block:\n{block}"
     )
     assert "Cinematic" in block, (
-        "Step 8 must mention 'Cinematic' variant.\n"
-        f"Actual step 8 block:\n{block}"
+        f"Step 8 must mention 'Cinematic' variant.\nActual step 8 block:\n{block}"
     )
 
 

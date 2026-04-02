@@ -90,7 +90,7 @@ the shared Cinematic rules above.
 ## Prompt Construction Rules
 
 These rules govern how generation prompts are assembled for diagrams.
-See Step 6 of the diagram-beautifier workflow for the full ordering spec.
+See Step 5 of the diagram-beautifier workflow for the full ordering spec.
 
 ### Quality bar directive (always first)
 

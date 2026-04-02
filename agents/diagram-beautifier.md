@@ -81,7 +81,9 @@ Steps 1 → 2 → 3 → 4 → 5a/5b → 6a/6b → 7 → 8 (full workflow)
 - Step 1: Check for pre-computed analysis from root session first (see below)
 - Step 2: **Skip** -- no CLI dependency needed
 - Step 3: Aesthetic selection (same as source path)
-- Steps 4 → 5 → 6 → 7 → 8: same as source path (source PNG serves as the reference image for Polished and Cinematic variants)
+- Steps 4 → 5a/5b → 6a/6b → 7 → 8: same as source path
+  - For Polished (5a): source PNG is passed as `reference_image_path` with the completeness-only guard
+  - For Cinematic (5b): no `reference_image_path` — topology manifest is the sole structural spec
 
 ### Pre-computed analysis (PNG path only)
 
