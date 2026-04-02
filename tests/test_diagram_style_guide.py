@@ -162,7 +162,7 @@ def test_cinematic_clean_minimalist_has_sweeping_arcs() -> None:
 def test_cinematic_claymation_has_scene_description() -> None:
     """Claymation Studio row in Cinematic Guidance table must mention 'full scene'."""
     content = _read_style_guide()
-    assert "full scene" in content, (
+    assert "full scene" in content.lower(), (
         "'full scene' not found in style guide — "
         "expected in Claymation Studio Cinematic Guidance row"
     )

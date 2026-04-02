@@ -82,7 +82,7 @@ the shared Cinematic rules above.
 | **Dark Mode Tech** | Ambient bokeh glow behind hero node; holographic node quality with depth layers; glowing bezier edges carry source-to-destination color gradients. |
 | **Bold Editorial** | Nodes become graphic elements with color-blocked panels and heavy typographic labels; dramatic directional lighting with strong shadows; hero node gets full-bleed color. |
 | **Hand-Drawn Sketchnote** | Gestural organic spacing between nodes; wobbly arrows with varying weight; hero node gets hand-drawn callout or emphasis circle. |
-| **Claymation Studio** | full scene with sculpted characters/objects in clay environment; rope or ribbon connectors; hero node is physically larger or more prominent than surrounding nodes. |
+| **Claymation Studio** | Full scene with sculpted characters/objects in clay environment; rope or ribbon connectors; hero node is physically larger or more prominent than surrounding nodes. |
 | **Lego Brick Builder** | Nodes as brick constructions on full baseplate scene; brick-peg connector rods; hero node has the most elaborate brick construction. |
 
 ---
