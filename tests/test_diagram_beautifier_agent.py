@@ -332,3 +332,45 @@ def test_step5_polished_has_reference_image_guard() -> None:
         "Step 5a Polished must include a completeness guard for the PNG reference image.\n"
         f"Actual step 5 block:\n{block}"
     )
+
+
+def test_step6_has_polished_review_subsection() -> None:
+    """Step 6 must contain a '6a' Polished quality review subsection."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "6a" in block, (
+        "Step 6 must contain a '6a' Polished quality review subsection.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_has_cinematic_review_subsection() -> None:
+    """Step 6 must contain a '6b' Cinematic quality review subsection."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "6b" in block, (
+        "Step 6 must contain a '6b' Cinematic quality review subsection.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_cinematic_names_manifest_as_ground_truth() -> None:
+    """Step 6b Cinematic review must name topology manifest as 'sole ground truth'."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "sole ground truth" in block.lower(), (
+        "Step 6b Cinematic review must name topology manifest as 'sole ground truth'.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_cinematic_has_missing_node_refinement_instruction() -> None:
+    """Step 6b Cinematic review must describe a missing node refinement process."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    lower = block.lower()
+    assert "absent" in lower or ("missing" in lower and "manifest" in lower), (
+        "Step 6b Cinematic review must describe a missing node refinement process "
+        "(e.g. 'absent from the output' with re-prompt instruction).\n"
+        f"Actual step 6 block:\n{block}"
+    )

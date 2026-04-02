@@ -263,16 +263,40 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    analyze` on Panel 1 for style reconciliation. Panels 2-N reference Panel 1
    for visual consistency plus their own subgraph structure.
 
-6. **Quality review**: Analyze each panel using `nano-banana analyze` with:
-   - Standard 5 dimensions (content accuracy, layout quality, visual clarity,
-     prompt fidelity, aesthetic fidelity)
-   - **Label fidelity** -- check all text labels against source ground truth
-   - **Structural accuracy** -- verify node count and major connections
+6. **Quality review**: Analyze each panel using `nano-banana analyze` across 8 dimensions.
+
+   ### 6a. Polished
+
+   Analyze each Polished panel using `nano-banana analyze` with:
+   - **Content accuracy**: correct content representation
+   - **Layout quality**: spatial arrangement and readability
+   - **Visual clarity**: legibility and contrast
+   - **Prompt fidelity**: adherence to the generation prompt
+   - **Aesthetic fidelity**: consistency with the selected aesthetic
+   - **Label fidelity** -- check all text labels against the topology manifest
+   - **Structural accuracy** -- verify node count and major connections against the
+     topology manifest
    - **Color-category fidelity** (diagrams with a semantic legend only): for
      each category in the original legend (e.g. Script Step, AI Agent Step,
      Condition, Start/End), verify that the same node names appear under the
      same category in the output. Flag any node whose category assignment
      changed from the source.
+
+   Max 1 refinement pass per panel, targeting only specific issues identified.
+
+   ### 6b. Cinematic
+
+   Analyze each Cinematic panel using `nano-banana analyze` with the same 8 dimensions
+   (content accuracy, layout quality, visual clarity, prompt fidelity, aesthetic fidelity,
+   label fidelity, structural accuracy, color-category fidelity for diagrams with a
+   semantic legend).
+
+   **Ground truth**: The topology manifest is the sole ground truth for Cinematic review
+   -- no reference image fallback. This is the primary confidence mechanism for Cinematic.
+
+   **Missing nodes refinement**: If any nodes from the topology manifest are absent from
+   the output, re-prompt with: "The following nodes from the topology manifest are absent
+   from the output: [missing node names]. Include all of them."
 
    Max 1 refinement pass per panel, targeting only specific issues identified.
 
