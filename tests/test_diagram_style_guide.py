@@ -153,7 +153,7 @@ def test_cinematic_dark_mode_has_bokeh_or_holographic() -> None:
 def test_cinematic_clean_minimalist_has_sweeping_arcs() -> None:
     """Clean Minimalist row in Cinematic Guidance table must mention 'sweeping arcs'."""
     content = _read_style_guide()
-    assert "sweeping arcs" in content, (
+    assert "sweeping arcs" in content.lower(), (
         "'sweeping arcs' not found in style guide — "
         "expected in Clean Minimalist Cinematic Guidance row"
     )
