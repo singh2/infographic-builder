@@ -89,3 +89,35 @@ def test_color_category_mapping_guidance_present() -> None:
     assert "color-category mapping" in content.lower(), (
         "'Color-category mapping' guidance not found"
     )
+
+
+def test_polished_vs_cinematic_section_present() -> None:
+    """File must contain a '## Polished vs Cinematic' section heading."""
+    content = _read_style_guide()
+    assert "## Polished vs Cinematic" in content, (
+        "'## Polished vs Cinematic' section heading not found"
+    )
+
+
+def test_polished_described_as_document_ready() -> None:
+    """Polished variant must be described as 'document-ready'."""
+    content = _read_style_guide()
+    assert "document-ready" in content, (
+        "'document-ready' description for Polished variant not found"
+    )
+
+
+def test_cinematic_described_as_presentation_ready() -> None:
+    """Cinematic variant must be described as 'presentation-ready'."""
+    content = _read_style_guide()
+    assert "presentation-ready" in content, (
+        "'presentation-ready' description for Cinematic variant not found"
+    )
+
+
+def test_hero_candidate_mentioned_in_cinematic_description() -> None:
+    """Cinematic variant description must mention 'hero candidate'."""
+    content = _read_style_guide()
+    assert "hero candidate" in content, (
+        "'hero candidate' not found in style guide — expected in Cinematic description"
+    )

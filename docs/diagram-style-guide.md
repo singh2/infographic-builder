@@ -12,6 +12,37 @@ node shape and connector guidance.
 
 ---
 
+## Polished vs Cinematic
+
+Every beautification produces two variants simultaneously.
+
+**Polished** is document-ready: faithful aesthetic application, better
+spacing/typography/colors/node shapes, coherent with professional
+expectations. The result should feel like "yes, that's what I meant, but
+beautiful." Clean connectors. Fresh but not surprising spatial composition.
+
+**Cinematic** is presentation-ready: topology is the script, aesthetic is
+the medium. Editorial choices about emphasis, atmosphere, and depth. The
+hero candidate gets visual prominence. Full expressive connector vocabulary.
+Spatial composition serves the visual over the functional — the viewer
+should stop and look.
+
+**Shared between both variants:**
+- Same aesthetic selection
+- Same topology manifest
+- Same quality review dimensions
+
+**Key differences:**
+
+| Dimension | Polished | Cinematic |
+|---|---|---|
+| Reference image use | Guard instruction — use to confirm topology | None |
+| Connector style | Clean | Expressive |
+| Spatial freedom | Fresh but coherent | Fully compositional |
+| Quality bar language | "Professional and polished" | "Cinematic and arresting" |
+
+---
+
 ## Node Shapes
 
 Apply the per-aesthetic shape spec when constructing generation prompts.
