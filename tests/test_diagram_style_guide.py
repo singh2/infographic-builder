@@ -153,16 +153,34 @@ def test_cinematic_dark_mode_has_bokeh_or_holographic() -> None:
 def test_cinematic_clean_minimalist_has_sweeping_arcs() -> None:
     """Clean Minimalist row in Cinematic Guidance table must mention 'sweeping arcs'."""
     content = _read_style_guide()
-    assert "sweeping arcs" in content.lower(), (
-        "'sweeping arcs' not found in style guide — "
-        "expected in Clean Minimalist Cinematic Guidance row"
+    lines = content.splitlines()
+    clean_minimalist_cinematic_row = next(
+        (
+            line
+            for line in lines
+            if "Clean Minimalist" in line and "sweeping arcs" in line.lower()
+        ),
+        None,
+    )
+    assert clean_minimalist_cinematic_row is not None, (
+        "Clean Minimalist cinematic row must mention 'sweeping arcs' — "
+        "no single line contained 'Clean Minimalist' and 'sweeping arcs'."
     )
 
 
 def test_cinematic_claymation_has_scene_description() -> None:
     """Claymation Studio row in Cinematic Guidance table must mention 'full scene'."""
     content = _read_style_guide()
-    assert "full scene" in content.lower(), (
-        "'full scene' not found in style guide — "
-        "expected in Claymation Studio Cinematic Guidance row"
+    lines = content.splitlines()
+    claymation_cinematic_row = next(
+        (
+            line
+            for line in lines
+            if "Claymation" in line and "full scene" in line.lower()
+        ),
+        None,
+    )
+    assert claymation_cinematic_row is not None, (
+        "Claymation Studio cinematic row must mention 'full scene' — "
+        "no single line contained 'Claymation' and 'full scene'."
     )
