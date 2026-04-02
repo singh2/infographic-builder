@@ -71,6 +71,22 @@ Apply the per-aesthetic shape spec when constructing generation prompts.
 
 ---
 
+## Cinematic Guidance Per Aesthetic
+
+When rendering the Cinematic variant, apply these per-aesthetic directives on top of
+the shared Cinematic rules above.
+
+| Aesthetic | Cinematic guidance |
+|---|---|
+| **Clean Minimalist** | Use sweeping arcs and scale variation to create hierarchy; generous breathing room becomes deliberate whitespace composition rather than empty space. |
+| **Dark Mode Tech** | Ambient bokeh glow behind hero node; holographic node quality with depth layers; glowing bezier edges carry source-to-destination color gradients. |
+| **Bold Editorial** | Nodes become graphic elements with color-blocked panels and heavy typographic labels; dramatic directional lighting with strong shadows; hero node gets full-bleed color. |
+| **Hand-Drawn Sketchnote** | Gestural organic spacing between nodes; wobbly arrows with varying weight; hero node gets hand-drawn callout or emphasis circle. |
+| **Claymation Studio** | full scene with sculpted characters/objects in clay environment; rope or ribbon connectors; hero node is physically larger or more prominent than surrounding nodes. |
+| **Lego Brick Builder** | Nodes as brick constructions on full baseplate scene; brick-peg connector rods; hero node has the most elaborate brick construction. |
+
+---
+
 ## Prompt Construction Rules
 
 These rules govern how generation prompts are assembled for diagrams.
