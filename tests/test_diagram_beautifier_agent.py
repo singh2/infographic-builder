@@ -34,9 +34,9 @@ def test_agent_frontmatter_has_model_role() -> None:
     assert "image-gen" in frontmatter
 
 
-def test_workflow_has_9_steps() -> None:
+def test_workflow_has_8_steps() -> None:
     content = _read_agent()
-    for n in range(1, 10):
+    for n in range(1, 9):
         assert f"{n}. **" in content or f"{n}." in content, f"Step {n} not found"
 
 
@@ -46,7 +46,6 @@ def test_workflow_step_order() -> None:
         "parse",
         "dependency",
         "aesthetic",
-        "render",
         "decompos",
         "beautif",
         "review",
@@ -60,12 +59,6 @@ def test_workflow_step_order() -> None:
         assert pos != -1, f"Keyword '{keyword}' not found"
         assert pos > last_pos, f"Keyword '{keyword}' out of order"
         last_pos = pos
-
-
-def test_agent_mentions_render_first() -> None:
-    content = _read_agent()
-    lower = content.lower()
-    assert "render" in lower and "reference" in lower
 
 
 def test_agent_mentions_structural_preservation() -> None:
@@ -99,13 +92,6 @@ def test_agent_mentions_png_input() -> None:
     content = _read_agent()
     lower = content.lower()
     assert "input types" in lower and "png" in lower
-
-
-def test_agent_skips_render_for_png() -> None:
-    """Agent must mention skipping the render step for PNG input."""
-    content = _read_agent()
-    lower = content.lower()
-    assert "skip" in lower and "png" in lower and "render" in lower
 
 
 def test_agent_uses_analyze_for_png_ground_truth() -> None:
@@ -145,76 +131,76 @@ def test_agent_skips_steps_when_pre_analysis_provided() -> None:
     assert "pre-analysis" in lower and "skip" in lower
 
 
-def _get_step_7_block(content: str) -> str:
-    start = content.find("7. **Quality review**")
-    assert start != -1, "Step 7 header '7. **Quality review**' not found in agent file"
-    end = content.find("8. **Assemble**", start)
-    return content[start:end] if end != -1 else content[start:]
-
-
-def test_step7_has_color_category_fidelity_dimension() -> None:
-    """Step 7 must include 'color-category fidelity' as an 8th quality dimension."""
-    content = _read_agent()
-    block = _get_step_7_block(content)
-    assert "color-category fidelity" in block.lower(), (
-        "Step 7 must include 'color-category fidelity' dimension.\n"
-        f"Actual step 7 block:\n{block}"
-    )
-
-
-def test_step7_color_category_fidelity_scoped_to_legend_diagrams() -> None:
-    """Color-category fidelity must be scoped to diagrams with a semantic legend."""
-    content = _read_agent()
-    block = _get_step_7_block(content)
-    assert "semantic legend" in block.lower(), (
-        "Step 7 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
-        f"Actual step 7 block:\n{block}"
-    )
-
-
 def _get_step_6_block(content: str) -> str:
-    start = content.find("6. **Beautify**")
-    assert start != -1, "Step 6 header '6. **Beautify**' not found in agent file"
-    end = content.find("7. **Quality review**", start)
+    start = content.find("6. **Quality review**")
+    assert start != -1, "Step 6 header '6. **Quality review**' not found in agent file"
+    end = content.find("7. **Assemble**", start)
     return content[start:end] if end != -1 else content[start:]
 
 
-def test_step6_has_quality_bar_directive() -> None:
-    """Step 6 must include a quality bar directive about being dramatically more
-    visually impressive or publication quality."""
+def test_step6_has_color_category_fidelity_dimension() -> None:
+    """Step 6 must include 'color-category fidelity' as an 8th quality dimension."""
     content = _read_agent()
     block = _get_step_6_block(content)
+    assert "color-category fidelity" in block.lower(), (
+        "Step 6 must include 'color-category fidelity' dimension.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_color_category_fidelity_scoped_to_legend_diagrams() -> None:
+    """Color-category fidelity must be scoped to diagrams with a semantic legend."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "semantic legend" in block.lower(), (
+        "Step 6 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def _get_step_5_block(content: str) -> str:
+    start = content.find("5. **Beautify**")
+    assert start != -1, "Step 5 header '5. **Beautify**' not found in agent file"
+    end = content.find("6. **Quality review**", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step5_has_quality_bar_directive() -> None:
+    """Step 5 must include a quality bar directive about being dramatically more
+    visually impressive or publication quality."""
+    content = _read_agent()
+    block = _get_step_5_block(content)
     assert (
         "dramatically more visually impressive" in block
         or "publication quality" in block
     ), (
-        "Step 6 must include a quality bar directive "
+        "Step 5 must include a quality bar directive "
         "('dramatically more visually impressive' or 'publication quality').\n"
-        f"Actual step 6 block:\n{block}"
+        f"Actual step 5 block:\n{block}"
     )
 
 
-def test_step6_prompt_construction_order_aesthetic_before_structural() -> None:
-    """Step 6 must describe aesthetic properties before structural preservation,
+def test_step5_prompt_construction_order_aesthetic_before_structural() -> None:
+    """Step 5 must describe aesthetic properties before structural preservation,
     and both must be present."""
     content = _read_agent()
-    block = _get_step_6_block(content)
+    block = _get_step_5_block(content)
     assert "aesthetic properties" in block.lower(), (
-        f"Step 6 must mention 'aesthetic properties'.\nActual step 6 block:\n{block}"
+        f"Step 5 must mention 'aesthetic properties'.\nActual step 5 block:\n{block}"
     )
     assert "structural preservation" in block.lower(), (
-        f"Step 6 must mention 'structural preservation'.\nActual step 6 block:\n{block}"
+        f"Step 5 must mention 'structural preservation'.\nActual step 5 block:\n{block}"
     )
     aesthetic_pos = block.lower().find("aesthetic properties")
     structural_pos = block.lower().find("structural preservation")
     assert aesthetic_pos < structural_pos, (
-        "Step 6 must list 'aesthetic properties' before 'structural preservation'.\n"
+        "Step 5 must list 'aesthetic properties' before 'structural preservation'.\n"
         f"aesthetic_pos={aesthetic_pos}, structural_pos={structural_pos}\n"
-        f"Actual step 6 block:\n{block}"
+        f"Actual step 5 block:\n{block}"
     )
 
 
-def test_step6_references_diagram_style_guide() -> None:
+def test_agent_references_diagram_style_guide() -> None:
     """The agent file must reference 'diagram-style-guide.md' in the Design Knowledge section."""
     content = _read_agent()
     assert "diagram-style-guide.md" in content, (
@@ -262,4 +248,22 @@ def test_step1_lists_semantic_node_types() -> None:
     assert "process" in block.lower(), (
         "Step 1 must mention semantic node type 'process'.\n"
         f"Actual step 1 block:\n{block}"
+    )
+
+
+def test_step4_is_panel_decomposition() -> None:
+    """Step 4 must be Panel decomposition (render step removed)."""
+    content = _read_agent()
+    assert "4. **Panel decomposition**" in content, (
+        "Step 4 must be 'Panel decomposition'. "
+        "The render step should have been removed and steps renumbered."
+    )
+
+
+def test_no_render_step() -> None:
+    """'Render to plain PNG' must not appear anywhere in the agent file."""
+    content = _read_agent()
+    assert "Render to plain PNG" not in content, (
+        "Agent file must not contain 'Render to plain PNG' — "
+        "the render step has been removed from the workflow."
     )

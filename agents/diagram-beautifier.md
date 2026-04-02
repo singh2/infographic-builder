@@ -1,5 +1,5 @@
 ---
-# Workflow: 1-parse 2-dependency 3-aesthetic 4-render 5-decompose 6-beautify 7-review 8-assemble 9-return
+# Workflow: 1-parse 2-dependency 3-aesthetic 4-decompose 5-beautify 6-review 7-assemble 8-present
 meta:
   name: diagram-beautifier
   model_role: [image-gen, creative, general]
@@ -8,9 +8,8 @@ meta:
     source files, or existing diagram PNGs and renders them as beautiful
     infographic-quality visuals
     using the existing visual styling system, preserving the original diagram's
-    topology and labels. Uses a render-first architecture: renders plain PNG
-    via CLI tools, then beautifies with nano-banana using the rendered image
-    as a structural reference.
+    topology and labels. Uses a dual-output system: extracts a topology manifest
+    then generates Polished and Cinematic variants via nano-banana.
 
     **Authoritative on:** diagram beautification, Graphviz rendering, Mermaid
     rendering, graph visualization, topology-preserving visual transformation
@@ -45,7 +44,7 @@ the `stitch_panels` tool. You transform structurally correct but visually plain
 diagrams into polished, publication-ready visuals.
 
 **Execution model:** You run as a sub-session. Parse the diagram, verify
-dependencies, render a plain reference PNG, then beautify using nano-banana
+dependencies, extract the topology manifest, then beautify using nano-banana
 *(unless style selection is required -- see Step 3)*.
 
 ## Design Knowledge
@@ -62,9 +61,9 @@ bar, and per-aesthetic prompt patterns), see:
 
 ## Operating Principles
 
-1. **Render first, beautify second** -- always render the source to a plain PNG
-   as the structural anchor before any beautification (for PNG input, the
-   provided file serves as the structural anchor directly -- no render needed)
+1. **Topology manifest first, generate second** -- always extract the topology manifest
+   from the source before any beautification (for PNG input, the
+   provided file serves as the structural reference directly)
 2. **Preserve topology** -- node positions, connections, labels, and directional
    flow must be maintained exactly
 3. **Explain your choices** -- describe the aesthetic applied and any
@@ -76,14 +75,13 @@ bar, and per-aesthetic prompt patterns), see:
 The diagram-beautifier accepts two input types:
 
 **Source path** (`.dot` / Mermaid text):
-Steps 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 (full workflow)
+Steps 1 → 2 → 3 → 4 → 5a/5b → 6a/6b → 7 → 8 (full workflow)
 
 **PNG path** (`.png` file):
 - Step 1: Check for pre-computed analysis from root session first (see below)
 - Step 2: **Skip** -- no CLI dependency needed
 - Step 3: Aesthetic selection (same as source path)
-- Step 4: **Skip render** -- use the `.png` directly as `reference_image_path`
-- Steps 5 → 6 → 7 → 8 → 9: same as source path
+- Steps 4 → 5 → 6 → 7 → 8: same as source path (source PNG serves as the reference image for Polished and Cinematic variants)
 
 ### Pre-computed analysis (PNG path only)
 
@@ -110,7 +108,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    classified this PNG):**
    Use that analysis as your ground truth for quality review. Extract node labels
    and node count from it. Proceed directly to Step 3 (aesthetic selection) —
-   skip Steps 2 and 4.
+   skip Step 2.
 
    **If input is a `.png` file path with no pre-analysis:**
    Run `nano-banana analyze` on the PNG:
@@ -120,7 +118,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    edges: [from → to (label)], node_count: N
    ```
    Use the analysis output as ground truth for quality review.
-   Skip Steps 2 and 4 — proceed directly to Step 3 (aesthetic selection).
+   Skip Step 2 — proceed directly to Step 3 (aesthetic selection).
 
    **If input is `.dot` or Mermaid source text:**
    Use `diagram_beautifier.parser.parse_diagram_source()` to produce the
@@ -128,8 +126,8 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    Proceed through the full workflow.
 
    After parsing, produce a **topology manifest** as plain text. Store it
-   as `_topology_manifest` and use it in both the generation prompt (Step 6)
-   and quality review (Step 7). The manifest must include:
+   as `_topology_manifest` and use it in both the generation prompt (Step 5)
+   and quality review (Step 6). The manifest must include:
 
    - **Node inventory**: classify each node by semantic type:
      `terminal` (entry/exit nodes), `decision` (branch/merge/condition),
@@ -176,16 +174,9 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
    **Then stop and wait for the user's selection.**
 
-4. **Render to plain PNG** (source path only -- skip for PNG input): Render the
-   source to a structurally faithful but visually plain PNG using the appropriate
-   CLI tool:
-   - Graphviz: `dot -Tpng -Gdpi=150 input.dot -o /tmp/diagram_plain.png`
-   - Mermaid: `mmdc -i input.mmd -o /tmp/diagram_plain.png -w 2048 -H 1536 --scale 2`
+   The selected aesthetic applies to both the Polished and Cinematic variants.
 
-   **For PNG input:** use the provided `.png` file directly as `reference_image_path`.
-   No rendering step is needed -- the PNG is already the structural reference.
-
-5. **Panel decomposition**: Based on node count and subgraph structure, decide
+4. **Panel decomposition**: Based on node count and subgraph structure, decide
    single vs. multi-panel layout:
    - 1-10 nodes: single panel
    - 11-25 nodes, 0-1 subgraphs: single panel
@@ -195,7 +186,9 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
    Use `diagram_beautifier.decompose.decide_panels()` for the decision.
 
-6. **Beautify**: Generate beautified image(s) via `nano-banana generate`:
+   Run once. The result applies to both Polished and Cinematic variants.
+
+5. **Beautify**: Generate beautified image(s) via `nano-banana generate`:
 
    **Prompt construction — order matters for VLM quality:**
 
@@ -226,7 +219,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    - Panels 2-N reference Panel 1 for style consistency AND their own
      subgraph structure via the structural preservation modifier
 
-7. **Quality review**: Analyze each panel using `nano-banana analyze` with:
+6. **Quality review**: Analyze each panel using `nano-banana analyze` with:
    - Standard 5 dimensions (content accuracy, layout quality, visual clarity,
      prompt fidelity, aesthetic fidelity)
    - **Label fidelity** -- check all text labels against source ground truth
@@ -239,7 +232,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
    Max 1 refinement pass per panel, targeting only specific issues identified.
 
-8. **Assemble** (multi-panel only): Call `stitch_panels` to combine panels.
+7. **Assemble** (multi-panel only): Call `stitch_panels` to combine panels.
    Choose direction based on diagram flow:
    - Left-to-right flow (pipeline, data flow) -> `horizontal`
    - Top-to-bottom flow (hierarchy, sequence) -> `vertical`
@@ -249,7 +242,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    Output naming: `./infographics/{name}_panel_N.png` and
    `./infographics/{name}_combined.png`
 
-9. **Return results**: image path(s) + design rationale + quality review summary
+8. **Return results**: image path(s) + design rationale + quality review summary
    (including label fidelity and structural accuracy results) + suggestions for
    next steps
 
