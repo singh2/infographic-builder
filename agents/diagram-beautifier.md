@@ -209,12 +209,13 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
       must be maintained."
 
    **Single-panel path:**
-   - Use `reference_image_path` = plain rendered PNG (or source PNG for PNG input)
+   - For PNG input: `reference_image_path` = source PNG (structural anchor)
+   - For .dot / Mermaid source: omit `reference_image_path` — topology manifest provides structure
    - Construct prompt following the five-part order above
    - Include all node/edge labels explicitly in part 5
 
    **Multi-panel path:**
-   - Panel 1 generated first with plain PNG as reference (style anchor)
+   - Panel 1 generated first; for PNG input, use source PNG as reference (style anchor); for .dot/Mermaid source, omit `reference_image_path`
    - Call `nano-banana analyze` on Panel 1 for style reconciliation
    - Panels 2-N reference Panel 1 for style consistency AND their own
      subgraph structure via the structural preservation modifier
@@ -253,7 +254,7 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 | `operation` | yes | Always `"generate"` |
 | `prompt` | yes | Aesthetic template + structural preservation modifier |
 | `output_path` | yes | Where to save the image |
-| `reference_image_path` | **yes** | Plain rendered PNG (structural anchor) |
+| `reference_image_path` | PNG: **yes** / source: no | Source PNG (PNG input, structural anchor); omit for .dot/Mermaid — topology manifest in prompt provides structure |
 
 ## Using nano-banana analyze
 

@@ -131,33 +131,6 @@ def test_agent_skips_steps_when_pre_analysis_provided() -> None:
     assert "pre-analysis" in lower and "skip" in lower
 
 
-def _get_step_6_block(content: str) -> str:
-    start = content.find("6. **Quality review**")
-    assert start != -1, "Step 6 header '6. **Quality review**' not found in agent file"
-    end = content.find("7. **Assemble**", start)
-    return content[start:end] if end != -1 else content[start:]
-
-
-def test_step6_has_color_category_fidelity_dimension() -> None:
-    """Step 6 must include 'color-category fidelity' as an 8th quality dimension."""
-    content = _read_agent()
-    block = _get_step_6_block(content)
-    assert "color-category fidelity" in block.lower(), (
-        "Step 6 must include 'color-category fidelity' dimension.\n"
-        f"Actual step 6 block:\n{block}"
-    )
-
-
-def test_step6_color_category_fidelity_scoped_to_legend_diagrams() -> None:
-    """Color-category fidelity must be scoped to diagrams with a semantic legend."""
-    content = _read_agent()
-    block = _get_step_6_block(content)
-    assert "semantic legend" in block.lower(), (
-        "Step 6 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
-        f"Actual step 6 block:\n{block}"
-    )
-
-
 def _get_step_5_block(content: str) -> str:
     start = content.find("5. **Beautify**")
     assert start != -1, "Step 5 header '5. **Beautify**' not found in agent file"
@@ -197,6 +170,33 @@ def test_step5_prompt_construction_order_aesthetic_before_structural() -> None:
         "Step 5 must list 'aesthetic properties' before 'structural preservation'.\n"
         f"aesthetic_pos={aesthetic_pos}, structural_pos={structural_pos}\n"
         f"Actual step 5 block:\n{block}"
+    )
+
+
+def _get_step_6_block(content: str) -> str:
+    start = content.find("6. **Quality review**")
+    assert start != -1, "Step 6 header '6. **Quality review**' not found in agent file"
+    end = content.find("7. **Assemble**", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step6_has_color_category_fidelity_dimension() -> None:
+    """Step 6 must include 'color-category fidelity' as an 8th quality dimension."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "color-category fidelity" in block.lower(), (
+        "Step 6 must include 'color-category fidelity' dimension.\n"
+        f"Actual step 6 block:\n{block}"
+    )
+
+
+def test_step6_color_category_fidelity_scoped_to_legend_diagrams() -> None:
+    """Color-category fidelity must be scoped to diagrams with a semantic legend."""
+    content = _read_agent()
+    block = _get_step_6_block(content)
+    assert "semantic legend" in block.lower(), (
+        "Step 6 color-category fidelity must be scoped with 'semantic legend' qualifier.\n"
+        f"Actual step 6 block:\n{block}"
     )
 
 
