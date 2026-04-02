@@ -220,3 +220,46 @@ def test_step6_references_diagram_style_guide() -> None:
     assert "diagram-style-guide.md" in content, (
         "Agent file must reference 'diagram-style-guide.md' in Design Knowledge section."
     )
+
+
+def _get_step_1_block(content: str) -> str:
+    start = content.find("1. **Parse")
+    assert start != -1, "Step 1 header '1. **Parse' not found in agent file"
+    end = content.find("2. **Dependency", start)
+    return content[start:end] if end != -1 else content[start:]
+
+
+def test_step1_mentions_topology_manifest() -> None:
+    """Step 1 must produce a topology manifest from the parsed source."""
+    content = _read_agent()
+    block = _get_step_1_block(content)
+    assert "topology manifest" in block.lower(), (
+        f"Step 1 must mention 'topology manifest'.\nActual step 1 block:\n{block}"
+    )
+
+
+def test_step1_mentions_hero_candidate() -> None:
+    """Step 1 must identify a hero candidate (highest-connectivity node)."""
+    content = _read_agent()
+    block = _get_step_1_block(content)
+    assert "hero candidate" in block.lower(), (
+        f"Step 1 must mention 'hero candidate'.\nActual step 1 block:\n{block}"
+    )
+
+
+def test_step1_lists_semantic_node_types() -> None:
+    """Step 1 must list semantic node types including terminal, decision, and process."""
+    content = _read_agent()
+    block = _get_step_1_block(content)
+    assert "terminal" in block.lower(), (
+        "Step 1 must mention semantic node type 'terminal'.\n"
+        f"Actual step 1 block:\n{block}"
+    )
+    assert "decision" in block.lower(), (
+        "Step 1 must mention semantic node type 'decision'.\n"
+        f"Actual step 1 block:\n{block}"
+    )
+    assert "process" in block.lower(), (
+        "Step 1 must mention semantic node type 'process'.\n"
+        f"Actual step 1 block:\n{block}"
+    )

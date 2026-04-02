@@ -125,7 +125,23 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    **If input is `.dot` or Mermaid source text:**
    Use `diagram_beautifier.parser.parse_diagram_source()` to produce the
    normalized structure: nodes, edges, subgraphs, node_count, edge_count.
-   Proceed through all 9 steps.
+   Proceed through the full workflow.
+
+   After parsing, produce a **topology manifest** as plain text. Store it
+   as `_topology_manifest` and use it in both the generation prompt (Step 6)
+   and quality review (Step 7). The manifest must include:
+
+   - **Node inventory**: classify each node by semantic type:
+     `terminal` (entry/exit nodes), `decision` (branch/merge/condition),
+     `process` (action/task step), `subprocess` (grouped sub-workflow)
+   - **Connectivity profile**: list all nodes with 3+ edges (high-degree hubs)
+   - **Critical path**: ordered sequence of nodes from entry terminal to exit
+     terminal, following the dominant flow direction
+   - **Semantic legend**: mapping of every node name to its semantic type
+   - **Hero candidate**: the highest-connectivity decision node or convergence
+     point — this node becomes the visual focal point in the beautified output
+   - **Edge labels**: complete list of all edge labels present in the source
+   - **Subgroup structure**: list any named subgraphs with their member nodes
 
 2. **Dependency check** (source path only -- skip for PNG input): Verify the required CLI tool is available.
    - `.dot` input -> check for `dot` (Graphviz) via `which dot`
