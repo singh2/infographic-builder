@@ -23,7 +23,7 @@ def parse_diagram_source(source: str, fmt: str) -> dict[str, Any]:
     """
     if fmt == "dot":
         return _parse_dot(source)
-    if fmt == "mermaid":
+    if fmt in ("mermaid", "mmd"):
         return _parse_mermaid(source)
     raise ValueError(f"Unsupported format: {fmt!r}")
 
