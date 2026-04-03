@@ -80,6 +80,8 @@ EXPECTED_NAMES = {
     "minimal-sketchnote",
     "minimal-lego",
     "minimal-clean",
+    # New scenario
+    "barista-day-claymation",
 }
 
 EXPECTED_PANEL_COUNTS = {
@@ -131,6 +133,8 @@ EXPECTED_PANEL_COUNTS = {
     "minimal-sketchnote": 1,
     "minimal-lego": 1,
     "minimal-clean": 1,
+    # New scenario
+    "barista-day-claymation": 3,
 }
 
 
@@ -158,8 +162,8 @@ def test_scenarios_is_valid_yaml() -> None:
 
 
 def test_scenarios_count(scenarios: list[dict]) -> None:
-    """There must be exactly 40 scenarios."""
-    assert len(scenarios) == 40, f"Expected 40 scenarios, got {len(scenarios)}"
+    """There must be exactly 41 scenarios."""
+    assert len(scenarios) == 41, f"Expected 41 scenarios, got {len(scenarios)}"
 
 
 def test_each_scenario_has_required_fields(scenarios: list[dict]) -> None:
@@ -222,7 +226,7 @@ def test_python_c_verification_output(capsys) -> None:
     scenarios = data["scenarios"]
     print(f"{len(scenarios)} scenarios loaded")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "40 scenarios loaded"
+    assert captured.out.strip() == "41 scenarios loaded"
 
 
 # ---------------------------------------------------------------------------

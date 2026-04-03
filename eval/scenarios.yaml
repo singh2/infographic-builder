@@ -557,6 +557,19 @@ scenarios:
       (deep amber means success). Clay barista figures, kitchen workstation props,
       warm lighting, playful tactile mood.
 
+  - name: barista-day-claymation
+    tier: core
+    prompt_weight: natural
+    aesthetic: claymation
+    topic: "A Day in the Life of a Barista"
+    panels: 3
+    audience: "General audience, coffee lovers"
+    style_direction: "Claymation Studio -- multi-panel narrative journey"
+    prompt: >
+      A day in the life of a barista, Claymation style. Show the morning
+      opening routine, the midday rush, and the quiet evening closing.
+      3 panels.
+
   - name: star-wars-ranking
     tier: extended
     prompt_weight: specified
