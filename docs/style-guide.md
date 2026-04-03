@@ -143,9 +143,8 @@ provides a freeform description:
 
 ## Diorama Mode
 
-3D-capable aesthetics (Lego, Claymation, freeform 3D) naturally materialize
-content in the medium — information structures become physical objects. This
-is the default and needs no special prompting.
+3D-capable aesthetics (Lego, Claymation, freeform 3D) naturally bring
+content to life in the medium. This is the default and needs no special prompting.
 
 If the user asks for a **"diorama"**, frame the prompt as characters acting
 out a scene. Dioramas work best for linear sequential workflows.

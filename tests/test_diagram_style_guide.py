@@ -91,11 +91,11 @@ def test_color_category_mapping_guidance_present() -> None:
     )
 
 
-def test_polished_vs_cinematic_section_present() -> None:
-    """File must contain a '## Polished vs Cinematic' section heading."""
+def test_four_variants_section_present() -> None:
+    """File must contain a '## Four Variants' section heading."""
     content = _read_style_guide()
-    assert "## Polished vs Cinematic" in content, (
-        "'## Polished vs Cinematic' section heading not found"
+    assert "## Four Variants" in content, (
+        "'## Four Variants' section heading not found"
     )
 
 
@@ -131,41 +131,26 @@ def test_cinematic_guidance_section_present() -> None:
     )
 
 
-def test_cinematic_dark_mode_has_bokeh_or_holographic() -> None:
-    """Dark Mode Tech row in Cinematic Guidance table must mention 'bokeh' or 'holographic'."""
+def test_dark_mode_tech_is_described_as_polished_variant() -> None:
+    """Dark Mode Tech must be described as a Polished variant in the Four Variants section."""
     content = _read_style_guide()
-    lines = content.splitlines()
-    dark_mode_cinematic_row = next(
-        (
-            line
-            for line in lines
-            if "Dark Mode Tech" in line
-            and ("bokeh" in line.lower() or "holographic" in line.lower())
-        ),
-        None,
-    )
-    assert dark_mode_cinematic_row is not None, (
-        "Dark Mode Tech cinematic row must mention 'bokeh' or 'holographic' — "
-        "no single line contained 'Dark Mode Tech' and 'bokeh'/'holographic'."
+    four_variants_start = content.find("## Four Variants")
+    assert four_variants_start != -1, "'## Four Variants' section not found"
+    four_variants_block = content[four_variants_start : four_variants_start + 600]
+    assert "Dark Mode Tech" in four_variants_block and "Polished" in four_variants_block, (
+        "Four Variants section must associate Dark Mode Tech with the Polished approach"
     )
 
 
-def test_cinematic_clean_minimalist_has_sweeping_arcs() -> None:
-    """Clean Minimalist row in Cinematic Guidance table must mention 'sweeping arcs'."""
+def test_clean_minimalist_is_described_as_polished_variant() -> None:
+    """Clean Minimalist must be described as a Polished variant in the Four Variants section."""
     content = _read_style_guide()
-    lines = content.splitlines()
-    clean_minimalist_cinematic_row = next(
-        (
-            line
-            for line in lines
-            if "Clean Minimalist" in line and "sweeping arcs" in line.lower()
-        ),
-        None,
-    )
-    assert clean_minimalist_cinematic_row is not None, (
-        "Clean Minimalist cinematic row must mention 'sweeping arcs' — "
-        "no single line contained 'Clean Minimalist' and 'sweeping arcs'."
-    )
+    four_variants_start = content.find("## Four Variants")
+    assert four_variants_start != -1, "'## Four Variants' section not found"
+    four_variants_block = content[four_variants_start : four_variants_start + 600]
+    assert (
+        "Clean Minimalist" in four_variants_block and "Polished" in four_variants_block
+    ), "Four Variants section must associate Clean Minimalist with the Polished approach"
 
 
 def test_cinematic_claymation_has_scene_description() -> None:
