@@ -269,6 +269,12 @@ decorative elements (arrows, dividers, etc.).
 Position already implies order. If a user explicitly requests numbered panels
 (e.g., for individual use in a slide deck), add them at that point.
 
+When the scene strategy is `varied`, set the Background field to
+`"per scene directive"` instead of a fixed color or treatment. This prevents
+the brief from contradicting per-panel scene directives. All other fields
+(palette, typography, icons, borders, header chrome) remain fixed and apply
+uniformly.
+
 ### Reference Image Chaining (Visual Consistency)
 
 Panel 1 is the style anchor. All subsequent panels reference it:

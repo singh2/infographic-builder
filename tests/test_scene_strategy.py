@@ -113,3 +113,26 @@ def test_prompt_engineering_scene_directive_is_multi_panel_only() -> None:
         "Scene directive must be scoped to 'multi-panel' and 'varied'.\n"
         f"Actual block:\n{block}"
     )
+
+
+# --- Sentinels ---
+H3_REF_IMAGE_CHAINING = "### Reference Image Chaining"
+
+
+def _get_style_brief_block(content: str) -> str:
+    start = content.index(H3_STYLE_BRIEF)
+    end = content.index(H3_REF_IMAGE_CHAINING, start)
+    return content[start:end]
+
+
+# --- Task 3: Style Brief ---
+
+
+def test_style_brief_mentions_varied_background() -> None:
+    """Style brief section must note that Background changes for varied strategy."""
+    block = _get_style_brief_block(read_guide())
+    lower = block.lower()
+    assert "varied" in lower and "scene directive" in lower, (
+        "Style Brief must mention varied strategy and scene directive for Background.\n"
+        f"Actual block:\n{block}"
+    )
