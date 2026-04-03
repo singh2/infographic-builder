@@ -337,6 +337,13 @@ rendered*, which is what Panels 2-N must match. Carrying forward any original
 brief language that contradicts the render causes style drift. The render wins,
 completely.
 
+**Varied scene strategy note:** When the scene strategy is `varied`, the
+reconciled brief carries the style DNA (typography, palette, icon rendering,
+lighting quality, border treatment) but the background environment description
+is specific to Panel 1's scene. Do not enforce Panel 1's background environment
+on Panels 2-N — they have their own scene directives. All other style properties
+from the reconciled brief apply uniformly.
+
 ### Panel Naming Convention
 
 **If the user specified an output path, always use it exactly.** User-specified

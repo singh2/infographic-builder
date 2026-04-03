@@ -136,3 +136,37 @@ def test_style_brief_mentions_varied_background() -> None:
         "Style Brief must mention varied strategy and scene directive for Background.\n"
         f"Actual block:\n{block}"
     )
+
+
+# --- Sentinels ---
+H3_RECONCILIATION = "### Post-Panel 1 Style Reconciliation"
+H3_PANEL_NAMING = "### Panel Naming Convention"
+
+
+def _get_reconciliation_block(content: str) -> str:
+    start = content.index(H3_RECONCILIATION)
+    end = content.index(H3_PANEL_NAMING, start)
+    return content[start:end]
+
+
+# --- Task 4: Reconciliation ---
+
+
+def test_reconciliation_has_varied_scoping_note() -> None:
+    """Reconciliation section must note that background is panel-specific for varied."""
+    block = _get_reconciliation_block(read_guide())
+    lower = block.lower()
+    assert "varied" in lower, (
+        "Reconciliation must mention varied strategy.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_reconciliation_varied_scopes_background() -> None:
+    """Reconciliation varied note must distinguish background from style properties."""
+    block = _get_reconciliation_block(read_guide())
+    normalised = " ".join(block.lower().split())
+    assert "background" in normalised and "style" in normalised, (
+        "Reconciliation varied note must distinguish background from style.\n"
+        f"Actual block:\n{block}"
+    )
