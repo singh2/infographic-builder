@@ -208,8 +208,12 @@ to exactly one panel:
 
 ```
 CONTENT MAP:
+Scene strategy: [varied | consistent]
+
 Panel 1 -- [title]: [concepts/data ONLY in this panel]
+  Scene: [varied only — environment, perspective, key props for this panel]
 Panel 2 -- [title]: [concepts/data ONLY in this panel]
+  Scene: [varied only — distinct environment from Panel 1]
 ...
 Shared across panels: [series title, style brief only]
 ```
@@ -220,6 +224,20 @@ Rules:
 - The only repeated elements: series title and style brief
 - Each panel prompt includes a scoping line: "This panel covers ONLY: [X].
   Do NOT include: [Y, Z]." where Y and Z are other panels' content
+
+**Scene strategy** — decided once per infographic at this stage:
+- **`consistent`**: Same visual frame across all panels. Background, composition,
+  and framing are identical. Use for comparisons, taxonomies, ranked lists, data
+  breakdowns — topics where uniform framing highlights content differences.
+- **`varied`**: Artistic style stays locked (palette, typography, icon rendering,
+  lighting quality, borders). Environment, props, perspective, and composition
+  vary per panel. Use for journeys, daily routines, recipes, multi-step processes
+  with distinct physical settings — topics where each panel naturally maps to a
+  different location.
+- When `consistent`, the `Scene:` lines do not exist in the content map.
+- When `varied`, each panel gets a 1-sentence scene directive — concrete and
+  visual (e.g. "sunlit forest trail with layered clay trees" not "nature scene").
+- **Default to `consistent` when in doubt.** This preserves current behavior.
 
 ### Style Consistency Brief
 
