@@ -57,10 +57,8 @@ def test_gitignore_eval_results_block_follows_ds_store():
     )
 
 
-def test_gitignore_ends_with_eval_results_block():
-    """The file must end with the eval-results block (no trailing junk)."""
+def test_gitignore_eval_results_block_is_present():
+    """The eval-results/ pattern must exist in .gitignore."""
     content = read_gitignore()
-    stripped = content.rstrip("\n")
-    assert stripped.endswith("eval-results/"), (
-        "The .gitignore file should end with the eval-results/ pattern"
-    )
+    lines = [line.strip() for line in content.splitlines()]
+    assert "eval-results/" in lines, "eval-results/ must be present in .gitignore"

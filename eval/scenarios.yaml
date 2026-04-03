@@ -2,42 +2,127 @@
 # Evaluation Scenarios
 # =============================================================================
 #
-# 23 infographic test scenarios used by the evaluation harness.
+# All scenarios for the infographic-builder evaluation harness.
+# See eval/EVAL_PHILOSOPHY.md for the full coverage framework.
 #
-# Organized into three prompt tiers that mirror real user behavior:
+# METADATA FIELDS (on every scenario)
+# =====================================
+#   tier            -- core (always run) | extended (run on demand)
+#   prompt_weight   -- minimal | natural | specified
+#   aesthetic       -- clean-minimalist | dark-mode-tech | bold-editorial |
+#                      sketchnote | claymation | lego | freeform |
+#                      agent-selected | reference-image | materialistic-3d
+#   capability      -- optional list: [diorama, reference-image, content-source,
+#                      live-data, materialistic-3d]  (omit when empty)
 #
-#   SPECIFIED  -- Full visual spec (colors, panel count, aspect ratio).
-#                 Tests generation quality under precise instructions.
-#   NATURAL    -- Conversational request with topic detail but no visual spec.
-#                 Agent decides panel count, layout, and aesthetic.
-#   AESTHETIC  -- Names a curated aesthetic from the style guide.
-#                 Tests step 3d template loading + named aesthetic rendering.
-#
-# Each scenario has:
+# CONTENT FIELDS
+# ==============
 #   name            -- unique slug identifier
 #   topic           -- human-readable title
-#   panels          -- expected panel count (agent may choose differently
-#                      for natural/aesthetic prompts; scoring uses actual
-#                      image count, not this field)
+#   panels          -- expected panel count (agent may choose differently for
+#                      minimal/natural prompts; scoring uses actual image count)
 #   audience        -- intended target audience
-#   style_direction -- visual style (or "Agent-selected" for natural prompts)
-#   prompt          -- full generation prompt passed to the infographic builder
+#   style_direction -- human-readable style description for human reviewers
+#   prompt          -- full generation prompt passed to infographic builder
+#
+# RUNNING SPECIFIC SLICES
+# =======================
+#   amplifier run "execute recipes/evaluate.yaml with filter_tier=core"
+#   amplifier run "execute recipes/evaluate.yaml with filter_aesthetic=claymation"
+#   amplifier run "execute recipes/evaluate.yaml with filter_prompt_weight=minimal"
 #
 # =============================================================================
 
 scenarios:
 
   # ===========================================================================
+  # MINIMAL -- Named aesthetic + topic only, ≤15 words (6 scenarios, all core)
+  # ===========================================================================
+  #
+  # The most important tier. Mirrors real user behavior. Tests creative
+  # judgment: does the agent pick the right layout, decompose sensibly, and
+  # produce a visually interesting result with minimal direction?
+  # One scenario per curated aesthetic.
+  # ---------------------------------------------------------------------------
+
+  - name: minimal-claymation
+    tier: core
+    prompt_weight: minimal
+    aesthetic: claymation
+    topic: "How Chocolate is Made (Minimal)"
+    panels: 1
+    audience: "General audience"
+    style_direction: "Claymation Studio -- agent decides all else"
+    prompt: >
+      How is chocolate made from bean to bar? Claymation Studio style.
+
+  - name: minimal-dark-tech
+    tier: core
+    prompt_weight: minimal
+    aesthetic: dark-mode-tech
+    topic: "Microservices Architecture (Minimal)"
+    panels: 1
+    audience: "Software engineers"
+    style_direction: "Dark Mode Tech -- agent decides all else"
+    prompt: >
+      Explain microservices architecture. Dark Mode Tech style.
+
+  - name: minimal-editorial
+    tier: core
+    prompt_weight: minimal
+    aesthetic: bold-editorial
+    topic: "The Rise and Fall of Vine (Minimal)"
+    panels: 1
+    audience: "General audience"
+    style_direction: "Bold Editorial -- agent decides all else"
+    prompt: >
+      The rise and fall of Vine. Bold Editorial style.
+
+  - name: minimal-sketchnote
+    tier: core
+    prompt_weight: minimal
+    aesthetic: sketchnote
+    topic: "How the Immune System Fights a Cold (Minimal)"
+    panels: 1
+    audience: "General audience"
+    style_direction: "Hand-Drawn Sketchnote -- agent decides all else"
+    prompt: >
+      How the immune system fights a cold. Hand-Drawn Sketchnote style.
+
+  - name: minimal-lego
+    tier: core
+    prompt_weight: minimal
+    aesthetic: lego
+    topic: "What is Recursion (Minimal)"
+    panels: 1
+    audience: "Beginner programmers"
+    style_direction: "Lego Brick Builder -- agent decides all else"
+    prompt: >
+      What is recursion in programming? Lego Brick Builder style.
+
+  - name: minimal-clean
+    tier: core
+    prompt_weight: minimal
+    aesthetic: clean-minimalist
+    topic: "How Compound Interest Works (Minimal)"
+    panels: 1
+    audience: "General audience"
+    style_direction: "Clean Minimalist -- agent decides all else"
+    prompt: >
+      How compound interest works. Clean Minimalist style.
+
+  # ===========================================================================
   # SPECIFIED -- Full visual spec in prompt (11 scenarios)
   # ===========================================================================
   #
-  # These prompts include panel count, color palette, and aspect ratio.
-  # They test generation quality under precise, pre-decomposed instructions.
+  # Extended tier: run for historical comparison and baseline regression.
+  # Not part of the default core run.
   # ---------------------------------------------------------------------------
 
-  # ---- 1-panel (3) ----------------------------------------------------------
-
   - name: mechanical-keyboard
+    tier: extended
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "The Anatomy of a Mechanical Keyboard"
     panels: 1
     audience: "Tech enthusiasts and hardware hobbyists"
@@ -50,6 +135,9 @@ scenarios:
       9:16 aspect ratio.
 
   - name: noise-canceling-headphones
+    tier: extended
+    prompt_weight: specified
+    aesthetic: clean-minimalist
     topic: "How Noise-Canceling Headphones Work"
     panels: 1
     audience: "General consumer / everyday tech users"
@@ -62,6 +150,9 @@ scenarios:
       and dark gray palette. 9:16 aspect ratio.
 
   - name: saas-metrics-dashboard
+    tier: extended
+    prompt_weight: specified
+    aesthetic: clean-minimalist
     topic: "Q3 2025 SaaS Metrics Dashboard"
     panels: 1
     audience: "SaaS executives and business stakeholders"
@@ -76,9 +167,10 @@ scenarios:
       icons. Clean corporate style with navy blue and emerald green on white
       background, accent gold for positive trends. 9:16 aspect ratio.
 
-  # ---- 2-panel (1) ----------------------------------------------------------
-
   - name: developer-survey-results
+    tier: extended
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "2025 Developer Survey Results"
     panels: 2
     audience: "Software developers and engineers"
@@ -98,9 +190,10 @@ scenarios:
       callouts. Modern tech style with electric blue and cool gray on dark
       background, white text, clean sans-serif. 9:16 aspect ratio.
 
-  # ---- 3-panel (2) ----------------------------------------------------------
-
   - name: neural-networks
+    tier: extended
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "How Neural Networks Learn"
     panels: 3
     audience: "AI/ML learners and technical practitioners"
@@ -117,6 +210,9 @@ scenarios:
       glowing node connections. 9:16 aspect ratio.
 
   - name: cicd-pipeline
+    tier: extended
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "CI/CD Pipeline: From Commit to Production"
     panels: 3
     audience: "Microsoft incubation teams and software engineers"
@@ -137,9 +233,10 @@ scenarios:
       Technical dark theme with green and teal accents on a near-black background,
       pipeline flow diagram with stage boxes and connector arrows. 9:16 aspect ratio.
 
-  # ---- 4-panel (2) ----------------------------------------------------------
-
   - name: llm-pipeline
+    tier: extended
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "The LLM Training Pipeline"
     panels: 4
     audience: "AI/ML practitioners and developers"
@@ -158,6 +255,9 @@ scenarios:
       highlights. 9:16 aspect ratio.
 
   - name: song-to-spotify
+    tier: extended
+    prompt_weight: specified
+    aesthetic: freeform
     topic: "How a Song Goes from Idea to Spotify"
     panels: 4
     audience: "Music creators and general audience"
@@ -175,9 +275,10 @@ scenarios:
       Creative music style with warm purple and gold palette on a dark background,
       vinyl/waveform visual motifs. 9:16 aspect ratio.
 
-  # ---- 5-panel (2) ----------------------------------------------------------
-
   - name: ai-everyday-life
+    tier: extended
+    prompt_weight: specified
+    aesthetic: clean-minimalist
     topic: "AI in Everyday Life"
     panels: 5
     audience: "General public and non-technical users"
@@ -198,6 +299,9 @@ scenarios:
       rounded icons, approachable feel. 9:16 aspect ratio.
 
   - name: coffee-bean
+    tier: extended
+    prompt_weight: specified
+    aesthetic: freeform
     topic: "The Life of a Coffee Bean"
     panels: 5
     audience: "Coffee enthusiasts and general audience"
@@ -217,9 +321,10 @@ scenarios:
       Warm earthy style with rich browns, cream, and forest greens on a light
       parchment background, illustrated feel. 9:16 aspect ratio.
 
-  # ---- 6-panel (1) ----------------------------------------------------------
-
   - name: history-of-internet
+    tier: extended
+    prompt_weight: specified
+    aesthetic: freeform
     topic: "History of the Internet"
     panels: 6
     audience: "General public and tech history enthusiasts"
@@ -246,14 +351,16 @@ scenarios:
   # NATURAL -- Conversational prompts, lightweight style hint (6 scenarios)
   # ===========================================================================
   #
-  # These read like what a real user would type.  No panel count, no colors,
-  # no aspect ratio.  The agent decides layout and decomposition.  Each
-  # prompt includes a brief style preference (the way a real user might
-  # casually mention "keep it clean" or "something dark and techy") so the
-  # agent can skip the interactive aesthetic menu in batch eval.
+  # These read like what a real user would type. No panel count, no colors,
+  # no aspect ratio. The agent decides layout and decomposition. Each prompt
+  # includes a brief style preference so the agent can skip the interactive
+  # aesthetic menu in batch eval.
   # ---------------------------------------------------------------------------
 
   - name: dns
+    tier: core
+    prompt_weight: natural
+    aesthetic: agent-selected
     topic: "How DNS Works"
     panels: 2
     audience: "Junior developers and technical learners"
@@ -264,6 +371,9 @@ scenarios:
       technical looking.
 
   - name: campfire
+    tier: core
+    prompt_weight: natural
+    aesthetic: freeform
     topic: "The Science Behind a Perfect Campfire"
     panels: 2
     audience: "Outdoor enthusiasts and general audience"
@@ -274,6 +384,9 @@ scenarios:
       Go for a warm, illustrated feel.
 
   - name: agile-vs-waterfall
+    tier: extended
+    prompt_weight: natural
+    aesthetic: agent-selected
     topic: "Agile vs Waterfall"
     panels: 2
     audience: "Non-technical stakeholders and project managers"
@@ -284,6 +397,9 @@ scenarios:
       I can put in a slide deck.
 
   - name: okr-cascade
+    tier: extended
+    prompt_weight: natural
+    aesthetic: agent-selected
     topic: "OKR Cascade: From Company to Team"
     panels: 2
     audience: "Microsoft incubation teams and program managers"
@@ -294,6 +410,9 @@ scenarios:
       professional and on-brand.
 
   - name: customer-discovery-funnel
+    tier: extended
+    prompt_weight: natural
+    aesthetic: freeform
     topic: "Customer Discovery Funnel for New Ventures"
     panels: 2
     audience: "Microsoft incubation teams and startup founders"
@@ -304,6 +423,9 @@ scenarios:
       vibe.
 
   - name: photosynthesis
+    tier: extended
+    prompt_weight: natural
+    aesthetic: freeform
     topic: "How Photosynthesis Works"
     panels: 2
     audience: "Students and general audience"
@@ -316,12 +438,14 @@ scenarios:
   # AESTHETIC -- Named curated aesthetic from the style guide (6 scenarios)
   # ===========================================================================
   #
-  # Each prompt names a curated aesthetic (step 3d) but does NOT specify
-  # colors, fonts, or panel decomposition.  Tests that the agent loads
-  # the aesthetic template and applies it correctly.
+  # Core tier: one per curated aesthetic. Key regression signal -- if an
+  # aesthetic template changes, this is where it shows.
   # ---------------------------------------------------------------------------
 
   - name: surfing
+    tier: core
+    prompt_weight: specified
+    aesthetic: bold-editorial
     topic: "What Happens When You Drop Into a Wave"
     panels: 3
     audience: "Surfing enthusiasts and outdoor sports fans"
@@ -331,6 +455,9 @@ scenarios:
       a wave. Cover the paddle, the pop-up, and the ride.
 
   - name: incubation-lifecycle
+    tier: core
+    prompt_weight: specified
+    aesthetic: clean-minimalist
     topic: "Microsoft Incubation Lifecycle"
     panels: 3
     audience: "Microsoft incubation teams and innovation leaders"
@@ -341,6 +468,9 @@ scenarios:
       gates and key metrics at each phase.
 
   - name: devops-lifecycle
+    tier: core
+    prompt_weight: specified
+    aesthetic: claymation
     topic: "The DevOps Infinite Loop"
     panels: 1
     audience: "Software engineers and DevOps practitioners"
@@ -350,6 +480,9 @@ scenarios:
       plan, code, build, test, release, deploy, operate, monitor.
 
   - name: sleep-stages
+    tier: core
+    prompt_weight: specified
+    aesthetic: sketchnote
     topic: "Why Sleep Matters"
     panels: 2
     audience: "General public and wellness readers"
@@ -360,6 +493,9 @@ scenarios:
       doctor's waiting room.
 
   - name: solar-system
+    tier: core
+    prompt_weight: specified
+    aesthetic: lego
     topic: "A Tour of the Solar System"
     panels: 3
     audience: "Students and space enthusiasts"
@@ -370,6 +506,9 @@ scenarios:
       and other objects beyond Neptune.
 
   - name: eisenhower-matrix
+    tier: core
+    prompt_weight: specified
+    aesthetic: dark-mode-tech
     topic: "The Eisenhower Matrix"
     panels: 1
     audience: "Knowledge workers and productivity enthusiasts"
@@ -380,16 +519,13 @@ scenarios:
       examples in each quadrant.
 
   # ===========================================================================
-  # README SHOWCASE SCENARIOS -- prompts drawn from the README examples section
+  # README SHOWCASE -- prompts drawn from the README examples section
   # ===========================================================================
-  #
-  # These reproduce scenarios shown or described in the project README to keep
-  # the eval set aligned with documented usage patterns.
-  # ---------------------------------------------------------------------------
-
-  # ---- NATURAL (agent decides layout and panel count) -----------------------
 
   - name: engineering-onboarding
+    tier: core
+    prompt_weight: natural
+    aesthetic: agent-selected
     topic: "New Engineer Onboarding Guide"
     panels: 3
     audience: "Software engineers on day one of a new role"
@@ -404,9 +540,11 @@ scenarios:
       Make it practical and scannable, aimed at engineers on day one who need
       a single reference they can pin up or bookmark.
 
-  # ---- AESTHETIC (named aesthetic + diorama mode) ---------------------------
-
   - name: espresso-brewing-diorama
+    tier: core
+    prompt_weight: specified
+    aesthetic: claymation
+    capability: [diorama]
     topic: "A Claymation Diorama Guide to Brewing the Perfect Espresso"
     panels: 1
     audience: "Coffee enthusiasts and home baristas"
@@ -420,6 +558,9 @@ scenarios:
       warm lighting, playful tactile mood.
 
   - name: star-wars-ranking
+    tier: extended
+    prompt_weight: specified
+    aesthetic: bold-editorial
     topic: "Every Star Wars Movie, Ranked"
     panels: 2
     audience: "Star Wars fans and pop culture enthusiasts"
@@ -435,10 +576,14 @@ scenarios:
       cinematic composition.
 
   # ===========================================================================
-  # MATERIALISTIC 3D -- tests diorama and 3D rendering capabilities (2 scenarios)
+  # MATERIALISTIC 3D -- tests 3D rendering capabilities
   # ===========================================================================
 
   - name: kubernetes-architecture-3d
+    tier: extended
+    prompt_weight: specified
+    aesthetic: materialistic-3d
+    capability: [materialistic-3d]
     topic: "Kubernetes Cluster Architecture -- Materialistic 3D"
     panels: 1
     audience: "Platform engineers and DevOps teams"
@@ -454,6 +599,10 @@ scenarios:
       component types, bold modern typography for labels. 9:16 aspect ratio.
 
   - name: data-pipeline-materialistic-3d
+    tier: extended
+    prompt_weight: specified
+    aesthetic: materialistic-3d
+    capability: [materialistic-3d]
     topic: "Modern Data Pipeline -- Materialistic 3D"
     panels: 1
     audience: "Data engineers and analytics teams"
@@ -469,17 +618,22 @@ scenarios:
       ratio.
 
   # ===========================================================================
-  # REFERENCE IMAGE -- tests user-provided style anchor capability (2 scenarios)
+  # REFERENCE IMAGE & CONTENT SOURCE -- tests image input modes (4 scenarios)
   # ===========================================================================
   #
-  # These scenarios include a reference image path in the prompt. The agent
-  # should detect the path, load the image, and use it as reference_image_path
-  # when calling nano-banana. Validates the image-input feature end-to-end.
+  # Three modes covered:
+  #   reference-image, single panel  -- style anchor, 1 panel
+  #   reference-image, multi-panel   -- style anchor carries across all panels
+  #   content-source                 -- image IS the content, not the style
   #
-  # Reference images are from infographics/ (generated samples that exist on disk).
+  # Reference images must exist in infographics/ on disk at eval time.
   # ---------------------------------------------------------------------------
 
   - name: amplifier-delegation-styled
+    tier: core
+    prompt_weight: specified
+    aesthetic: reference-image
+    capability: [reference-image]
     topic: "Amplifier Agent Delegation and Context Sink Pattern"
     panels: 1
     audience: "Amplifier developers and AI engineers"
@@ -496,7 +650,30 @@ scenarios:
       token math showing why delegation preserves session longevity. 9:16 aspect
       ratio.
 
+  - name: reference-image-multi-panel
+    tier: core
+    prompt_weight: specified
+    aesthetic: reference-image
+    capability: [reference-image]
+    topic: "TCP/IP Stack -- Lego Style (Multi-Panel Reference Image)"
+    panels: 3
+    audience: "Students and developers learning networking"
+    style_direction: "Match style of reference image (Lego Brick Builder) across all panels"
+    prompt: >
+      Using './infographics/build-network-state-lego_combined.png' as a visual
+      style reference -- match this image's Lego Brick Builder aesthetic, plastic
+      stud textures, color palette, and typography exactly -- create a 3-panel
+      infographic explaining the TCP/IP stack. Panel 1: Physical and Data Link
+      layers (cables, switches, MAC addresses, frames). Panel 2: Network and
+      Transport layers (IP addresses, routing, TCP handshake, UDP). Panel 3:
+      Application layer (HTTP, DNS, TLS, how a browser request travels end-to-end).
+      The reference image aesthetic must carry consistently across all three panels.
+
   - name: product-metrics-watercolor
+    tier: extended
+    prompt_weight: specified
+    aesthetic: reference-image
+    capability: [reference-image]
     topic: "SaaS Product Health Dashboard -- Watercolor Style"
     panels: 1
     audience: "Product managers and startup founders"
@@ -511,19 +688,36 @@ scenarios:
       58 (industry avg 32), Average Revenue Per User $28/mo. Soft watercolor
       charts and icons, pastel tones with subtle ink outlines. 9:16 aspect ratio.
 
+  - name: content-source-chart
+    tier: core
+    prompt_weight: natural
+    aesthetic: agent-selected
+    capability: [content-source]
+    topic: "Recipe Validation Pipeline (from diagram content)"
+    panels: 1
+    audience: "Developers working with Amplifier recipes"
+    style_direction: "Agent-selected -- do not match the diagram visual style"
+    prompt: >
+      The image './eval/diagrams/recipe-validation-pipeline.png' shows a workflow
+      diagram. Treat it as content to visualize -- extract the process steps and
+      logic from it, then create a clean infographic explaining this recipe
+      validation pipeline for a developer audience. Do not match the visual style
+      of the source diagram. Choose an aesthetic appropriate for developers and
+      redesign the information as a polished, clear infographic.
+
   # ===========================================================================
-  # LIVE DATA -- scenarios that fetch from real repos at eval time (2 scenarios)
+  # LIVE DATA -- scenarios that fetch from real repos at eval time
   # ===========================================================================
   #
-  # These pass GitHub URLs to the agent and ask it to synthesize an infographic
-  # from data it fetches live: repo architecture from README/code, recent commits
-  # from git history. Tests the full pipeline from data gathering to visual output.
-  #
-  # Note: content accuracy scoring will vary run-to-run as repos evolve. The
-  # primary signal is visual quality and layout coherence, not factual precision.
+  # Content accuracy scoring will vary run-to-run as repos evolve.
+  # Primary signal: visual quality and layout coherence, not factual precision.
   # ---------------------------------------------------------------------------
 
   - name: amplifier-repo-architecture
+    tier: extended
+    prompt_weight: natural
+    aesthetic: agent-selected
+    capability: [live-data]
     topic: "Amplifier AI Agent Framework -- Repository Architecture"
     panels: 2
     audience: "Developers evaluating whether to build on Amplifier"
@@ -541,6 +735,10 @@ scenarios:
       edges can move fast.
 
   - name: infographic-builder-recent-changes
+    tier: extended
+    prompt_weight: natural
+    aesthetic: agent-selected
+    capability: [live-data]
     topic: "infographic-builder -- What Changed in the Last Week"
     panels: 2
     audience: "Project contributors and power users tracking new capabilities"

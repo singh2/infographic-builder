@@ -192,3 +192,142 @@ def test_parse_unsupported_format_raises() -> None:
     """Parser raises ValueError for unknown format identifiers."""
     with pytest.raises(ValueError, match="Unsupported format"):
         parse_diagram_source("some source", "svg")
+
+
+# ---------------------------------------------------------------------------
+# Mermaid: sequenceDiagram
+# ---------------------------------------------------------------------------
+
+SEQUENCE_DIAGRAM = """\
+sequenceDiagram
+    participant Browser
+    participant API Gateway
+    Browser->>API Gateway: POST /login
+    API Gateway-->>Browser: 200 OK
+    Browser->>API Gateway: GET /profile
+"""
+
+
+def test_parse_mermaid_sequence_format() -> None:
+    """Parser identifies sequenceDiagram type."""
+    result = parse_diagram_source(SEQUENCE_DIAGRAM, "mermaid")
+    assert result["format"] == "mermaid"
+    assert result["diagram_type"] == "sequenceDiagram"
+
+
+def test_parse_mermaid_sequence_nodes() -> None:
+    """Parser extracts participants as nodes, including multi-word names."""
+    result = parse_diagram_source(SEQUENCE_DIAGRAM, "mermaid")
+    labels = {n["label"] for n in result["nodes"]}
+    assert "Browser" in labels
+    assert "API Gateway" in labels
+    assert result["node_count"] >= 2
+
+
+def test_parse_mermaid_sequence_edges() -> None:
+    """Parser extracts messages as directed edges with message text as label."""
+    result = parse_diagram_source(SEQUENCE_DIAGRAM, "mermaid")
+    assert result["edge_count"] == 3
+    edge_labels = {e["label"] for e in result["edges"] if e.get("label")}
+    assert "POST /login" in edge_labels
+    assert "200 OK" in edge_labels
+
+
+# ---------------------------------------------------------------------------
+# Mermaid: erDiagram
+# ---------------------------------------------------------------------------
+
+ER_DIAGRAM = """\
+erDiagram
+    USER {
+        int id PK
+        string email
+    }
+    ORDER {
+        int id PK
+        int user_id FK
+    }
+    PRODUCT {
+        int id PK
+        string name
+    }
+    USER ||--o{ ORDER : places
+    ORDER ||--|{ PRODUCT : contains
+"""
+
+
+def test_parse_mermaid_er_format() -> None:
+    """Parser identifies erDiagram type."""
+    result = parse_diagram_source(ER_DIAGRAM, "mermaid")
+    assert result["format"] == "mermaid"
+    assert result["diagram_type"] == "erDiagram"
+
+
+def test_parse_mermaid_er_nodes() -> None:
+    """Parser extracts entity names as nodes."""
+    result = parse_diagram_source(ER_DIAGRAM, "mermaid")
+    labels = {n["label"] for n in result["nodes"]}
+    assert "USER" in labels
+    assert "ORDER" in labels
+    assert "PRODUCT" in labels
+    assert result["node_count"] >= 3
+
+
+def test_parse_mermaid_er_edges() -> None:
+    """Parser extracts relationships as edges with verb label."""
+    result = parse_diagram_source(ER_DIAGRAM, "mermaid")
+    assert result["edge_count"] >= 2
+    edge_labels = {e["label"] for e in result["edges"] if e.get("label")}
+    assert "places" in edge_labels
+    assert "contains" in edge_labels
+
+
+# ---------------------------------------------------------------------------
+# Mermaid: classDiagram
+# ---------------------------------------------------------------------------
+
+CLASS_DIAGRAM = """\
+classDiagram
+    class Session {
+        +String id
+        +execute(prompt)
+    }
+    class Coordinator {
+        +mount(point, instance)
+        +get(point)
+    }
+    class Tool {
+        <<interface>>
+        +execute(input)
+    }
+    Session --> Coordinator : uses
+    Coordinator --> Tool : mounts
+    ConcreteTools ..|> Tool : implements
+"""
+
+
+def test_parse_mermaid_class_format() -> None:
+    """Parser identifies classDiagram type."""
+    result = parse_diagram_source(CLASS_DIAGRAM, "mermaid")
+    assert result["format"] == "mermaid"
+    assert result["diagram_type"] == "classDiagram"
+
+
+def test_parse_mermaid_class_nodes() -> None:
+    """Parser extracts class names as nodes from class declarations."""
+    result = parse_diagram_source(CLASS_DIAGRAM, "mermaid")
+    labels = {n["label"] for n in result["nodes"]}
+    assert "Session" in labels
+    assert "Coordinator" in labels
+    assert "Tool" in labels
+    assert result["node_count"] >= 3
+
+
+def test_parse_mermaid_class_edges() -> None:
+    """Parser extracts relationships as edges including --> and ..|> arrows."""
+    result = parse_diagram_source(CLASS_DIAGRAM, "mermaid")
+    assert result["edge_count"] >= 3
+    edge_labels = {e["label"] for e in result["edges"] if e.get("label")}
+    assert "uses" in edge_labels
+    assert "mounts" in edge_labels
+    assert "implements" in edge_labels

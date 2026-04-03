@@ -34,6 +34,9 @@ tags: ["evaluation", "quality", "rubric", "batch"]
 context:
   scenarios_file: "eval/scenarios.yaml"
   run_suffix: ""
+  filter_tier: ""           # core | extended | "" (empty = all scenarios)
+  filter_aesthetic: ""      # e.g. claymation | dark-mode-tech | "" (empty = all)
+  filter_prompt_weight: ""  # minimal | natural | specified | "" (empty = all)
 
 steps:
   # ---------------------------------------------------------------------------
@@ -55,9 +58,13 @@ steps:
     type: "bash"
     command: >
       python3 -c "
-      import yaml, json, sys;
+      import yaml, json;
       data = yaml.safe_load(open('{{scenarios_file}}'));
-      print(json.dumps(data['scenarios']))
+      s = data['scenarios'];
+      t = '{{filter_tier}}'; s = [x for x in s if not t or x.get('tier') == t];
+      a = '{{filter_aesthetic}}'; s = [x for x in s if not a or x.get('aesthetic') == a];
+      p = '{{filter_prompt_weight}}'; s = [x for x in s if not p or x.get('prompt_weight') == p];
+      print(json.dumps(s))
       "
     output: "scenarios"
 

@@ -160,7 +160,7 @@ steps:
       echo ""
       echo "Diagrams processed:    $TOTAL_DIAGRAMS"
       echo "Total images:          $TOTAL_IMAGES"
-      echo "Expected:              48  (12 diagrams × 4 images each)"
+      echo "Expected:              84  (21 diagrams × 4 images each)"
       echo "Failed:                $FAILED"
       echo ""
       echo "Output directory: {{run_dir}}"

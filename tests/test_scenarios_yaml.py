@@ -2,7 +2,9 @@
 Tests for eval/scenarios.yaml structure and completeness.
 
 Verifies that the scenarios file exists, is valid YAML, contains exactly
-32 scenarios, and that each scenario has all required fields.
+40 scenarios, that each scenario has all required fields including metadata
+tags, and that the tag values are drawn from the documented allowed sets.
+See eval/EVAL_PHILOSOPHY.md for the coverage framework.
 """
 
 from __future__ import annotations
@@ -14,7 +16,20 @@ import yaml
 
 SCENARIOS_PATH = pathlib.Path("eval/scenarios.yaml")
 
-REQUIRED_FIELDS = {"name", "topic", "panels", "audience", "style_direction", "prompt"}
+REQUIRED_FIELDS = {
+    "name", "topic", "panels", "audience", "style_direction", "prompt",
+    "tier", "prompt_weight", "aesthetic",
+}
+
+VALID_TIERS = {"core", "extended"}
+VALID_PROMPT_WEIGHTS = {"minimal", "natural", "specified"}
+VALID_AESTHETICS = {
+    "clean-minimalist", "dark-mode-tech", "bold-editorial", "sketchnote",
+    "claymation", "lego", "freeform", "agent-selected", "reference-image",
+    "materialistic-3d",
+}
+VALID_CAPABILITIES = {"diorama", "reference-image", "content-source", "live-data", "materialistic-3d"}
+CURATED_AESTHETICS = {"clean-minimalist", "dark-mode-tech", "bold-editorial", "sketchnote", "claymation", "lego"}
 
 EXPECTED_NAMES = {
     # Specified -- full visual spec
@@ -50,12 +65,21 @@ EXPECTED_NAMES = {
     # Materialistic 3D
     "kubernetes-architecture-3d",
     "data-pipeline-materialistic-3d",
-    # Reference image
+    # Reference image and content source
     "amplifier-delegation-styled",
+    "reference-image-multi-panel",
     "product-metrics-watercolor",
+    "content-source-chart",
     # Live data
     "amplifier-repo-architecture",
     "infographic-builder-recent-changes",
+    # Minimal -- one per curated aesthetic
+    "minimal-claymation",
+    "minimal-dark-tech",
+    "minimal-editorial",
+    "minimal-sketchnote",
+    "minimal-lego",
+    "minimal-clean",
 }
 
 EXPECTED_PANEL_COUNTS = {
@@ -92,12 +116,21 @@ EXPECTED_PANEL_COUNTS = {
     # Materialistic 3D
     "kubernetes-architecture-3d": 1,
     "data-pipeline-materialistic-3d": 1,
-    # Reference image
+    # Reference image and content source
     "amplifier-delegation-styled": 1,
+    "reference-image-multi-panel": 3,
     "product-metrics-watercolor": 1,
+    "content-source-chart": 1,
     # Live data
     "amplifier-repo-architecture": 2,
     "infographic-builder-recent-changes": 2,
+    # Minimal
+    "minimal-claymation": 1,
+    "minimal-dark-tech": 1,
+    "minimal-editorial": 1,
+    "minimal-sketchnote": 1,
+    "minimal-lego": 1,
+    "minimal-clean": 1,
 }
 
 
@@ -125,8 +158,8 @@ def test_scenarios_is_valid_yaml() -> None:
 
 
 def test_scenarios_count(scenarios: list[dict]) -> None:
-    """There must be exactly 32 scenarios."""
-    assert len(scenarios) == 32, f"Expected 32 scenarios, got {len(scenarios)}"
+    """There must be exactly 40 scenarios."""
+    assert len(scenarios) == 40, f"Expected 40 scenarios, got {len(scenarios)}"
 
 
 def test_each_scenario_has_required_fields(scenarios: list[dict]) -> None:
@@ -145,7 +178,7 @@ def test_scenario_names_are_unique(scenarios: list[dict]) -> None:
 
 
 def test_scenario_names_match_expected(scenarios: list[dict]) -> None:
-    """Scenario names must match the expected set of 32 names."""
+    """Scenario names must match the expected set of 40 names."""
     names = {s["name"] for s in scenarios}
     assert names == EXPECTED_NAMES, (
         f"Unexpected names: {names - EXPECTED_NAMES}, "
@@ -189,4 +222,76 @@ def test_python_c_verification_output(capsys) -> None:
     scenarios = data["scenarios"]
     print(f"{len(scenarios)} scenarios loaded")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "32 scenarios loaded"
+    assert captured.out.strip() == "40 scenarios loaded"
+
+
+# ---------------------------------------------------------------------------
+# Metadata field validation (tier, prompt_weight, aesthetic, capability)
+# See eval/EVAL_PHILOSOPHY.md for the allowed value sets.
+# ---------------------------------------------------------------------------
+
+
+def test_tier_values_are_valid(scenarios: list[dict]) -> None:
+    """Every scenario's tier must be 'core' or 'extended'."""
+    for scenario in scenarios:
+        assert scenario["tier"] in VALID_TIERS, (
+            f"Scenario {scenario['name']}: invalid tier '{scenario['tier']}'. "
+            f"Must be one of {VALID_TIERS}"
+        )
+
+
+def test_prompt_weight_values_are_valid(scenarios: list[dict]) -> None:
+    """Every scenario's prompt_weight must be 'minimal', 'natural', or 'specified'."""
+    for scenario in scenarios:
+        assert scenario["prompt_weight"] in VALID_PROMPT_WEIGHTS, (
+            f"Scenario {scenario['name']}: invalid prompt_weight '{scenario['prompt_weight']}'. "
+            f"Must be one of {VALID_PROMPT_WEIGHTS}"
+        )
+
+
+def test_aesthetic_values_are_valid(scenarios: list[dict]) -> None:
+    """Every scenario's aesthetic must be a known value from the philosophy doc."""
+    for scenario in scenarios:
+        assert scenario["aesthetic"] in VALID_AESTHETICS, (
+            f"Scenario {scenario['name']}: invalid aesthetic '{scenario['aesthetic']}'. "
+            f"Must be one of {VALID_AESTHETICS}"
+        )
+
+
+def test_capability_values_are_valid(scenarios: list[dict]) -> None:
+    """If a scenario has a capability list, all values must be known."""
+    for scenario in scenarios:
+        caps = scenario.get("capability", [])
+        for cap in caps:
+            assert cap in VALID_CAPABILITIES, (
+                f"Scenario {scenario['name']}: invalid capability '{cap}'. "
+                f"Must be one of {VALID_CAPABILITIES}"
+            )
+
+
+def test_minimal_covers_all_curated_aesthetics(scenarios: list[dict]) -> None:
+    """Every curated aesthetic must have at least one minimal-weight scenario.
+
+    This is the primary coverage health check from eval/EVAL_PHILOSOPHY.md.
+    The minimal column is the regression canary for creative quality.
+    """
+    minimal_aesthetics = {
+        s["aesthetic"] for s in scenarios if s.get("prompt_weight") == "minimal"
+    }
+    missing = CURATED_AESTHETICS - minimal_aesthetics
+    assert not missing, (
+        f"Curated aesthetics missing minimal coverage: {missing}. "
+        f"Add a minimal scenario for each."
+    )
+
+
+def test_core_tier_covers_all_curated_aesthetics(scenarios: list[dict]) -> None:
+    """Every curated aesthetic must appear in at least one core scenario."""
+    core_aesthetics = {
+        s["aesthetic"] for s in scenarios if s.get("tier") == "core"
+    }
+    missing = CURATED_AESTHETICS - core_aesthetics
+    assert not missing, (
+        f"Curated aesthetics missing core coverage: {missing}. "
+        f"Add a core scenario for each."
+    )
