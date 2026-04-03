@@ -79,3 +79,37 @@ def test_content_map_default_is_consistent() -> None:
         "Content Map must specify 'consistent' as the default strategy.\n"
         f"Actual block:\n{block}"
     )
+
+
+# --- Sentinels ---
+H2_PROMPT_ENGINEERING = "## Prompt Engineering"
+H3_MULTI_PANEL = "### Multi-Panel Composition"  # next H3 after prompt list
+
+
+def _get_prompt_engineering_block(content: str) -> str:
+    start = content.index(H2_PROMPT_ENGINEERING)
+    end = content.index("### ", start + len(H2_PROMPT_ENGINEERING))
+    return content[start:end]
+
+
+# --- Task 2: Prompt Engineering ---
+
+
+def test_prompt_engineering_has_scene_directive_element() -> None:
+    """Prompt Engineering list must include a scene directive element."""
+    block = _get_prompt_engineering_block(read_guide())
+    lower = block.lower()
+    assert "scene directive" in lower, (
+        "'scene directive' not found in Prompt Engineering section.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_prompt_engineering_scene_directive_is_multi_panel_only() -> None:
+    """Scene directive element must be scoped to multi-panel varied only."""
+    block = _get_prompt_engineering_block(read_guide())
+    lower = block.lower()
+    assert "multi-panel" in lower and "varied" in lower, (
+        "Scene directive must be scoped to 'multi-panel' and 'varied'.\n"
+        f"Actual block:\n{block}"
+    )

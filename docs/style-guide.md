@@ -180,6 +180,9 @@ When constructing the generation prompt, always specify:
 4. **Text content** -- include the actual text/labels/numbers to render
 5. **Style modifier** -- "clean and modern", "bold and colorful", "minimal corporate"
 6. **Aspect ratio hint** -- tall for vertical (9:16), wide for presentations (16:9)
+7. **Scene directive** (multi-panel varied only) -- the distinct environment,
+   perspective, or visual setting for THIS panel, drawn from the content map's
+   Scene field. Omit for consistent strategy or single-panel infographics.
 
 ## Decomposition Heuristics
 
