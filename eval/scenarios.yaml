@@ -378,3 +378,179 @@ scenarios:
       Create a Dark Mode Tech infographic about the Eisenhower Matrix for
       prioritizing tasks. Show the urgent/important grid with real-world
       examples in each quadrant.
+
+  # ===========================================================================
+  # README SHOWCASE SCENARIOS -- prompts drawn from the README examples section
+  # ===========================================================================
+  #
+  # These reproduce scenarios shown or described in the project README to keep
+  # the eval set aligned with documented usage patterns.
+  # ---------------------------------------------------------------------------
+
+  # ---- NATURAL (agent decides layout and panel count) -----------------------
+
+  - name: engineering-onboarding
+    topic: "New Engineer Onboarding Guide"
+    panels: 3
+    audience: "Software engineers on day one of a new role"
+    style_direction: "Agent-selected"
+    prompt: >
+      Create an onboarding guide infographic for new engineers joining a modern
+      software team. Cover three areas: (1) Repository structure -- how the
+      codebase is organized, key directories, where tests and configs live.
+      (2) Development workflow -- branching strategy, PR process, review
+      expectations, CI/CD pipeline overview. (3) Team conventions -- commit
+      message format, code style guide, how to ask for help, on-call rotation.
+      Make it practical and scannable, aimed at engineers on day one who need
+      a single reference they can pin up or bookmark.
+
+  # ---- AESTHETIC (named aesthetic + diorama mode) ---------------------------
+
+  - name: espresso-brewing-diorama
+    topic: "A Claymation Diorama Guide to Brewing the Perfect Espresso"
+    panels: 1
+    audience: "Coffee enthusiasts and home baristas"
+    style_direction: "Claymation Studio diorama mode"
+    prompt: >
+      Make a Claymation Studio diorama infographic -- clay figures acting out
+      each step in a physical scene -- showing how to brew the perfect espresso.
+      Steps: grind fresh beans fine, dose 18g into the portafilter, tamp evenly
+      at 30lbs of pressure, lock and pull for 25-30 seconds, check the crema
+      (deep amber means success). Clay barista figures, kitchen workstation props,
+      warm lighting, playful tactile mood.
+
+  - name: star-wars-ranking
+    topic: "Every Star Wars Movie, Ranked"
+    panels: 2
+    audience: "Star Wars fans and pop culture enthusiasts"
+    style_direction: "Bold Editorial (named aesthetic)"
+    prompt: >
+      Create a Bold Editorial infographic ranking every Star Wars theatrical film
+      from best to worst based on critical reception and fan sentiment. Cover all
+      11 films: A New Hope, The Empire Strikes Back, Return of the Jedi, The
+      Phantom Menace, Attack of the Clones, Revenge of the Sith, The Force
+      Awakens, The Last Jedi, The Rise of Skywalker, Rogue One, Solo. For each
+      show rank position, approximate Rotten Tomatoes score, and a one-line
+      verdict. Bold Editorial style -- dramatic typography, high contrast,
+      cinematic composition.
+
+  # ===========================================================================
+  # MATERIALISTIC 3D -- tests diorama and 3D rendering capabilities (2 scenarios)
+  # ===========================================================================
+
+  - name: kubernetes-architecture-3d
+    topic: "Kubernetes Cluster Architecture -- Materialistic 3D"
+    panels: 1
+    audience: "Platform engineers and DevOps teams"
+    style_direction: "Materialistic 3D diorama with glossy plastic components and soft studio lighting"
+    prompt: >
+      Create a 1-panel infographic visualizing Kubernetes cluster architecture
+      in a materialistic 3D style. Render each component as a glossy 3D physical
+      object: Control Plane (API Server, etcd, Scheduler, Controller Manager) as
+      a sleek glass platform floating above; Worker Nodes as metallic plastic
+      server blocks below; Pods as small rounded capsules docked on nodes;
+      Services as glowing connector bridges spanning nodes. Dark studio
+      background, soft ambient lighting, saturated accent colors differentiating
+      component types, bold modern typography for labels. 9:16 aspect ratio.
+
+  - name: data-pipeline-materialistic-3d
+    topic: "Modern Data Pipeline -- Materialistic 3D"
+    panels: 1
+    audience: "Data engineers and analytics teams"
+    style_direction: "Materialistic 3D with glossy pipeline stages and neon data flow effects"
+    prompt: >
+      Create a 1-panel infographic of a modern data pipeline in materialistic 3D
+      style. Render 5 stages as physical glossy 3D platforms connected by glowing
+      neon data streams: Ingest (Kafka/Kinesis -- metallic funnel), Store (Data
+      Lake -- crystalline ice block), Process (Spark/dbt -- glowing compute
+      cluster), Serve (Data Warehouse -- polished mirror-finish surface), Consume
+      (BI Tools -- floating display screens). Dark background, dramatic downward
+      studio lighting, each stage a distinct saturated accent color. 9:16 aspect
+      ratio.
+
+  # ===========================================================================
+  # REFERENCE IMAGE -- tests user-provided style anchor capability (2 scenarios)
+  # ===========================================================================
+  #
+  # These scenarios include a reference image path in the prompt. The agent
+  # should detect the path, load the image, and use it as reference_image_path
+  # when calling nano-banana. Validates the image-input feature end-to-end.
+  #
+  # Reference images are from infographics/ (generated samples that exist on disk).
+  # ---------------------------------------------------------------------------
+
+  - name: amplifier-delegation-styled
+    topic: "Amplifier Agent Delegation and Context Sink Pattern"
+    panels: 1
+    audience: "Amplifier developers and AI engineers"
+    style_direction: "Match style of reference image (Dark Mode Tech)"
+    prompt: >
+      Using './infographics/code-analysis-dark-tech.png' as a visual style
+      reference -- match this image's color palette, typography, layout density,
+      and dark tech aesthetic exactly -- create a 1-panel infographic explaining
+      Amplifier's agent delegation pattern. Show: (1) Root session delegates to
+      specialist expert agent, spending only ~50 tokens in root context. (2)
+      Expert agent spawns in its own context window, loads @mentioned docs
+      (8,000+ tokens), runs full orchestrator loop (20,000+ tokens consumed in
+      agent context). (3) Only a ~500 token summary returns to root. Include the
+      token math showing why delegation preserves session longevity. 9:16 aspect
+      ratio.
+
+  - name: product-metrics-watercolor
+    topic: "SaaS Product Health Dashboard -- Watercolor Style"
+    panels: 1
+    audience: "Product managers and startup founders"
+    style_direction: "Match style of reference image (watercolor illustration)"
+    prompt: >
+      Using './infographics/redwood-run-watercolor.png' as a visual style
+      reference -- match this image's watercolor illustration aesthetic, soft
+      color washes, organic shapes, and hand-painted feel exactly -- create a
+      1-panel product health dashboard infographic. Present these metrics with
+      watercolor data visualizations: Monthly Active Users 14,200 (up 18% MoM),
+      Activation Rate 62% (target 70%), Day-30 Retention 34%, Net Promoter Score
+      58 (industry avg 32), Average Revenue Per User $28/mo. Soft watercolor
+      charts and icons, pastel tones with subtle ink outlines. 9:16 aspect ratio.
+
+  # ===========================================================================
+  # LIVE DATA -- scenarios that fetch from real repos at eval time (2 scenarios)
+  # ===========================================================================
+  #
+  # These pass GitHub URLs to the agent and ask it to synthesize an infographic
+  # from data it fetches live: repo architecture from README/code, recent commits
+  # from git history. Tests the full pipeline from data gathering to visual output.
+  #
+  # Note: content accuracy scoring will vary run-to-run as repos evolve. The
+  # primary signal is visual quality and layout coherence, not factual precision.
+  # ---------------------------------------------------------------------------
+
+  - name: amplifier-repo-architecture
+    topic: "Amplifier AI Agent Framework -- Repository Architecture"
+    panels: 2
+    audience: "Developers evaluating whether to build on Amplifier"
+    style_direction: "Agent-selected"
+    prompt: >
+      Browse https://github.com/microsoft/amplifier and create an infographic
+      explaining the architecture of the Amplifier AI agent framework. Cover the
+      key layers: (1) the kernel (amplifier-core -- tiny stable center, session
+      lifecycle, module loading, event system, ~2,600 lines), (2) the 5 module
+      types and what each does (Provider, Tool, Orchestrator, Context, Hook --
+      distinguish LLM-decided vs code-decided), (3) the Foundation library and
+      bundle composition system, (4) how agents and recipes sit on top as
+      application-layer patterns. Show the dependency hierarchy and the core
+      design principle: mechanism not policy, the center stays still so the
+      edges can move fast.
+
+  - name: infographic-builder-recent-changes
+    topic: "infographic-builder -- What Changed in the Last Week"
+    panels: 2
+    audience: "Project contributors and power users tracking new capabilities"
+    style_direction: "Agent-selected"
+    prompt: >
+      Fetch the last week of commits from https://github.com/singh2/infographic-builder
+      (or run git log locally -- you are inside this repo) and create an infographic
+      summarizing what changed. Group commits by theme: new features added, quality
+      improvements, test coverage changes, documentation updates. For each theme
+      call out the most significant change in plain language. Show the overall
+      direction of development and what capabilities are new or improved. Use a
+      changelog, timeline, or grouped-cards layout -- whichever fits the commit
+      density best.

@@ -2,7 +2,7 @@
 Tests for eval/scenarios.yaml structure and completeness.
 
 Verifies that the scenarios file exists, is valid YAML, contains exactly
-23 scenarios, and that each scenario has all required fields.
+32 scenarios, and that each scenario has all required fields.
 """
 
 from __future__ import annotations
@@ -43,6 +43,19 @@ EXPECTED_NAMES = {
     "sleep-stages",
     "solar-system",
     "eisenhower-matrix",
+    # README showcase
+    "engineering-onboarding",
+    "espresso-brewing-diorama",
+    "star-wars-ranking",
+    # Materialistic 3D
+    "kubernetes-architecture-3d",
+    "data-pipeline-materialistic-3d",
+    # Reference image
+    "amplifier-delegation-styled",
+    "product-metrics-watercolor",
+    # Live data
+    "amplifier-repo-architecture",
+    "infographic-builder-recent-changes",
 }
 
 EXPECTED_PANEL_COUNTS = {
@@ -72,6 +85,19 @@ EXPECTED_PANEL_COUNTS = {
     "sleep-stages": 2,
     "solar-system": 3,
     "eisenhower-matrix": 1,
+    # README showcase
+    "engineering-onboarding": 3,
+    "espresso-brewing-diorama": 1,
+    "star-wars-ranking": 2,
+    # Materialistic 3D
+    "kubernetes-architecture-3d": 1,
+    "data-pipeline-materialistic-3d": 1,
+    # Reference image
+    "amplifier-delegation-styled": 1,
+    "product-metrics-watercolor": 1,
+    # Live data
+    "amplifier-repo-architecture": 2,
+    "infographic-builder-recent-changes": 2,
 }
 
 
@@ -99,8 +125,8 @@ def test_scenarios_is_valid_yaml() -> None:
 
 
 def test_scenarios_count(scenarios: list[dict]) -> None:
-    """There must be exactly 23 scenarios."""
-    assert len(scenarios) == 23, f"Expected 23 scenarios, got {len(scenarios)}"
+    """There must be exactly 32 scenarios."""
+    assert len(scenarios) == 32, f"Expected 32 scenarios, got {len(scenarios)}"
 
 
 def test_each_scenario_has_required_fields(scenarios: list[dict]) -> None:
@@ -119,7 +145,7 @@ def test_scenario_names_are_unique(scenarios: list[dict]) -> None:
 
 
 def test_scenario_names_match_expected(scenarios: list[dict]) -> None:
-    """Scenario names must match the expected set of 18 names."""
+    """Scenario names must match the expected set of 32 names."""
     names = {s["name"] for s in scenarios}
     assert names == EXPECTED_NAMES, (
         f"Unexpected names: {names - EXPECTED_NAMES}, "
@@ -163,4 +189,4 @@ def test_python_c_verification_output(capsys) -> None:
     scenarios = data["scenarios"]
     print(f"{len(scenarios)} scenarios loaded")
     captured = capsys.readouterr()
-    assert captured.out.strip() == "23 scenarios loaded"
+    assert captured.out.strip() == "32 scenarios loaded"
