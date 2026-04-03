@@ -48,10 +48,30 @@ _RUBRIC_DIMENSIONS = """
 ### Scoring Rubric (each dimension scored 1–5)
 
 **1. Content Accuracy (20%)**
-Evaluates factual correctness, data integrity, and absence of misleading claims.
-- *Behavioral anchors*: 5 = all data verifiable and accurate; 3 = minor errors
-  or omissions; 1 = significant factual mistakes.
-- *AI failure modes*: hallucinated statistics, incorrect labels, conflated concepts.
+Evaluates factual correctness, data integrity, label accuracy, and structural
+fidelity to the brief. Enumerate every visible text label and data point before
+scoring — check each against the brief.
+- *Behavioral anchors*:
+  5 = every label, number, and concept matches the brief; no duplicates, no
+    nonsensical text, no extraneous elements.
+  4 = all key content present and correct; at most one minor omission or
+    imprecise label that does not mislead.
+  3 = most content correct but 1-2 clear errors (wrong value, missing step,
+    slightly misleading claim).
+  2 = multiple errors or structural problems — duplicate labels, wrong diagram
+    shape, garbled text, missing key concepts from the brief.
+  1 = pervasive inaccuracies — hallucinated data, fundamentally wrong structure,
+    or content unrelated to the brief.
+- *AI failure modes*: hallucinated statistics, incorrect labels, conflated
+  concepts, duplicate labels or step numbers, nonsensical or garbled text,
+  wrong diagram shape (e.g. triple loop instead of figure eight), random visual
+  elements unrelated to the topic (unexplained hands, figures, objects),
+  placeholder text that was never filled in.
+- *Score ≤ 3 if*: any label or step number appears more than once without
+  semantic reason, OR any visible text is nonsensical/garbled, OR the diagram
+  shape contradicts the stated structure (e.g. "infinite loop" rendered as
+  something other than a figure eight).
+- *Score ≤ 2 if*: multiple items from the above list occur in the same image.
 
 **2. Narrative Structure (15%)**
 Evaluates logical flow, clear entry/exit points, and coherent story progression.
@@ -75,11 +95,26 @@ Evaluates font hierarchy, contrast, type size, and overall readability.
   decorative fonts used for body copy.
 
 **5. Visual Quality & Consistency (20% single-panel / 17% multi-panel)**
-Evaluates overall polish, colour palette coherence, icon consistency, and brand
-alignment WITHIN each panel.
-- *Behavioral anchors*: 5 = professional finish, unified visual language;
-  3 = mostly consistent with occasional rough edges; 1 = inconsistent or amateurish.
-- *AI failure modes*: mismatched icon styles, clashing colours, uneven padding.
+Evaluates overall polish, colour palette coherence, icon consistency, compositional
+integrity, and brand alignment WITHIN each panel.
+- *Behavioral anchors*:
+  5 = professional finish, unified visual language, every element belongs and
+    serves the composition; no artifacts, no unexplained elements.
+  4 = polished with at most one minor rough edge (slight alignment issue,
+    one element slightly out of place).
+  3 = mostly consistent but noticeable issues — an unexplained element,
+    awkward spatial composition, or inconsistent rendering in one area.
+  2 = multiple compositional problems — random elements that don't belong,
+    disembodied body parts, figures that break spatial logic, clashing styles
+    within the same panel.
+  1 = inconsistent or amateurish — no unified visual language.
+- *AI failure modes*: mismatched icon styles, clashing colours, uneven padding,
+  random visual artifacts (unexplained hands, floating objects, extra figures
+  with no narrative purpose), unrealistic spatial arrangements (people facing
+  wrong directions, physically impossible compositions), elements that look
+  copy-pasted or disconnected from the scene.
+- *Score ≤ 3 if*: any clearly unintended element is visible (disembodied hand,
+  random figure, floating object unrelated to content).
 
 **6. Cross-Panel Consistency (15% — multi-panel only)**
 Evaluates visual consistency ACROSS panels. All panels must look like they came

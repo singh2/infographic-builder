@@ -180,9 +180,6 @@ When constructing the generation prompt, always specify:
 4. **Text content** -- include the actual text/labels/numbers to render
 5. **Style modifier** -- "clean and modern", "bold and colorful", "minimal corporate"
 6. **Aspect ratio hint** -- tall for vertical (9:16), wide for presentations (16:9)
-7. **Scene directive** (multi-panel varied only) -- the distinct environment,
-   perspective, or visual setting for THIS panel, drawn from the content map's
-   Scene field. Omit for consistent strategy or single-panel infographics.
 
 ## Decomposition Heuristics
 
@@ -211,12 +208,8 @@ to exactly one panel:
 
 ```
 CONTENT MAP:
-Scene strategy: [varied | consistent]
-
 Panel 1 -- [title]: [concepts/data ONLY in this panel]
-  Scene: [varied only — environment, perspective, key props for this panel]
 Panel 2 -- [title]: [concepts/data ONLY in this panel]
-  Scene: [varied only — distinct environment from Panel 1]
 ...
 Shared across panels: [series title, style brief only]
 ```
@@ -227,20 +220,6 @@ Rules:
 - The only repeated elements: series title and style brief
 - Each panel prompt includes a scoping line: "This panel covers ONLY: [X].
   Do NOT include: [Y, Z]." where Y and Z are other panels' content
-
-**Scene strategy** — decided once per infographic at this stage:
-- **`consistent`**: Same visual frame across all panels. Background, composition,
-  and framing are identical. Use for comparisons, taxonomies, ranked lists, data
-  breakdowns — topics where uniform framing highlights content differences.
-- **`varied`**: Artistic style stays locked (palette, typography, icon rendering,
-  lighting quality, borders). Environment, props, perspective, and composition
-  vary per panel. Use for journeys, daily routines, recipes, multi-step processes
-  with distinct physical settings — topics where each panel naturally maps to a
-  different location.
-- When `consistent`, the `Scene:` lines do not exist in the content map.
-- When `varied`, each panel gets a 1-sentence scene directive — concrete and
-  visual (e.g. "sunlit forest trail with layered clay trees" not "nature scene").
-- **Default to `consistent` when in doubt.** This preserves current behavior.
 
 ### Style Consistency Brief
 
@@ -268,12 +247,6 @@ decorative elements (arrows, dividers, etc.).
 **Do not include panel numbering or footer text** ("Panel 1 of 4", etc.).
 Position already implies order. If a user explicitly requests numbered panels
 (e.g., for individual use in a slide deck), add them at that point.
-
-When the scene strategy is `varied`, set the Background field to
-`"per scene directive"` instead of a fixed color or treatment. This prevents
-the brief from contradicting per-panel scene directives. All other fields
-(palette, typography, icons, borders, header chrome) remain fixed and apply
-uniformly.
 
 ### Reference Image Chaining (Visual Consistency)
 
@@ -336,13 +309,6 @@ Do not merge -- overwrite.** The analysis describes what Gemini *actually
 rendered*, which is what Panels 2-N must match. Carrying forward any original
 brief language that contradicts the render causes style drift. The render wins,
 completely.
-
-**Varied scene strategy note:** When the scene strategy is `varied`, the
-reconciled brief carries the style DNA (typography, palette, icon rendering,
-lighting quality, border treatment) but the background environment description
-is specific to Panel 1's scene. Do not enforce Panel 1's background environment
-on Panels 2-N — they have their own scene directives. All other style properties
-from the reconciled brief apply uniformly.
 
 ### Panel Naming Convention
 
@@ -412,22 +378,6 @@ concrete -- these will be used to refine the generation prompt).
 
 For Panels 2-N, add a visual comparison step using nano-banana `compare` with
 Panel 1 as image1 and the panel under review as image2. Use this prompt:
-
-**Varied scene strategy:** When the content map declares `Scene strategy: varied`,
-prepend this preamble to the comparison prompt:
-
-> "These panels use a VARIED scene strategy — each panel intentionally depicts a
-> different environment while sharing the same artistic style. When checking
-> BACKGROUND, evaluate only the background STYLE (lighting quality, texture
-> approach, depth-of-field treatment) — do NOT flag differences in background
-> CONTENT (what the scene depicts). A forest and a kitchen are not drift if they
-> share the same lighting quality, color temperature, and rendering approach.
-> Only flag unintended style inconsistencies: mismatched typography weights,
-> divergent accent colors, inconsistent icon rendering, or different border
-> treatments."
-
-When the scene strategy is `consistent` (or unset), use the comparison prompt
-as-is — full 8-dimension enforcement including background content.
 
 ```
 Compare these two infographic panels that must share identical visual style.
