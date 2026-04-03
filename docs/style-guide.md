@@ -149,6 +149,57 @@ content to life in the medium. This is the default and needs no special promptin
 If the user asks for a **"diorama"**, frame the prompt as characters acting
 out a scene. Dioramas work best for linear sequential workflows.
 
+## Variation Cascade
+
+When generating 3 candidates for Panel 1 selection, what to vary depends on what
+the user has already specified. Three tiers, applied in priority order:
+
+### Tier 1: Vary aesthetic (highest diversity)
+
+**When:** User specified a topic but no aesthetic.
+
+Generate 3 candidates each in a **different curated aesthetic**, selected to
+maximize visual diversity across the professional-to-playful spectrum. Choose 3
+aesthetics that contrast strongly — e.g., Clean Minimalist, Claymation Studio,
+and Dark Mode Tech rather than three adjacent styles.
+
+### Tier 2: Vary based on aesthetic type (medium diversity)
+
+**When:** User specified an aesthetic (curated or freeform).
+
+The variation axis depends on the aesthetic type:
+
+| Aesthetic | Variation axis |
+|-----------|----------------|
+| Claymation Studio | Environment/setting |
+| Lego Brick Builder | Environment/setting |
+| Clean Minimalist | Composition |
+| Dark Mode Tech | Composition |
+| Bold Editorial | Composition |
+| Hand-Drawn Sketchnote | Composition |
+| Freeform | Composition |
+
+**Composition directions** (flat/2D aesthetics — use all 3 across the candidates):
+
+- Central focal point — hero visual dominates, supporting text arranged around it
+- Scene-based — characters or objects act out the topic in a spatial arrangement
+- Structured/diagrammatic — grid, flow, or table layout emphasizes relationships and data
+
+**Environment directions** (3D aesthetics — Claymation Studio, Lego Brick Builder):
+
+Agent picks 3 contrasting settings appropriate to the topic. Settings should be
+visually distinct and reinforce the content theme — for example, for a productivity
+topic: a cozy home office, a busy open-plan workspace, and an outdoor café.
+
+### Tier 3: Model freedom (lowest diversity)
+
+**When:** User specified both an aesthetic and a layout type.
+
+Generate 3 candidates with **identical constraints** (same aesthetic, same layout).
+Add the nudge: "Explore a distinct visual interpretation." The model finds variation
+within fixed parameters — different color emphasis, icon choices, spatial
+arrangements, or mood — all within the locked aesthetic and structure.
+
 ## Layout Types
 
 Match layout to content:

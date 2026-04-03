@@ -169,11 +169,14 @@ def test_freeform_has_three_numbered_rules():
 
 
 def test_freeform_is_last_subsection_before_layout_types():
-    """### Freeform Aesthetics must be the last ### subsection before ## Layout Types."""
+    """### Freeform Aesthetics must be the last ### subsection within ## Aesthetics."""
     content = read_guide()
     aesthetics_idx = content.index(H2_AESTHETICS)
-    layout_idx = content.index(H2_LAYOUT_TYPES)
-    aesthetics_block = content[aesthetics_idx:layout_idx]
+    # Bound the search to ## Aesthetics section only (next ## heading ends the section)
+    next_h2 = re.search(r"\n## ", content[aesthetics_idx + len(H2_AESTHETICS) :])
+    assert next_h2, "No H2 heading found after ## Aesthetics"
+    section_end = aesthetics_idx + len(H2_AESTHETICS) + next_h2.start()
+    aesthetics_block = content[aesthetics_idx:section_end]
 
     subsections = list(re.finditer(r"^### .+", aesthetics_block, re.MULTILINE))
     assert subsections, "No ### subsections found in ## Aesthetics"
@@ -212,12 +215,14 @@ def test_layout_types_content_intact():
 # Task: Style Reference Mode subsection in ## Aesthetics
 # ---------------------------------------------------------------------------
 
+
 def test_style_reference_mode_subsection_in_aesthetics():
     content = read_guide()
     aesthetics_idx = content.index(H2_AESTHETICS)
     layout_idx = content.index(H2_LAYOUT_TYPES)
     block = content[aesthetics_idx:layout_idx]
     assert "### Style Reference Mode" in block
+
 
 def test_style_reference_mode_skips_menu():
     content = read_guide()
@@ -228,11 +233,20 @@ def test_style_reference_mode_skips_menu():
     assert "skip" in lower
     assert "menu" in lower or "6-option" in lower
 
+
 def test_style_reference_mode_translates_7_dimensions():
     content = read_guide()
     start = content.index("### Style Reference Mode")
     next_h3 = content.find("\n### ", start + 1)
     block = content[start:next_h3] if next_h3 != -1 else content[start:]
     lower = block.lower()
-    for dim in ["palette", "typography", "icons", "background", "lighting", "texture", "mood"]:
+    for dim in [
+        "palette",
+        "typography",
+        "icons",
+        "background",
+        "lighting",
+        "texture",
+        "mood",
+    ]:
         assert dim in lower
