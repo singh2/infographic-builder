@@ -425,6 +425,42 @@ NEEDS_REFINEMENT, list the specific changes that would fix the issues (be
 concrete -- these will be used to refine the generation prompt).
 ```
 
+### Dealbreaker Check (Multi-Candidate Pre-Screen)
+
+Before presenting candidates to the user, run a lightweight binary pre-screen on
+each generated image. This is **not** the full 5-dimension quality review — it
+only catches broken outputs that should never reach the user (garbled text,
+missing content, completely wrong aesthetic).
+
+Use nano-banana `analyze` with this prompt:
+
+```
+Quick dealbreaker check — answer YES or NO for each question only.
+
+1. TEXT LEGIBILITY: Is the text in the image legible and readable (not garbled,
+   corrupted, or illegibly small)?
+
+2. CORE CONTENT PRESENT: Is the core content present in the image (main topic,
+   key data points, or central concept visibly represented)?
+
+3. AESTHETIC MATCH: Does the overall aesthetic of the image roughly match the
+   requested style (not a completely different visual genre)?
+
+Return exactly three lines:
+TEXT_LEGIBLE: YES|NO
+CONTENT_PRESENT: YES|NO
+AESTHETIC_MATCH: YES|NO
+```
+
+**Failure handling:**
+
+- If any check returns NO, silently regenerate the image once (do not inform the
+  user).
+- If the regenerated image still fails any dealbreaker check, drop (discard) that
+  candidate entirely — do not show it to the user.
+- Always present a minimum of 2 candidates. If too many are dropped, regenerate
+  additional candidates until at least 2 pass all dealbreaker checks.
+
 ### Cross-Panel Visual Comparison (Multi-Panel Only)
 
 For Panels 2-N, add a visual comparison step using nano-banana `compare` with
