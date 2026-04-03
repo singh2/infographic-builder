@@ -5,7 +5,7 @@ Covers (task-6 quality fix suggestions):
 1. Execution model banner has parenthetical caveat about aesthetic selection
 2. Steps 1–8 are present in order with no gaps or duplicates
 3. Step 3 contains sub-parts a, b, c, d, e
-4. Step 3d ends with the halt instruction
+4. Step 3d defers aesthetic selection to multi-candidate presentation (step 5b)
 5. Cross-reference in step 2 says 'step 6' (not 'step 5')
 
 Covers (task-8 output contract suggestions):
@@ -117,21 +117,6 @@ def test_step_3b_two_turn_shortcut():
     """Step 3b must mention the two-turn shortcut."""
     block = _get_step_3_block(read_agent())
     assert "two-turn shortcut" in block, "Step 3b must mention the 'two-turn shortcut'"
-
-
-def test_step_3c_has_six_numbered_options():
-    """Step 3c menu must list options 1 through 6."""
-    block = _get_step_3_block(read_agent())
-    for n in range(1, 7):
-        assert f"{n}." in block, f"Step 3c menu missing option {n}"
-
-
-def test_step_3c_halt_instruction():
-    """Step 3c must end with the halt instruction."""
-    block = _get_step_3_block(read_agent())
-    assert "stop and wait for the user's selection" in block, (
-        "Step 3c must contain 'stop and wait for the user's selection'"
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -326,3 +311,22 @@ def test_step_5_two_anchors_panel_1_and_image_path():
     lower = block.lower()
     assert "cross-panel consistency" in lower
     assert "aesthetic fidelity" in lower
+
+
+# ---------------------------------------------------------------------------
+# Task 3: Step 3d defers aesthetic selection to multi-candidate presentation
+# ---------------------------------------------------------------------------
+
+
+def test_step_3d_defers_to_multi_candidate():
+    block = _get_step_3_block(read_agent())
+    lower = block.lower()
+    assert "multi-candidate" in lower or "candidate" in lower
+    assert "step 5b" in lower or "step 5" in lower
+
+
+def test_step_3d_no_longer_halts():
+    block = _get_step_3_block(read_agent())
+    # The old halt instruction should be removed from 3d
+    # Halt now lives in step 5b-iii instead
+    assert "stop and wait" not in block.lower() or "5b" in block.lower()

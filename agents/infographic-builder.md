@@ -106,24 +106,11 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
    This is the **two-turn shortcut** — no proposal needed.
 
-   **d. If no style was specified**, present the aesthetic options and halt:
-
-   ```
-   For "[topic]," I'd recommend [Layout Name].
-
-   Choose a style, or describe your own:
-
-     1. Clean Minimalist       4. Hand-Drawn Sketchnote
-     2. Dark Mode Tech         5. Claymation Studio
-     3. Bold Editorial         6. Lego Brick Builder
-
-     Or describe any style — "professional report",
-     "watercolor", "comic book", "retro pixel art",
-     "vintage travel poster" — get creative.
-   ```
-
-   **Then stop and wait for the user's selection.** Do not proceed to design
-   or generation until the user has chosen.
+   **d. If no style was specified**, defer aesthetic selection to the
+   multi-candidate presentation at step 5b. The user will pick from 3
+   real images in different aesthetics rather than choosing from a text
+   menu. Do not halt here — proceed directly to step 4, which will
+   plan 3 design variants (one per aesthetic candidate).
 
    **e. Load the aesthetic template.** If the user picks a numbered option,
    load the corresponding template from the Aesthetics section of the Style
