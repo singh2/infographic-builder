@@ -33,3 +33,9 @@ showcase/
 
 # Evaluation harness output (timestamped results directories)
 eval-results/
+
+# Superpowers development and session state (local only)
+.superpowers/
+
+# Test output artifacts (local only)
+test-output/

@@ -377,33 +377,39 @@ def test_step6_cinematic_has_missing_node_refinement_instruction() -> None:
 
 
 def _get_step_8_block(content: str) -> str:
-    start = content.find("8. **Present side-by-side**")
+    start = content.find("8. **Present all four variants**")
     assert start != -1, (
-        "Step 8 header '8. **Present side-by-side**' not found in agent file"
+        "Step 8 header '8. **Present all four variants**' not found in agent file"
     )
     # Find the next section after step 8 (e.g., "## Using nano-banana")
     end = content.find("\n## ", start)
     return content[start:end] if end != -1 else content[start:]
 
 
-def test_step8_is_present_side_by_side() -> None:
-    """Step 8 header must be 'Present side-by-side'."""
+def test_step8_is_present_all_four_variants() -> None:
+    """Step 8 header must be 'Present all four variants'."""
     content = _read_agent()
-    assert "8. **Present side-by-side**" in content, (
-        "Step 8 header must be '8. **Present side-by-side**'. "
-        "The 'Return results' step should have been replaced."
+    assert "8. **Present all four variants**" in content, (
+        "Step 8 header must be '8. **Present all four variants**'. "
+        "The system now produces four aesthetic outputs, not a Polished/Cinematic pair."
     )
 
 
-def test_step8_mentions_both_variants() -> None:
-    """Step 8 must mention both Polished and Cinematic variants."""
+def test_step8_mentions_all_four_variants() -> None:
+    """Step 8 must mention all four variant aesthetics."""
     content = _read_agent()
     block = _get_step_8_block(content)
-    assert "Polished" in block, (
-        f"Step 8 must mention 'Polished' variant.\nActual step 8 block:\n{block}"
+    assert "Dark Mode Tech" in block, (
+        f"Step 8 must mention 'Dark Mode Tech' variant.\nActual step 8 block:\n{block}"
     )
-    assert "Cinematic" in block, (
-        f"Step 8 must mention 'Cinematic' variant.\nActual step 8 block:\n{block}"
+    assert "Clean Minimalist" in block, (
+        f"Step 8 must mention 'Clean Minimalist' variant.\nActual step 8 block:\n{block}"
+    )
+    assert "Sketchnote" in block, (
+        f"Step 8 must mention 'Sketchnote' variant.\nActual step 8 block:\n{block}"
+    )
+    assert "Claymation" in block, (
+        f"Step 8 must mention 'Claymation' variant.\nActual step 8 block:\n{block}"
     )
 
 

@@ -12,34 +12,42 @@ node shape and connector guidance.
 
 ---
 
-## Polished vs Cinematic
+## Four Variants
 
-Every beautification produces two variants simultaneously.
+Every beautification produces four variants simultaneously, using two generation
+approaches across four fixed aesthetics.
 
-**Polished** is document-ready: faithful aesthetic application, better
-spacing/typography/colors/node shapes, coherent with professional
-expectations. The result should feel like "yes, that's what I meant, but
-beautiful." Clean connectors. Fresh but not surprising spatial composition.
+**Dark Mode Tech** and **Clean Minimalist** use the **Polished** approach:
+document-ready, faithful aesthetic application, clean connectors, fresh but
+coherent spatial composition. For PNG input, the source is passed as a
+reference image (completeness guard only). The result should feel like
+"yes, that's what I meant, but beautiful."
 
-**Cinematic** is presentation-ready: topology is the script, aesthetic is
-the medium. Editorial choices about emphasis, atmosphere, and depth. The
-hero candidate gets visual prominence. Full expressive connector vocabulary.
-Spatial composition serves the visual over the functional — the viewer
+**Hand-Drawn Sketchnote** and **Claymation Studio** use the **Cinematic**
+approach: presentation-ready, topology as script, editorial emphasis. The
+hero candidate gets visual prominence as the compositional focal point. No
+reference image ever. Spatial composition serves the visual. The viewer
 should stop and look.
 
-**Shared between both variants:**
-- Same aesthetic selection
+**Claymation** has two sub-modes chosen automatically by the model in Step 3:
+- **Normal**: sculpted clay nodes in a neutral clay environment, size encodes
+  importance, rope/ribbon connectors
+- **Diorama**: clay figures acting out the workflow in a physical scene, nodes
+  staged left-to-right in sequence, domain-appropriate props and environment
+
+**Shared across all four variants:**
 - Same topology manifest
-- Same quality review dimensions
+- Same panel decomposition
+- Same 8 quality review dimensions
 
-**Key differences:**
+**Key differences by generation approach:**
 
-| Dimension | Polished | Cinematic |
+| Dimension | Dark Mode Tech + Clean Minimalist | Sketchnote + Claymation |
 |---|---|---|
-| Reference image use | Guard instruction — use to confirm topology | None |
-| Connector style | Clean | Expressive |
+| Reference image (PNG input) | Completeness guard | Never |
+| Connector style | Clean / orthogonal | Expressive / gestural |
 | Spatial freedom | Fresh but coherent | Fully compositional |
-| Quality bar language | "Professional and polished" | "Cinematic and arresting" |
+| Hero node emphasis | Maintained via color/scale | Dominant visual anchor |
 
 ---
 
@@ -73,17 +81,14 @@ Apply the per-aesthetic shape spec when constructing generation prompts.
 
 ## Cinematic Guidance Per Aesthetic
 
-When rendering the Cinematic variant, apply these per-aesthetic directives on top of
-the shared Cinematic rules above.
+Variants C (Sketchnote) and D (Claymation) use the Cinematic generation approach.
+Apply these directives on top of the shared Cinematic rules above.
 
 | Aesthetic | Cinematic guidance |
 |---|---|
-| **Clean Minimalist** | Use sweeping arcs and scale variation to create hierarchy; generous breathing room becomes deliberate whitespace composition rather than empty space. |
-| **Dark Mode Tech** | Ambient bokeh glow behind hero node; holographic node quality with depth layers; glowing bezier edges carry source-to-destination color gradients. |
-| **Bold Editorial** | Nodes become graphic elements with color-blocked panels and heavy typographic labels; dramatic directional lighting with strong shadows; hero node gets full-bleed color. |
 | **Hand-Drawn Sketchnote** | Gestural organic spacing between nodes; wobbly arrows with varying weight; hero node gets hand-drawn callout or emphasis circle. |
-| **Claymation Studio** | Full scene with sculpted characters/objects in clay environment; rope or ribbon connectors; hero node is physically larger or more prominent than surrounding nodes. |
-| **Lego Brick Builder** | Nodes as brick constructions on full baseplate scene; brick-peg connector rods; hero node has the most elaborate brick construction. |
+| **Claymation Studio — Normal** | Full scene with sculpted characters/objects in clay environment; rope or ribbon connectors; hero node is physically larger or more prominent than surrounding nodes. |
+| **Claymation Studio — Diorama** | Physical scene with clay figures enacting the workflow steps in sequence; nodes staged as characters or props in a shallow-depth environment; hero node is the most elaborately sculpted figure; warm studio lighting; domain-appropriate miniature props. |
 
 ---
 

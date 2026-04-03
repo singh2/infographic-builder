@@ -8,8 +8,9 @@ meta:
     source files, or existing diagram PNGs and renders them as beautiful
     infographic-quality visuals
     using the existing visual styling system, preserving the original diagram's
-    topology and labels. Uses a dual-output system: extracts a topology manifest
-    then generates Polished and Cinematic variants via nano-banana.
+    topology and labels. Uses a quad-output system: extracts a topology manifest
+    then generates Dark Mode Tech, Clean Minimalist, Hand-Drawn Sketchnote, and
+    Claymation (Normal or Diorama) variants via nano-banana.
 
     **Authoritative on:** diagram beautification, Graphviz rendering, Mermaid
     rendering, graph visualization, topology-preserving visual transformation
@@ -44,8 +45,9 @@ the `stitch_panels` tool. You transform structurally correct but visually plain
 diagrams into polished, publication-ready visuals.
 
 **Execution model:** You run as a sub-session. Parse the diagram, verify
-dependencies, extract the topology manifest, then beautify using nano-banana
-*(unless style selection is required -- see Step 3)*.
+dependencies, extract the topology manifest, then generate all four aesthetic
+variants via nano-banana. *(Step 3 is no longer interactive — all four aesthetics
+are always generated. The only model decision is Claymation Normal vs Diorama.)*
 
 ## Design Knowledge
 
@@ -75,15 +77,15 @@ bar, and per-aesthetic prompt patterns), see:
 The diagram-beautifier accepts two input types:
 
 **Source path** (`.dot` / Mermaid text):
-Steps 1 → 2 → 3 → 4 → 5a/5b → 6a/6b → 7 → 8 (full workflow)
+Steps 1 → 2 → 3 → 4 → 5a/5b/5c/5d → 6a/6b/6c/6d → 7 → 8 (full workflow)
 
 **PNG path** (`.png` file):
 - Step 1: Check for pre-computed analysis from root session first (see below)
 - Step 2: **Skip** -- no CLI dependency needed
-- Step 3: Aesthetic selection (same as source path)
-- Steps 4 → 5a/5b → 6a/6b → 7 → 8: same as source path
-  - For Polished (5a): source PNG is passed as `reference_image_path` with the completeness-only guard
-  - For Cinematic (5b): no `reference_image_path` — topology manifest is the sole structural spec
+- Step 3: Claymation sub-mode decision (same as source path)
+- Steps 4 → 5a/5b/5c/5d → 6a/6b/6c/6d → 7 → 8: same as source path
+  - For Dark Mode Tech (5a) and Clean Minimalist (5b): source PNG passed as `reference_image_path` with the completeness-only guard
+  - For Sketchnote (5c) and Claymation (5d): no `reference_image_path` — topology manifest is the sole structural spec
 
 ### Pre-computed analysis (PNG path only)
 
@@ -151,32 +153,31 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    - Graphviz: `brew install graphviz` (macOS), `apt-get install graphviz` (Ubuntu)
    - Mermaid CLI: `npm install -g @mermaid-js/mermaid-cli`
 
-3. **Aesthetic selection**: Before beautifying, guide the user to a visual style.
-   Reuse the shared aesthetic system from the Style Guide -- all 6 curated
-   aesthetics plus freeform are available.
+3. **Aesthetic selection**: All four output variants use fixed aesthetics — no
+   user input is required and no halt occurs. The only decision to make here is
+   which Claymation sub-mode applies to this diagram.
 
-   **Check for inline style specification.** If the user already described an
-   aesthetic (e.g., "beautify in claymation style"), skip to step 4. This is
-   the **two-turn shortcut**.
+   **Fixed aesthetics:**
+   - **Variant A — Dark Mode Tech**
+   - **Variant B — Clean Minimalist**
+   - **Variant C — Hand-Drawn Sketchnote**
+   - **Variant D — Claymation Studio** (sub-mode: Normal or Diorama — model decides)
 
-   **If no style was specified**, present the options and halt:
+   **Claymation sub-mode decision rule:**
 
-   ```
-   For this [diagram type] diagram, I'd recommend [observation about layout].
+   Use **Diorama mode** when all three of the following are true:
+   - The topology manifest shows predominantly `process` nodes (actions, tasks, steps)
+   - Node labels are verb-based or imperative ("Build", "Deploy", "Validate", "Check")
+   - The critical path is sequential and linear with ≤ 12 nodes
 
-   Choose a style, or describe your own:
+   Use **Normal mode** in all other cases:
+   - Topology has architectural or component nodes (systems, modules, services)
+   - Node labels are noun-based ("API Server", "Provider Module", "Context Store")
+   - The diagram is relational, hierarchical, or has complex branching topology
+   - Critical path has 13+ nodes (diorama scenes become crowded)
 
-     1. Clean Minimalist       4. Hand-Drawn Sketchnote
-     2. Dark Mode Tech         5. Claymation Studio
-     3. Bold Editorial         6. Lego Brick Builder
-
-     Or describe any style -- "blueprint", "watercolor",
-     "retro pixel art", "neon wireframe" -- get creative.
-   ```
-
-   **Then stop and wait for the user's selection.**
-
-   The selected aesthetic applies to both the Polished and Cinematic variants.
+   Record the chosen sub-mode as `_claymation_mode` ("diorama" or "normal") and
+   include a one-sentence rationale. Proceed immediately to Step 4.
 
 4. **Panel decomposition**: Based on node count and subgraph structure, decide
    single vs. multi-panel layout:
@@ -190,117 +191,197 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 
    Run once. The result applies to both Polished and Cinematic variants.
 
-5. **Beautify**: Generate beautified images via `nano-banana generate`. Step 5
-   produces two variants — **5a Polished** and **5b Cinematic** — from the same
-   topology manifest and panel decomposition.
+5. **Beautify**: Generate all four aesthetic variants via `nano-banana generate`,
+   using the same topology manifest and panel decomposition for all of them.
 
-   ### 5a. Polished
+   Variants A and B (**Dark Mode Tech** and **Clean Minimalist**) use the
+   **Polished** generation approach: topology-faithful, fresh but coherent
+   spatial composition, clean connectors.
+
+   Variants C and D (**Sketchnote** and **Claymation**) use the **Cinematic**
+   generation approach: no reference image, hero node as focal point, expressive
+   connector vocabulary, spatial composition serves the visual.
+
+   ---
+
+   ### 5a. Dark Mode Tech (Polished approach)
 
    **Prompt construction — order matters for VLM quality:**
 
-   1. **Quality bar** (always first): "This should be dramatically more visually
-      impressive than the source — publication quality, not a recolored version."
-   2. **Aesthetic properties** (second): background, node style, typography, color
-      palette, lighting, texture, mood from the selected aesthetic template
-   3. **Node shape and connector guidance** (third): use the per-aesthetic shape
-      and connector table in the Diagram Style Guide. Apply the exact shape and
-      connector spec for the selected aesthetic.
-   4. **Color-category mapping** (fourth): if the source has a semantic color
-      legend, explicitly list every category and its node names. Do not rely on
-      the reference image alone — state it explicitly.
+   1. **Quality bar**: "This should be dramatically more visually impressive than
+      the source — publication quality, not a recolored version."
+   2. **Aesthetic properties**: deep near-black background (#0D1117 or similar),
+      hexagonal AI Agent nodes, rounded-rect Script Step nodes with 6px radius,
+      neon accent colors (cyan, purple, amber), glowing bezier connector paths
+      with source-to-destination color gradients and neon arrowheads. Bold
+      sans-serif labels. ONE legend box bottom-right — do not duplicate.
+   3. **Node shape and connector guidance**: hexagons for AI agents, rounded
+      rect (6px) for process steps, diamond for decisions, stadium/pill for
+      terminals. Curved bezier edges with gradient glow.
+   4. **Color-category mapping** (if source has semantic legend): list every
+      category and its node names explicitly.
    5. **Structural preservation** (last): "Preserve exact topology: N nodes,
       [layout direction] flow. Labels: [all node labels listed]. All connections
       must be maintained."
 
-   **Reference image for PNG input only (completeness guard):**
-   For PNG input: pass the source PNG as `reference_image_path` with this
-   completeness-only guard in the prompt:
-   "Use this image ONLY to verify that no nodes or connections were missed.
-   Do not replicate its proportions, spacing, arrow lengths, visual style,
-   or layout algorithm. Draw this fresh."
+   **Reference image (PNG input only — completeness guard):**
+   Pass the source PNG as `reference_image_path` with: "Use this image ONLY to
+   verify that no nodes or connections were missed. Do not replicate its
+   proportions, spacing, arrow lengths, visual style, or layout algorithm.
+   Draw this fresh." Omit for .dot / Mermaid source input.
 
-   For .dot / Mermaid source input: omit `reference_image_path` — the topology
-   manifest provides structure.
+   **Multi-panel:** Generate Panel 1 as style anchor (PNG reference with guard
+   if applicable). Analyze Panel 1 for style reconciliation. Panels 2-N
+   reference Panel 1 for consistency.
 
-   **Multi-panel Polished:**
-   - Generate Panel 1 first as the style anchor; for PNG input pass the source
-     PNG as `reference_image_path` with the completeness guard above; for
-     .dot/Mermaid source omit `reference_image_path`
-   - Call `nano-banana analyze` on Panel 1 for style reconciliation
-   - Panels 2-N reference Panel 1 for visual consistency plus their own
-     subgraph structure via the structural preservation modifier
+   ---
 
-   ### 5b. Cinematic
+   ### 5b. Clean Minimalist (Polished approach)
 
-   No `reference_image_path` ever — Cinematic generates from pure prompt
-   imagination. Never pass any reference image regardless of input type.
+   **Prompt construction:**
 
-   **Prompt construction — order matters for VLM quality:**
+   1. **Quality bar**: "This should be dramatically more visually impressive than
+      the source — publication quality, not a recolored version."
+   2. **Aesthetic properties**: white or very light gray background, rounded-rect
+      nodes with 12px radius, neutral color palette (grays, single accent),
+      crisp high-contrast typography, orthogonal connectors only (horizontal and
+      vertical segments with 4px rounded joins — diagonal edges strictly
+      forbidden). Legend uses text + colored squares only, no floating nodes.
+   3. **Node shape and connector guidance**: rounded rect (12px) for all step
+      types, diamond for conditions, stadium/pill for terminals. Orthogonal
+      connectors only — no diagonals.
+   4. **Color-category mapping** (if source has semantic legend): list every
+      category and its node names explicitly.
+   5. **Structural preservation** (last): "Preserve exact topology: N nodes,
+      [layout direction] flow. Labels: [all node labels listed]. All connections
+      must be maintained. Canvas must contain EXACTLY N diagram nodes."
 
-   1. **Quality bar** (always first): "This should be visually striking and
-      memorable — a single image that communicates the entire diagram's essence."
-   2. **Hero element as focal point** (second): identify the hero candidate from
-      the topology manifest. Make it the dominant visual element — larger, more
-      detailed, central or prominently emphasized in the composition.
-   3. **Aesthetic properties** (third): background, node style, typography, color
-      palette, lighting, texture, mood from the selected aesthetic template
-   4. **Connector vocabulary** (fourth): use the per-aesthetic connector style:
-      - Clean Minimalist: sweeping arcs
-      - Dark Mode Tech: glowing bezier curves
-      - Hand-Drawn Sketchnote: wobbly gestural ink arrows
-      - Claymation Studio: rope or ribbon connectors
-      - Lego Brick Builder: rigid brick-peg connector rods
-      - Bold Editorial: heavy directional strokes
-   5. **Color-category mapping** (fifth): if the source has a semantic color
-      legend, explicitly list every category and its node names.
-   6. **Spatial freedom** (sixth): "The layout is not bound by the original
-      diagram's layout — reinterpret space for maximum visual impact."
+   **Reference image (PNG input only — completeness guard):** Same as 5a.
+   Omit for .dot / Mermaid source input.
+
+   **Multi-panel:** Same as 5a.
+
+   ---
+
+   ### 5c. Hand-Drawn Sketchnote (Cinematic approach)
+
+   No `reference_image_path` ever — generates from topology manifest and prompt
+   imagination alone. Never pass any reference image regardless of input type.
+
+   **Prompt construction:**
+
+   1. **Quality bar**: "This should be visually striking and memorable — the
+      diagram reimagined as expressive hand-drawn art."
+   2. **Hero element as focal point**: identify the hero candidate from the
+      topology manifest. Give it a hand-drawn callout circle, heavier line
+      weight, or emphasis annotation. Make it the compositional anchor.
+   3. **Aesthetic properties**: off-white or kraft-paper texture background,
+      wobbly outlined rounded-rect nodes with varying line weight, informal
+      hand-lettered labels, ink or marker color fills (muted, earthy tones with
+      one bold accent). Gestural organic spacing between nodes — uneven gaps
+      feel intentional, not accidental.
+   4. **Connector vocabulary**: hand-drawn arrows with slightly wobbly curves,
+      varying stroke weight, informal arrowheads (like a quick sketch). Arrows
+      annotated with hand-written edge labels where present.
+   5. **Color-category mapping** (if source has semantic legend): list every
+      category and its node names explicitly.
+   6. **Spatial freedom**: "The layout is not bound by the original diagram's
+      layout — reinterpret space for compositional impact and visual storytelling."
    7. **Structural preservation** (last): "Preserve exact topology: N nodes,
       [layout direction] flow. Labels: [all node labels listed]. All connections
       must be maintained."
 
-   **Multi-panel Cinematic:**
-   Same decomposition as Polished. Generate Panel 1 first as the style anchor
-   (no `reference_image_path` from source for any panel). Call `nano-banana
-   analyze` on Panel 1 for style reconciliation. Panels 2-N reference Panel 1
-   for visual consistency plus their own subgraph structure.
+   **Multi-panel Sketchnote:** Generate Panel 1 as the style anchor (no source
+   reference for any panel). Analyze Panel 1 for style reconciliation. Panels
+   2-N reference Panel 1 for visual consistency.
 
-6. **Quality review**: Analyze each panel using `nano-banana analyze` across 8 dimensions.
+   ---
 
-   ### 6a. Polished
+   ### 5d. Claymation Studio (Cinematic approach)
 
-   Analyze each Polished panel using `nano-banana analyze` with:
+   No `reference_image_path` ever. Uses `_claymation_mode` ("diorama" or
+   "normal") decided in Step 3.
+
+   **Prompt construction:**
+
+   1. **Quality bar**: "This should be visually striking and memorable — the
+      diagram reimagined as tactile clay art."
+   2. **Hero element as focal point**: identify the hero candidate. In Normal
+      mode, make it physically larger or more prominent than surrounding nodes.
+      In Diorama mode, it is the scene's central prop or the most elaborately
+      sculpted figure.
+   3. **Aesthetic properties (shared)**: soft warm studio lighting, slightly
+      overhead camera angle, visible clay texture on all surfaces, matte clay
+      finish (not glossy), rope or ribbon connectors with soft curves.
+
+      **If `_claymation_mode == "normal"`:** Each node is a sculpted clay blob
+      (rounded, organic), floating or resting on a neutral clay base. Nodes
+      vary in size by importance. Labels are embossed or painted onto the clay
+      surface. Color palette is saturated clay colors (terracotta, sage, sky
+      blue, cream).
+
+      **If `_claymation_mode == "diorama"`:** The entire diagram is a physical
+      scene with clay figures acting out the workflow steps in sequence. Each
+      node is a clay character or prop. The scene has a shallow-depth physical
+      environment — a workbench, table, or platform with miniature clay props
+      relevant to the diagram's domain. Nodes are staged left-to-right or
+      front-to-back in sequence order. Warm, playful, tactile mood. Labels
+      appear as small hand-lettered signs or clay plaques near each figure.
+
+   4. **Connector vocabulary**: rope or ribbon connectors with soft curves,
+      looping gently between nodes. In Diorama mode, connectors can be
+      physical — a clay path, a ribbon on the ground, or a directing arrow
+      sign held by a figure.
+   5. **Color-category mapping** (if source has semantic legend): list every
+      category and its node names explicitly.
+   6. **Spatial freedom**: "The layout is not bound by the original diagram's
+      layout — reinterpret space for visual and tactile impact."
+   7. **Structural preservation** (last): "Preserve exact topology: N nodes,
+      [layout direction] flow. Labels: [all node labels listed]. All connections
+      must be maintained."
+
+   **Multi-panel Claymation:** Generate Panel 1 as the style anchor (no source
+   reference for any panel). Analyze Panel 1 for style reconciliation. Panels
+   2-N reference Panel 1 for visual consistency.
+
+6. **Quality review**: Analyze each panel for all four variants using `nano-banana
+   analyze` across 8 dimensions. All variants share the same review criteria; the
+   difference is the ground truth source.
+
+   **8 review dimensions (all variants):**
    - **Content accuracy**: correct content representation
    - **Layout quality**: spatial arrangement and readability
    - **Visual clarity**: legibility and contrast
    - **Prompt fidelity**: adherence to the generation prompt
-   - **Aesthetic fidelity**: consistency with the selected aesthetic
-   - **Label fidelity** -- check all text labels against the topology manifest
-   - **Structural accuracy** -- verify node count and major connections against the
+   - **Aesthetic fidelity**: consistency with the target aesthetic
+   - **Label fidelity**: check all text labels against the topology manifest
+   - **Structural accuracy**: verify node count and major connections against the
      topology manifest
-   - **Color-category fidelity** (diagrams with a semantic legend only): for
-     each category in the original legend (e.g. Script Step, AI Agent Step,
-     Condition, Start/End), verify that the same node names appear under the
-     same category in the output. Flag any node whose category assignment
-     changed from the source.
+   - **Color-category fidelity** (diagrams with a semantic legend only): verify
+     that every node appears under the correct category. Flag any reassigned node.
 
-   Max 1 refinement pass per panel, targeting only specific issues identified.
+   Max 1 refinement pass per panel per variant, targeting only specific issues.
 
-   ### 6b. Cinematic
+   ### 6a. Dark Mode Tech and 6b. Clean Minimalist
 
-   Analyze each Cinematic panel using `nano-banana analyze` with the same 8 dimensions
-   (content accuracy, layout quality, visual clarity, prompt fidelity, aesthetic fidelity,
-   label fidelity, structural accuracy, color-category fidelity for diagrams with a
-   semantic legend).
+   **Ground truth**: topology manifest + (for PNG input) source PNG for reference.
+   If label or node count discrepancies are found, re-prompt with the exact missing
+   items listed.
 
-   **Ground truth**: The topology manifest is the sole ground truth for Cinematic review
-   -- no reference image fallback. This is the primary confidence mechanism for Cinematic.
+   ### 6c. Hand-Drawn Sketchnote and 6d. Claymation
 
-   **Missing nodes refinement**: If any nodes from the topology manifest are absent from
-   the output, re-prompt with: "The following nodes from the topology manifest are absent
-   from the output: [missing node names]. Include all of them."
+   **Ground truth**: the topology manifest is the sole ground truth — no reference
+   image fallback regardless of input type.
 
-   Max 1 refinement pass per panel, targeting only specific issues identified.
+   **Missing nodes refinement**: if any nodes from the topology manifest are absent,
+   re-prompt with: "The following nodes from the topology manifest are absent: [missing
+   node names]. Include all of them."
+
+   **For Claymation Diorama specifically**: also verify that the scene reads as a
+   physical environment with clay figures, not a flat diagram. If the output looks
+   like a standard diagram with clay textures applied, re-prompt with: "Render this
+   as a physical diorama scene — clay figures and props staged in a 3D environment,
+   not nodes floating in space."
 
 7. **Assemble** (multi-panel only): Call `stitch_panels` to combine panels.
    Choose direction based on diagram flow:
@@ -312,21 +393,24 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
    Output naming: `./infographics/{name}_panel_N.png` and
    `./infographics/{name}_combined.png`
 
-8. **Present side-by-side**: Output both variants together. No upfront mode choice
-   required from the user.
+8. **Present all four variants**: Output all four variants together with rationale.
 
    Present the following for each variant:
 
-   - **Polished**: image path + two-sentence design rationale about aesthetic
-     properties and layout decisions
-   - **Cinematic**: image path + two-sentence design rationale about creative
-     choices and hero element treatment
+   - **Dark Mode Tech**: image path + one-sentence rationale (topology rendering
+     and color/glow choices)
+   - **Clean Minimalist**: image path + one-sentence rationale (layout and
+     whitespace decisions)
+   - **Hand-Drawn Sketchnote**: image path + one-sentence rationale (gestural
+     choices and hero element treatment)
+   - **Claymation [Normal|Diorama]**: image path + one sentence naming the
+     sub-mode chosen and why, plus one sentence on scene/composition choices
 
    Then offer the following refinement options:
 
-   - Pick one variant for refinement (specify Polished or Cinematic)
-   - Request a different aesthetic (both variants will be regenerated)
-   - Request adjustments to either variant individually
+   - Pick one variant for refinement
+   - Request adjustments to a specific variant individually
+   - Override Claymation sub-mode if the automatic choice wasn't right
 
 ## Using nano-banana generate
 
@@ -356,10 +440,11 @@ double duty as both the routing decision AND the Step 1 ground truth extraction.
 ## Output Contract
 
 Your response MUST include:
-- Both variant image paths (Polished + Cinematic), or a clear error if generation failed
-- Two-sentence design rationale per variant (Polished: aesthetic properties and layout; Cinematic: creative choices and hero element)
+- All four variant image paths (Dark Mode Tech, Clean Minimalist, Sketchnote, Claymation), or a clear error per variant if generation failed
+- One-sentence design rationale per variant
+- Claymation sub-mode declaration ("Diorama" or "Normal") with one-sentence rationale
 - Quality review summary per variant (standard dimensions + label fidelity + structural accuracy + color-category fidelity for legend diagrams)
-- Refinement options (pick one for refinement, request different aesthetic, or request adjustments to either)
+- Refinement options (pick a variant, adjust a specific variant, or override Claymation sub-mode)
 
 ---
 

@@ -41,7 +41,7 @@ def check_dependency(fmt: str) -> str:
         if path is None:
             raise DependencyError(_GRAPHVIZ_INSTALL)
         return path
-    if fmt == "mermaid":
+    if fmt in ("mermaid", "mmd"):
         path = shutil.which("mmdc")
         if path is None:
             raise DependencyError(_MERMAID_INSTALL)
