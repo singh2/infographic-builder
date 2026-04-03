@@ -170,3 +170,53 @@ def test_reconciliation_varied_scopes_background() -> None:
         "Reconciliation varied note must distinguish background from style.\n"
         f"Actual block:\n{block}"
     )
+
+
+# --- Sentinels ---
+H3_CROSS_PANEL = "### Cross-Panel Visual Comparison"
+H3_REFINEMENT = "### Refinement Rules"
+
+
+def _get_cross_panel_block(content: str) -> str:
+    start = content.index(H3_CROSS_PANEL)
+    end = content.index(H3_REFINEMENT, start)
+    return content[start:end]
+
+
+# --- Task 5: Cross-Panel Critic ---
+
+
+def test_cross_panel_has_varied_scoping_preamble() -> None:
+    """Cross-panel critic must include a scoping preamble for varied strategy."""
+    block = _get_cross_panel_block(read_guide())
+    lower = block.lower()
+    assert "varied" in lower, (
+        "Cross-panel critic must mention varied strategy.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_cross_panel_varied_distinguishes_style_from_environment() -> None:
+    """Varied preamble must tell critic to check style, not environment."""
+    block = _get_cross_panel_block(read_guide())
+    normalised = " ".join(block.lower().split())
+    # Must tell critic that environment differences are intentional
+    assert "intentional" in normalised or "not drift" in normalised or "do not flag" in normalised, (
+        "Varied preamble must state environment differences are intentional.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_cross_panel_varied_preserves_style_enforcement() -> None:
+    """Varied preamble must still enforce style consistency (typography, palette, etc.)."""
+    block = _get_cross_panel_block(read_guide())
+    lower = block.lower()
+    # Must mention specific style properties that are still enforced
+    style_properties_mentioned = sum(
+        1 for prop in ["typography", "palette", "icon", "border"]
+        if prop in lower
+    )
+    assert style_properties_mentioned >= 2, (
+        "Varied preamble must name specific style properties still enforced.\n"
+        f"Actual block:\n{block}"
+    )

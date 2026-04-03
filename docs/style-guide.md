@@ -413,6 +413,22 @@ concrete -- these will be used to refine the generation prompt).
 For Panels 2-N, add a visual comparison step using nano-banana `compare` with
 Panel 1 as image1 and the panel under review as image2. Use this prompt:
 
+**Varied scene strategy:** When the content map declares `Scene strategy: varied`,
+prepend this preamble to the comparison prompt:
+
+> "These panels use a VARIED scene strategy — each panel intentionally depicts a
+> different environment while sharing the same artistic style. When checking
+> BACKGROUND, evaluate only the background STYLE (lighting quality, texture
+> approach, depth-of-field treatment) — do NOT flag differences in background
+> CONTENT (what the scene depicts). A forest and a kitchen are not drift if they
+> share the same lighting quality, color temperature, and rendering approach.
+> Only flag unintended style inconsistencies: mismatched typography weights,
+> divergent accent colors, inconsistent icon rendering, or different border
+> treatments."
+
+When the scene strategy is `consistent` (or unset), use the comparison prompt
+as-is — full 8-dimension enforcement including background content.
+
 ```
 Compare these two infographic panels that must share identical visual style.
 Image 1 is the style anchor (Panel 1). Image 2 is a subsequent panel.
