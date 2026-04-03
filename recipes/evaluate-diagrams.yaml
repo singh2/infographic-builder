@@ -20,7 +20,6 @@
 #   eval-results/<timestamp>-diagrams/<diagram-name>/<diagram-name>_minimal.png
 #   eval-results/<timestamp>-diagrams/<diagram-name>/<diagram-name>_sketchnote.png
 #   eval-results/<timestamp>-diagrams/<diagram-name>/<diagram-name>_claymation.png
-#   eval-results/<timestamp>-diagrams/<diagram-name>/<diagram-name>_comparison.png
 #
 # =============================================================================
 
@@ -89,7 +88,7 @@ steps:
   #   Step 5d: Claymation Studio variant (Cinematic approach, Normal or Diorama)
   #   Steps 6a-6d: Quality review for all four variants
   #   Step 7: Assemble panels if multi-panel
-  #   Step 8: Quad comparison output
+  #   Step 8: Present side-by-side (no stitched output)
   # ---------------------------------------------------------------------------
   - id: "beautify-diagrams"
     foreach: "{{diagrams}}"
@@ -104,20 +103,15 @@ steps:
       - id: "beautify"
         agent: "infographic-builder:diagram-beautifier"
         prompt: |
-          Beautify this diagram through the full 8-step workflow, producing all four aesthetic variants.
+          Beautify this diagram.
 
-          Input diagram: {{diagram.path}}
-          Format: {{diagram.fmt}}
+          Input: {{diagram.path}} (format: {{diagram.fmt}})
 
-          Save all outputs into {{run_dir}}/{{diagram.name}}/ using these exact filenames:
-          - Dark Mode Tech (Step 5a):         {{diagram.name}}_darkmode.png
-          - Clean Minimalist (Step 5b):       {{diagram.name}}_minimal.png
-          - Hand-Drawn Sketchnote (Step 5c):  {{diagram.name}}_sketchnote.png
-          - Claymation Studio (Step 5d):      {{diagram.name}}_claymation.png
-          - Quad comparison (Step 8):         {{diagram.name}}_comparison.png
-
-          Create the output directory if it does not exist. Run all 8 steps
-          including quality review for all four variants (Steps 6a through 6d).
+          Save outputs to {{run_dir}}/{{diagram.name}}/:
+          - {{diagram.name}}_darkmode.png
+          - {{diagram.name}}_minimal.png
+          - {{diagram.name}}_sketchnote.png
+          - {{diagram.name}}_claymation.png
         timeout: 1800
         on_error: "continue"
 
@@ -166,12 +160,12 @@ steps:
       echo ""
       echo "Diagrams processed:    $TOTAL_DIAGRAMS"
       echo "Total images:          $TOTAL_IMAGES"
-      echo "Expected:              60  (12 diagrams × 5 images each)"
+      echo "Expected:              48  (12 diagrams × 4 images each)"
       echo "Failed:                $FAILED"
       echo ""
       echo "Output directory: {{run_dir}}"
       echo ""
       echo "Review outputs:"
-      find "{{run_dir}}" -name "*_comparison.png" | sort | while read f; do
+      find "{{run_dir}}" -name "*.png" | sort | while read f; do
         echo "  open \"$f\""
       done
