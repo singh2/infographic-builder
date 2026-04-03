@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This Week in Infographic Builder — April 2026</title>
+<style>
+  :root {
+    --accent: #FF6B9D;
+    --accent-2: #7B61FF;
+    --accent-3: #4ECDC4;
+    --surface-1: rgba(255,255,255,0.06);
+    --surface-2: rgba(255,255,255,0.10);
+    --surface-3: rgba(255,255,255,0.15);
+    --border-subtle: rgba(255,255,255,0.12);
+    --border-visible: rgba(255,255,255,0.20);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.7);
+    --text-tertiary: rgba(255,255,255,0.5);
+
+    --font-headline: clamp(36px, 6vw, 72px);
+    --font-medium: clamp(24px, 4vw, 48px);
+    --font-subhead: clamp(18px, 2.5vw, 28px);
+    --font-body: clamp(15px, 1.8vw, 18px);
+    --font-small: clamp(12px, 1.5vw, 14px);
+    --padding-slide: clamp(24px, 6vw, 100px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #000;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ── Slide sections ── */
+  .slide {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--padding-slide);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  .slide-inner {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ── Typography ── */
+  .section-label {
+    font-size: var(--font-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .headline {
+    font-size: var(--font-headline);
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+
+  .subheadline {
+    font-size: var(--font-subhead);
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 750px;
+  }
+
+  .medium-headline {
+    font-size: var(--font-medium);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  .body-text {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 700px;
+  }
+
+  .body-text + .body-text { margin-top: 16px; }
+
+  .emphasis {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .accent-text { color: var(--accent); }
+  .accent2-text { color: var(--accent-2); }
+  .accent3-text { color: var(--accent-3); }
+
+  /* ── Cards ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: clamp(16px, 2vw, 24px);
+    margin-top: 32px;
+  }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: clamp(20px, 3vw, 32px);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-visible);
+  }
+
+  .card-icon {
+    font-size: clamp(32px, 5vw, 48px);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .card h3 {
+    font-size: clamp(18px, 2.5vw, 22px);
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .card p, .card li {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Split layout ── */
+  .split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+    gap: clamp(24px, 4vw, 60px);
+    align-items: start;
+    margin-top: 32px;
+  }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: clamp(16px, 3vw, 24px);
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Courier New', monospace;
+    font-size: clamp(13px, 1.6vw, 15px);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+    color: var(--text-secondary);
+    margin-top: 20px;
+  }
+
+  .code-block .kw { color: #FF6B9D; }
+  .code-block .str { color: #4ECDC4; }
+  .code-block .cm { color: rgba(255,255,255,0.35); font-style: italic; }
+  .code-block .fn { color: #7B61FF; }
+  .code-block .num { color: #FFD93D; }
+  .code-block .op { color: rgba(255,255,255,0.5); }
+
+  /* ── Callout boxes ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding: 16px 24px;
+    margin-top: 24px;
+    background: rgba(255, 107, 157, 0.06);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .callout.purple {
+    border-left-color: var(--accent-2);
+    background: rgba(123, 97, 255, 0.06);
+  }
+
+  .callout.teal {
+    border-left-color: var(--accent-3);
+    background: rgba(78, 205, 196, 0.06);
+  }
+
+  .callout p {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Numbered list ── */
+  .numbered-list {
+    list-style: none;
+    counter-reset: item;
+    margin-top: 24px;
+  }
+
+  .numbered-list li {
+    counter-increment: item;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 14px;
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .numbered-list li::before {
+    content: counter(item);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Tags / pills ── */
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .tag.pink { background: rgba(255,107,157,0.15); color: #FF6B9D; }
+  .tag.purple { background: rgba(123,97,255,0.15); color: #7B61FF; }
+  .tag.teal { background: rgba(78,205,196,0.15); color: #4ECDC4; }
+  .tag.yellow { background: rgba(255,217,61,0.15); color: #FFD93D; }
+
+  /* ── Comparison columns ── */
+  .comparison {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: clamp(16px, 3vw, 24px);
+    margin-top: 32px;
+  }
+
+  .comparison-col {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: clamp(24px, 4vw, 36px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comparison-col::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .comparison-col.polished::before {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+
+  .comparison-col.cinematic::before {
+    background: linear-gradient(90deg, var(--accent-2), var(--accent-3));
+  }
+
+  .comparison-col h3 {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .comparison-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .comparison-col li {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .comparison-col li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--text-tertiary);
+  }
+
+  .comparison-col .goal {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+    font-size: var(--font-body);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  /* ── Flow diagram ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+
+  .flow-step {
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: clamp(13px, 1.6vw, 15px);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--text-tertiary);
+    font-size: 18px;
+  }
+
+  .flow-step.highlight {
+    background: rgba(255,107,157,0.15);
+    border-color: rgba(255,107,157,0.3);
+    color: var(--accent);
+  }
+
+  /* ── Quality grid ── */
+  .quality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 2px;
+    margin-top: 28px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .quality-item {
+    background: var(--surface-2);
+    padding: clamp(16px, 2.5vw, 24px);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .quality-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,107,157,0.15);
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .quality-item.diagram-specific .quality-num {
+    color: var(--accent-2);
+    background: rgba(123,97,255,0.15);
+  }
+
+  .quality-text {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .quality-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ── Slide-specific decorations ── */
+  .slide-num {
+    position: absolute;
+    bottom: clamp(16px, 3vw, 32px);
+    right: clamp(16px, 3vw, 32px);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .slide-inner { position: relative; z-index: 1; }
+
+  /* ── Title slide special ── */
+  .title-slide {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title-slide .slide-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title-slide .headline {
+    font-size: clamp(40px, 8vw, 80px);
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-slide .subheadline {
+    text-align: center;
+    max-width: 600px;
+  }
+
+  .date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 32px;
+  }
+
+  /* ── Roadmap items ── */
+  .roadmap {
+    margin-top: 32px;
+  }
+
+  .roadmap-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .roadmap-item:last-child { border-bottom: none; }
+
+  .roadmap-icon {
+    font-size: clamp(28px, 4vw, 36px);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .roadmap-item h3 {
+    font-size: clamp(18px, 2.5vw, 22px);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .roadmap-item p {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Manifest visualization ── */
+  .manifest-block {
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: clamp(20px, 3vw, 32px);
+    margin-top: 24px;
+  }
+
+  .manifest-block h4 {
+    font-size: clamp(14px, 1.8vw, 16px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-2);
+    margin-bottom: 16px;
+  }
+
+  .manifest-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .manifest-item:last-child { border-bottom: none; }
+
+  .manifest-key {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: clamp(13px, 1.5vw, 14px);
+    color: var(--accent);
+    min-width: 160px;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .manifest-val {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ── Diorama special ── */
+  .diorama-card {
+    background: linear-gradient(135deg, rgba(123,97,255,0.08), rgba(78,205,196,0.08));
+    border: 1px solid rgba(123,97,255,0.2);
+    border-radius: 16px;
+    padding: clamp(24px, 4vw, 40px);
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .diorama-card .example-prompt {
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--text-primary);
+    font-style: italic;
+    margin: 20px 0;
+    line-height: 1.5;
+  }
+
+  .diorama-card .example-result {
+    font-size: var(--font-body);
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .diorama-scene {
+    display: flex;
+    justify-content: center;
+    gap: clamp(12px, 3vw, 32px);
+    margin: 24px 0;
+    flex-wrap: wrap;
+  }
+
+  .clay-figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .clay-figure .emoji {
+    font-size: clamp(36px, 6vw, 56px);
+  }
+
+  .clay-figure .label {
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--text-tertiary);
+    font-weight: 500;
+    text-align: center;
+    max-width: 80px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .manifest-item { flex-direction: column; gap: 4px; }
+    .manifest-key { min-width: auto; }
+    .flow { justify-content: center; }
+  }
+
+  /* ── Scroll progress ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    z-index: 1000;
+    transition: width 0.1s ease;
+    width: 0%;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- ═══════════════ SLIDE 1 — TITLE ═══════════════ -->
+<section class="slide title-slide" id="slide-1">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--accent);top:-150px;right:-100px;"></div>
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent-2);bottom:-100px;left:-100px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">Show &amp; Tell · April 2026</div>
+    <h1 class="headline" style="margin-top:12px;">This Week in<br>Infographic Builder</h1>
+    <p class="subheadline" style="margin-top:20px;">Diagram Beautifier + Smarter Image Handling</p>
+    <div class="date-badge">
+      <span style="color:var(--accent);">●</span> Internal Team Update
+    </div>
+  </div>
+  <div class="slide-num">01 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 2 — THE PROBLEM ═══════════════ -->
+<section class="slide" id="slide-2">
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent);bottom:-80px;right:-80px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">The Problem</div>
+    <h2 class="headline">Diagrams are the ugly<br>stepchild of every deck</h2>
+    <p class="body-text" style="margin-top:24px;">
+      Every team has diagrams. Architecture diagrams in <code style="background:var(--surface-2);padding:2px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:0.9em;">.dot</code>. Flow diagrams in Mermaid. They look like this:
+    </p>
+    <div class="callout" style="margin-top:24px;">
+      <p>A tangle of boxes and arrows that convey structure but feel <span class="emphasis">dead</span> on a slide. Nobody wants to put them in a presentation. Nobody lingers on them in a doc.</p>
+    </div>
+    <p class="body-text" style="margin-top:32px;">
+      We can make infographics that pop. We can make charts that sing. But diagrams — the things engineers actually <em>need</em> to communicate architecture — still look like they were exported from 2003.
+    </p>
+    <div style="margin-top:40px;padding:24px 0;border-top:1px solid var(--border-subtle);">
+      <p class="medium-headline" style="margin-bottom:0;">
+        What if you could give your diagrams the same <span class="accent-text">"infographic treatment"</span> as everything else?
+      </p>
+    </div>
+  </div>
+  <div class="slide-num">02 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 3 — INTRODUCING DIAGRAM BEAUTIFIER ═══════════════ -->
+<section class="slide" id="slide-3">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--accent-2);top:-120px;left:-150px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">New Feature</div>
+    <h2 class="headline">Diagram Beautifier</h2>
+    <p class="body-text" style="margin-top:16px;">
+      A new agent that takes your <span class="emphasis">actual diagrams</span> and transforms them into publication-quality visuals — using the same aesthetic styles already in the system.
+    </p>
+
+    <div class="card-grid" style="margin-top:36px;">
+      <div class="card">
+        <span class="card-icon">📄</span>
+        <h3>Accepts</h3>
+        <p>Graphviz <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:0.9em;">.dot</code> source, Mermaid diagrams (text or <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:0.9em;">.mmd</code>), and existing PNG diagrams</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎨</span>
+        <h3>Transforms</h3>
+        <p>Into visuals using any system style — Clean Minimalist, Dark Mode Tech, Bold Editorial, Claymation, Sketchnote, Lego</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧠</span>
+        <h3>Understands</h3>
+        <p>It doesn't just "recolor" the diagram. It parses the semantics, understands the topology, and <span class="emphasis">preserves meaning</span></p>
+      </div>
+    </div>
+
+    <div class="callout purple" style="margin-top:32px;">
+      <p><strong>Key insight:</strong> The difference between a skin and a transformation is whether the system understands what it's looking at.</p>
+    </div>
+  </div>
+  <div class="slide-num">03 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 4 — TOPOLOGY MANIFEST ═══════════════ -->
+<section class="slide" id="slide-4">
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent-3);top:-100px;right:-100px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">The Secret Sauce</div>
+    <h2 class="headline" style="font-size:var(--font-medium);">The Topology Manifest</h2>
+    <p class="body-text">
+      Before generating anything, the agent extracts a <span class="emphasis">semantic blueprint</span> of the diagram — a structured manifest that becomes the ground truth for both generation and quality review.
+    </p>
+
+    <div class="manifest-block">
+      <h4>Extracted Manifest</h4>
+      <div class="manifest-item">
+        <span class="manifest-key">nodes[]</span>
+        <span class="manifest-val">Every node with its type — terminal, decision, process, subprocess</span>
+      </div>
+      <div class="manifest-item">
+        <span class="manifest-key">edges[]</span>
+        <span class="manifest-val">What connects to what — the full adjacency map</span>
+      </div>
+      <div class="manifest-item">
+        <span class="manifest-key">hero_candidate</span>
+        <span class="manifest-val">Highest-connectivity node — the natural focal point of the diagram</span>
+      </div>
+      <div class="manifest-item">
+        <span class="manifest-key">critical_path</span>
+        <span class="manifest-val">Entry → exit path — the story the diagram tells</span>
+      </div>
+      <div class="manifest-item">
+        <span class="manifest-key">subgroups[]</span>
+        <span class="manifest-val">Named clusters — logical groupings that should stay visually together</span>
+      </div>
+    </div>
+
+    <div class="callout teal" style="margin-top:28px;">
+      <p>This manifest is the difference between <strong>"looks like a diagram"</strong> and <strong>"actually IS your diagram, just beautiful."</strong></p>
+    </div>
+  </div>
+  <div class="slide-num">04 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 5 — POLISHED vs CINEMATIC ═══════════════ -->
+<section class="slide" id="slide-5">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--accent);bottom:-150px;left:-150px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">Dual Output</div>
+    <h2 class="headline" style="font-size:var(--font-medium);">Two Variants. One Run.</h2>
+    <p class="body-text">
+      Every diagram automatically produces two outputs — each optimized for a different use case.
+    </p>
+
+    <div class="comparison">
+      <div class="comparison-col polished">
+        <h3><span style="font-size:clamp(24px,4vw,32px);">🎯</span> Polished</h3>
+        <ul>
+          <li>Publication-quality, layout-faithful</li>
+          <li>Reference image passed with a "completeness guard" instruction</li>
+          <li>All labels must match. All connections present. Every node accounted for</li>
+          <li>Designed for accuracy and trust</li>
+        </ul>
+        <div class="goal">
+          "Drop this into your design doc and no one questions the content."
+        </div>
+      </div>
+      <div class="comparison-col cinematic">
+        <h3><span style="font-size:clamp(24px,4vw,32px);">🎬</span> Cinematic</h3>
+        <ul>
+          <li>Full creative reimagining</li>
+          <li>Topology manifest is the ONLY input — no reference image</li>
+          <li>Hero element becomes dominant, central, striking</li>
+          <li>Layout is fully reinterpreted</li>
+        </ul>
+        <div class="goal">
+          "This is the thing you put on a slide and people actually look at."
+        </div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:28px;color:var(--text-tertiary);font-style:italic;">
+      Show both side-by-side. Let the user pick. Or keep both.
+    </p>
+  </div>
+  <div class="slide-num">05 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 6 — QUALITY ═══════════════ -->
+<section class="slide" id="slide-6">
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent-2);bottom:-80px;right:-80px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">Quality Built In</div>
+    <h2 class="headline" style="font-size:var(--font-medium);">8-Dimension Quality Review</h2>
+    <p class="body-text">
+      The Cinematic output isn't just vibes. Every generation goes through a structured quality review — and the last three dimensions exist <span class="emphasis">specifically for diagrams</span>.
+    </p>
+
+    <div class="quality-grid">
+      <div class="quality-item">
+        <span class="quality-num">1</span>
+        <span class="quality-text"><strong>Content accuracy</strong></span>
+      </div>
+      <div class="quality-item">
+        <span class="quality-num">2</span>
+        <span class="quality-text"><strong>Layout quality</strong></span>
+      </div>
+      <div class="quality-item">
+        <span class="quality-num">3</span>
+        <span class="quality-text"><strong>Visual clarity</strong></span>
+      </div>
+      <div class="quality-item">
+        <span class="quality-num">4</span>
+        <span class="quality-text"><strong>Prompt fidelity</strong></span>
+      </div>
+      <div class="quality-item">
+        <span class="quality-num">5</span>
+        <span class="quality-text"><strong>Aesthetic consistency</strong></span>
+      </div>
+      <div class="quality-item diagram-specific">
+        <span class="quality-num">6</span>
+        <span class="quality-text"><strong>Label fidelity</strong> — every text label matches the manifest</span>
+      </div>
+      <div class="quality-item diagram-specific">
+        <span class="quality-num">7</span>
+        <span class="quality-text"><strong>Structural accuracy</strong> — node count and connections verified</span>
+      </div>
+      <div class="quality-item diagram-specific">
+        <span class="quality-num">8</span>
+        <span class="quality-text"><strong>Color-category fidelity</strong> — semantic legends preserved</span>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;padding:20px 24px;background:var(--surface-1);border-radius:12px;border:1px solid var(--border-subtle);">
+      <p class="body-text" style="max-width:none;margin:0;text-align:center;">
+        The last three are diagram-specific and exist precisely because <span class="accent-text">beautiful ≠ correct</span>. You shouldn't have to choose.
+      </p>
+    </div>
+  </div>
+  <div class="slide-num">06 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 7 — PNG INPUT ═══════════════ -->
+<section class="slide" id="slide-7">
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent-3);top:-100px;left:-80px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">Image Reference Pipeline</div>
+    <h2 class="headline" style="font-size:var(--font-medium);">How PNG Input Works</h2>
+    <p class="body-text">
+      People naturally have existing images they want to do something with. Two cases come up a lot:
+    </p>
+
+    <div class="card-grid" style="margin-top:28px;">
+      <div class="card" style="border-left:3px solid var(--accent);">
+        <h3 style="font-size:clamp(16px,2vw,18px);color:var(--accent);">"I have a PNG of a diagram. Can you beautify it?"</h3>
+        <p style="margin-top:10px;">
+          Yes. The agent analyzes the PNG, extracts its topology, and runs the full Polished + Cinematic flow — just like it would for a <code style="background:var(--surface-2);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:0.9em;">.dot</code> file.
+        </p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--accent-2);">
+        <h3 style="font-size:clamp(16px,2vw,18px);color:var(--accent-2);">"I want this new infographic to feel like this image I already have."</h3>
+        <p style="margin-top:10px;">
+          Also yes. Pass the image as a style reference. The generator sees the visual and takes the style cues, but generates new content.
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top:36px;padding-top:28px;border-top:1px solid var(--border-subtle);">
+      <p class="medium-headline" style="font-size:var(--font-subhead);margin-bottom:0;">
+        The big question was: <span class="accent3-text">how do you tell these apart?</span>
+      </p>
+    </div>
+  </div>
+  <div class="slide-num">07 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 8 — ANALYZE-FIRST ROUTING ═══════════════ -->
+<section class="slide" id="slide-8">
+  <div class="glow-orb" style="width:500px;height:500px;background:var(--accent);top:-150px;right:-150px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">The Smart Part</div>
+    <h2 class="headline" style="font-size:var(--font-medium);">Analyze-First Routing</h2>
+
+    <div class="split" style="margin-top:28px;">
+      <div>
+        <div style="margin-bottom:28px;">
+          <div class="tag pink" style="margin-bottom:12px;">Before</div>
+          <p class="body-text">
+            Keyword-based routing. If the filename has "diagram" in it, go to the beautifier. <span style="color:var(--accent);">Fragile. Wrong.</span>
+          </p>
+        </div>
+        <div>
+          <div class="tag teal" style="margin-bottom:12px;">Now</div>
+          <p class="body-text">
+            <span class="emphasis">Analyze the PNG before routing.</span> One nano-banana call answers three questions at once:
+          </p>
+        </div>
+
+        <div class="code-block" style="margin-top:20px;">
+<span class="cm">// Single VLM call does double duty</span>
+<span class="fn">analyze</span>(image) → {
+  <span class="str">is_diagram</span>: <span class="kw">true</span> | <span class="kw">false</span>,
+  <span class="str">content</span>:   <span class="str">"semantic summary"</span>,
+  <span class="str">aesthetic</span>: <span class="str">"colors, mood, typography"</span>
+}</div>
+      </div>
+
+      <div>
+        <p class="body-text" style="margin-bottom:20px;">The result does <span class="emphasis">two jobs</span> simultaneously:</p>
+
+        <div class="card" style="margin-bottom:16px;border-left:3px solid var(--accent-3);">
+          <h3 style="font-size:clamp(16px,2vw,18px);">1. Routes the image</h3>
+          <p>Diagram → beautifier agent<br>Not a diagram → infographic builder</p>
+        </div>
+
+        <div class="card" style="border-left:3px solid var(--accent-3);">
+          <h3 style="font-size:clamp(16px,2vw,18px);">2. Becomes Step 1 ground truth</h3>
+          <p>No duplicate analysis needed — the routing call IS the analysis</p>
+        </div>
+
+        <div class="callout teal" style="margin-top:20px;">
+          <p>The routing decision and the analysis are <strong>the same call</strong>. That's the elegance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">08 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 9 — DIORAMA MODE ═══════════════ -->
+<section class="slide" id="slide-9">
+  <div class="glow-orb" style="width:400px;height:400px;background:var(--accent-2);bottom:-100px;left:-80px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">One More Thing</div>
+    <h2 class="headline">Diorama Mode</h2>
+    <p class="body-text">
+      Small but delightful. The 3D aesthetics (Claymation, Lego) now support an opt-in <span class="emphasis">diorama mode</span>.
+    </p>
+    <p class="body-text">
+      Instead of materializing information as objects (a checklist → a clipboard, a list → a wall), characters <span class="emphasis">act out a process</span> in a scene.
+    </p>
+
+    <div class="diorama-card">
+      <p style="font-size:var(--font-small);text-transform:uppercase;letter-spacing:2px;color:var(--accent-2);font-weight:600;">Example</p>
+      <p class="example-prompt">"Show our onboarding steps"</p>
+
+      <div class="diorama-scene">
+        <div class="clay-figure">
+          <span class="emoji">🧑‍💼</span>
+          <span class="label">Gets badge</span>
+        </div>
+        <div class="clay-figure">
+          <span class="emoji">🧑‍💻</span>
+          <span class="label">Sets up laptop</span>
+        </div>
+        <div class="clay-figure">
+          <span class="emoji">🧑‍🤝‍🧑</span>
+          <span class="label">Meets team</span>
+        </div>
+        <div class="clay-figure">
+          <span class="emoji">📋</span>
+          <span class="label">First standup</span>
+        </div>
+        <div class="clay-figure">
+          <span class="emoji">🚀</span>
+          <span class="label">Ships code</span>
+        </div>
+      </div>
+
+      <p class="example-result">
+        Five clay characters walking through an office, each at a different onboarding milestone.
+      </p>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;align-items:center;">
+      <span class="tag purple">Opt-in</span>
+      <span class="tag teal">Three words in the prompt</span>
+      <span class="tag pink">Completely different energy</span>
+    </div>
+  </div>
+  <div class="slide-num">09 / 10</div>
+</section>
+
+<!-- ═══════════════ SLIDE 10 — WHAT'S NEXT ═══════════════ -->
+<section class="slide" id="slide-10">
+  <div class="glow-orb" style="width:500px;height:500px;background:linear-gradient(135deg,var(--accent),var(--accent-2));top:-200px;right:-200px;"></div>
+  <div class="glow-orb" style="width:300px;height:300px;background:var(--accent-3);bottom:-80px;left:-80px;"></div>
+  <div class="slide-inner">
+    <div class="section-label">What's Next</div>
+    <h2 class="headline">On the Horizon</h2>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <span class="roadmap-icon">🎨</span>
+        <div>
+          <h3>Moodboard Canvas UI</h3>
+          <p>An interactive web page to explore all styles and try them live. Browse, tweak, generate — all in the browser.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-icon">📊</span>
+        <div>
+          <h3>Diagram Evaluation Pipeline</h3>
+          <p>Automated quality scoring across a test set of real diagrams. Catch regressions before they ship.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-icon">🔀</span>
+        <div>
+          <h3>More Diagram Types &amp; Layouts</h3>
+          <p>Sequence diagrams, state machines, ER diagrams — expanding the topology parser to handle the full zoo of diagram conventions.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;text-align:center;padding:32px;background:var(--surface-1);border-radius:16px;border:1px solid var(--border-subtle);">
+      <p style="font-size:var(--font-subhead);color:var(--text-primary);font-weight:600;">Thanks for listening! Questions?</p>
+      <p style="font-size:var(--font-body);color:var(--text-tertiary);margin-top:8px;">Try it out: pass any <code style="background:var(--surface-2);padding:2px 8px;border-radius:4px;font-family:monospace;">.dot</code> or <code style="background:var(--surface-2);padding:2px 8px;border-radius:4px;font-family:monospace;">.mmd</code> file to the diagram-beautifier agent</p>
+    </div>
+  </div>
+  <div class="slide-num">10 / 10</div>
+</section>
+
+<script>
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progress').style.width = progress + '%';
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const slides = document.querySelectorAll('.slide');
+    const viewportCenter = window.scrollY + window.innerHeight / 2;
+    let currentIndex = 0;
+
+    slides.forEach((slide, i) => {
+      if (slide.offsetTop <= viewportCenter) currentIndex = i;
+    });
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      const next = Math.min(currentIndex + 1, slides.length - 1);
+      slides[next].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prev = Math.max(currentIndex - 1, 0);
+      slides[prev].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+
+</body>
+</html>

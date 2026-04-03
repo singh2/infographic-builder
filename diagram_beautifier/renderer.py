@@ -45,7 +45,7 @@ def render_plain_png(
 
     if fmt == "dot":
         cmd = ["dot", "-Tpng", "-Gdpi=150", source_path, "-o", output_path]
-    elif fmt == "mermaid":
+    elif fmt in ("mermaid", "mmd"):
         cmd = [
             "mmdc",
             "-i",
