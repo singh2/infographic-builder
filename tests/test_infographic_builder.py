@@ -330,3 +330,20 @@ def test_step_3d_no_longer_halts():
     # The old halt instruction should be removed from 3d
     # Halt now lives in step 5b-iii instead
     assert "stop and wait" not in block.lower() or "5b" in block.lower()
+
+
+# ---------------------------------------------------------------------------
+# Task 4: Step 4 supports per-candidate design plans (Tier 1)
+# ---------------------------------------------------------------------------
+
+
+def _get_step_4_block(content):
+    start = content.index("4. **")
+    end = content.index("\n5. **", start)
+    return content[start:end]
+
+
+def test_step_4_supports_per_candidate_plans():
+    block = _get_step_4_block(read_agent())
+    lower = block.lower()
+    assert "candidate" in lower or "tier 1" in lower or "per aesthetic" in lower

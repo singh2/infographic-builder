@@ -128,6 +128,12 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    let the content render naturally in the medium. See Diorama
    Mode in the Style Guide.
 
+   **Multi-candidate mode (Tier 1 — aesthetic unspecified):** Run this step
+   once per candidate aesthetic, producing 3 lightweight design plans. Each
+   plan applies a different aesthetic template to the same content. Layout
+   type may differ per candidate if a different layout better suits the style.
+   For Tiers 2 and 3, run this step once since the aesthetic is shared.
+
 5. **Generate the image(s)**:
 
    **Single-panel path:**
