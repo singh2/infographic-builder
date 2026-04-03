@@ -171,6 +171,16 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    style brief from step 5c verbatim. Panels 2-N may run in parallel since
    they all reference Panel 1, not each other.
 
+   **Varied scene strategy:** When the content map declares
+   `Scene strategy: varied`, add a 4th signal to each Panel 2-N prompt —
+   the scene directive from the content map: "This panel's ENVIRONMENT is:
+   [scene description]. The artistic STYLE (lighting quality, color palette,
+   typography, icon rendering, border treatment) must match Panel 1 exactly.
+   The setting and composition are intentionally different." This gives the
+   model explicit permission to change the environment while keeping the
+   style locked. For `consistent` strategy, omit this — the three existing
+   signals are sufficient.
+
    - **If the user's prompt specifies output paths, use those paths exactly.**
      Output paths from the user override the default Panel Naming Convention.
    - If no output paths are specified, follow the Panel Naming Convention

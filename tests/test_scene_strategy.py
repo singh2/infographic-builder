@@ -220,3 +220,42 @@ def test_cross_panel_varied_preserves_style_enforcement() -> None:
         "Varied preamble must name specific style properties still enforced.\n"
         f"Actual block:\n{block}"
     )
+
+
+# --- Task 6: Agent Step 5d ---
+
+
+def _get_agent_step_5_block(content: str) -> str:
+    start = content.index("5. **Generate the image(s)**")
+    end = content.index("6. **", start)
+    return content[start:end]
+
+
+def test_agent_step5d_has_scene_directive_signal() -> None:
+    """Step 5d must mention scene directive as a signal for varied strategy."""
+    block = _get_agent_step_5_block(read_agent())
+    lower = block.lower()
+    assert "scene directive" in lower, (
+        "Step 5d must mention 'scene directive'.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_agent_step5d_scene_scoped_to_varied() -> None:
+    """Step 5d scene directive must be scoped to varied strategy."""
+    block = _get_agent_step_5_block(read_agent())
+    lower = block.lower()
+    assert "varied" in lower, (
+        "Step 5d scene directive must reference varied strategy.\n"
+        f"Actual block:\n{block}"
+    )
+
+
+def test_agent_step5d_varied_locks_style() -> None:
+    """Step 5d varied instruction must emphasize that style stays locked."""
+    block = _get_agent_step_5_block(read_agent())
+    normalised = " ".join(block.lower().split())
+    assert "style" in normalised and ("match" in normalised or "lock" in normalised or "exact" in normalised), (
+        "Step 5d must state that style stays locked for varied panels.\n"
+        f"Actual block:\n{block}"
+    )
