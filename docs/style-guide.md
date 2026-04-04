@@ -149,6 +149,57 @@ content to life in the medium. This is the default and needs no special promptin
 If the user asks for a **"diorama"**, frame the prompt as characters acting
 out a scene. Dioramas work best for linear sequential workflows.
 
+## Variation Cascade
+
+When generating 3 candidates for Panel 1 selection, what to vary depends on what
+the user has already specified. Three tiers, applied in priority order:
+
+### Tier 1: Vary aesthetic (highest diversity)
+
+**When:** User specified a topic but no aesthetic.
+
+Generate 3 candidates each in a **different curated aesthetic**, selected to
+maximize visual diversity across the professional-to-playful spectrum. Choose 3
+aesthetics that contrast strongly — e.g., Clean Minimalist, Claymation Studio,
+and Dark Mode Tech rather than three adjacent styles.
+
+### Tier 2: Vary based on aesthetic type (medium diversity)
+
+**When:** User specified an aesthetic (curated or freeform).
+
+The variation axis depends on the aesthetic type:
+
+| Aesthetic | Variation axis |
+|-----------|----------------|
+| Claymation Studio | Environment/setting |
+| Lego Brick Builder | Environment/setting |
+| Clean Minimalist | Composition |
+| Dark Mode Tech | Composition |
+| Bold Editorial | Composition |
+| Hand-Drawn Sketchnote | Composition |
+| Freeform | Composition |
+
+**Composition directions** (flat/2D aesthetics — use all 3 across the candidates):
+
+- Central focal point — hero visual dominates, supporting text arranged around it
+- Scene-based — characters or objects act out the topic in a spatial arrangement
+- Structured/diagrammatic — grid, flow, or table layout emphasizes relationships and data
+
+**Environment directions** (3D aesthetics — Claymation Studio, Lego Brick Builder):
+
+Agent picks 3 contrasting settings appropriate to the topic. Settings should be
+visually distinct and reinforce the content theme — for example, for a productivity
+topic: a cozy home office, a busy open-plan workspace, and an outdoor café.
+
+### Tier 3: Model freedom (lowest diversity)
+
+**When:** User specified both an aesthetic and a layout type.
+
+Generate 3 candidates with **identical constraints** (same aesthetic, same layout).
+Add the nudge: "Explore a distinct visual interpretation." The model finds variation
+within fixed parameters — different color emphasis, icon choices, spatial
+arrangements, or mood — all within the locked aesthetic and structure.
+
 ## Layout Types
 
 Match layout to content:
@@ -373,6 +424,42 @@ Summary: Overall PASS or NEEDS_REFINEMENT across all 5 dimensions. If
 NEEDS_REFINEMENT, list the specific changes that would fix the issues (be
 concrete -- these will be used to refine the generation prompt).
 ```
+
+### Dealbreaker Check (Multi-Candidate Pre-Screen)
+
+Before presenting candidates to the user, run a lightweight binary pre-screen on
+each generated image. This is **not** the full 5-dimension quality review — it
+only catches broken outputs that should never reach the user (garbled text,
+missing content, completely wrong aesthetic).
+
+Use nano-banana `analyze` with this prompt:
+
+```
+Quick dealbreaker check — answer YES or NO for each question only.
+
+1. TEXT LEGIBILITY: Is the text in the image legible and readable (not garbled,
+   corrupted, or illegibly small)?
+
+2. CORE CONTENT PRESENT: Is the core content present in the image (main topic,
+   key data points, or central concept visibly represented)?
+
+3. AESTHETIC MATCH: Does the overall aesthetic of the image roughly match the
+   requested style (not a completely different visual genre)?
+
+Return exactly three lines:
+TEXT_LEGIBLE: YES|NO
+CONTENT_PRESENT: YES|NO
+AESTHETIC_MATCH: YES|NO
+```
+
+**Failure handling:**
+
+- If any check returns NO, silently regenerate the image once (do not inform the
+  user).
+- If the regenerated image still fails any dealbreaker check, drop (discard) that
+  candidate entirely — do not show it to the user.
+- Always present a minimum of 2 candidates. If too many are dropped, regenerate
+  additional candidates until at least 2 pass all dealbreaker checks.
 
 ### Cross-Panel Visual Comparison (Multi-Panel Only)
 

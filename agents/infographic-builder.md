@@ -106,24 +106,11 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
    This is the **two-turn shortcut** — no proposal needed.
 
-   **d. If no style was specified**, present the aesthetic options and halt:
-
-   ```
-   For "[topic]," I'd recommend [Layout Name].
-
-   Choose a style, or describe your own:
-
-     1. Clean Minimalist       4. Hand-Drawn Sketchnote
-     2. Dark Mode Tech         5. Claymation Studio
-     3. Bold Editorial         6. Lego Brick Builder
-
-     Or describe any style — "professional report",
-     "watercolor", "comic book", "retro pixel art",
-     "vintage travel poster" — get creative.
-   ```
-
-   **Then stop and wait for the user's selection.** Do not proceed to design
-   or generation until the user has chosen.
+   **d. If no style was specified**, defer aesthetic selection to the
+   multi-candidate presentation at step 5b. The user will pick from 3
+   real images in different aesthetics rather than choosing from a text
+   menu. Do not halt here — proceed directly to step 4, which will
+   plan 3 design variants (one per aesthetic candidate).
 
    **e. Load the aesthetic template.** If the user picks a numbered option,
    load the corresponding template from the Aesthetics section of the Style
@@ -141,12 +128,22 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    let the content render naturally in the medium. See Diorama
    Mode in the Style Guide.
 
+   **Multi-candidate mode (Tier 1 — aesthetic unspecified):** Run this step
+   once per candidate aesthetic, producing 3 lightweight design plans. Each
+   plan applies a different aesthetic template to the same content. Layout
+   type may differ per candidate if a different layout better suits the style.
+   For Tiers 2 and 3, run this step once since the aesthetic is shared.
+
 5. **Generate the image(s)**:
 
    **Single-panel path:**
-   - Construct one detailed generation prompt (see Prompt Engineering in the
-     Style Guide)
-   - Call `nano-banana` with `operation: "generate"`, the prompt, and `output_path`
+   Generate 3 candidates in parallel, varying based on the Variation Cascade
+   in the Style Guide (Tier 1 if no aesthetic specified, Tier 2 or 3
+   otherwise). Run the Dealbreaker Check on each candidate. Present all
+   passing candidates to the user with a one-sentence rationale per
+   candidate describing what makes it different. **Stop and wait for the
+   user's selection.** The user's pick is the final output — no further
+   quality review.
 
    **Multi-panel path** -- follow these sub-steps IN ORDER. Do not skip or
    reorder. Each sub-step must complete before the next begins.
@@ -154,15 +151,33 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **5a. Content map + style brief.** Build both artifacts (see Multi-Panel
    Composition in the Style Guide) before any generation call.
 
-   **5b. Generate Panel 1 ONLY.** Call `nano-banana generate` once, with no
-   `reference_image_path`. This establishes the style anchor.
+   **5b. Generate 3 Panel 1 candidates.**
+
+   **5b-i.** Generate 3 candidates in parallel. The variation axis is
+   determined by the Variation Cascade in the Style Guide — Tier 1 (aesthetic)
+   if no aesthetic was specified, Tier 2 (environment or composition based
+   on aesthetic type) if an aesthetic was locked, or Tier 3 (model freedom)
+   if both aesthetic and layout were specified. All 3 calls run concurrently.
+
+   **5b-ii.** Run the Dealbreaker Check (see Style Guide) on each candidate.
+   Silently regenerate failures once. Drop candidates that fail twice.
+   Minimum 2 candidates.
+
+   **5b-iii.** Present all passing candidates to the user. For each
+   candidate, show the image path and a one-sentence rationale describing
+   what makes it different — the aesthetic name for Tier 1 variation, the
+   spatial approach for composition variation, or the environment for
+   setting variation. End with: "Pick one, or tell me what you'd like to
+   adjust." **Stop and wait for the user's selection.** Do not proceed to
+   reconciliation until the user has chosen.
 
    **5c. Reconcile style brief (REQUIRED GATE).** Call `nano-banana analyze`
-   on Panel 1 using the reconciliation prompt from the Style Guide.
-   **OVERWRITE** your original style brief with the analysis output. Do not
-   merge -- replace entirely. **You MUST NOT generate any subsequent panel
-   until this step has produced a reconciled brief.** This is a hard gate,
-   not a suggestion.
+   on the **chosen** Panel 1 candidate using the reconciliation prompt from
+   the Style Guide. **OVERWRITE** your original style brief with the analysis
+   output. Do not merge -- replace entirely. **You MUST NOT generate any
+   subsequent panel until this step has produced a reconciled brief.** This
+   is a hard gate, not a suggestion. The two rejected candidates are
+   discarded.
 
    **5d. Generate Panels 2-N.** Each prompt MUST include all three
    consistency signals: (1) opening directive "This panel MUST match the
