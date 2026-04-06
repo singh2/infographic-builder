@@ -6,7 +6,6 @@ bundle:
 context:
   include:
     - infographic-builder:context/infographic-awareness.md
-    - infographic-builder:context/diagram-beautifier-awareness.md
 
 tools:
   - module: tool-nano-banana
@@ -17,4 +16,3 @@ tools:
 agents:
   include:
     - infographic-builder:infographic-builder
-    - infographic-builder:diagram-beautifier

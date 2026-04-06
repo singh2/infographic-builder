@@ -45,44 +45,21 @@ The agent automatically handles:
 No configuration or flags needed. The user steers with natural language
 in the delegated sub-session.
 
-## Routing Decision
+## PNG Input Handling
 
-### Source files (.dot / .mmd / .mermaid / inline Graphviz or Mermaid syntax)
-
-Route immediately to `infographic-builder:diagram-beautifier`. No analysis needed.
-
-Detection patterns:
-- File extensions: `.dot`, `.mmd`, `.mermaid`
-- Inline text starting with: `digraph`, `graph {`, `flowchart`, `sequenceDiagram`, `classDiagram`, `stateDiagram`, `erDiagram`, `graph TD`, `graph LR`
-
-### PNG files (`.png`) — ALWAYS analyze first, regardless of user wording
-
-Do NOT guess from keywords or filenames. Always analyze the image directly:
+When a `.png` file is provided, analyze it before delegating if the user's text suggests style inspiration:
 
 1. Run `nano-banana analyze` on the PNG with this exact prompt:
    ```
-   1. DIAGRAM CLASSIFICATION: Is this image a structured diagram — such as a
-   flowchart, architecture diagram, sequence diagram, network diagram, ER diagram,
-   or process flow? Answer YES or NO. If YES: list all visible node/step labels
-   and estimate the node count.
-
-   2. CONTENT SUMMARY: What is this image about? Describe the subject matter, key
+   1. CONTENT SUMMARY: What is this image about? Describe the subject matter, key
    elements, data, and concepts depicted.
 
-   3. AESTHETIC DESCRIPTION: What does this image look like visually? Describe the
+   2. AESTHETIC DESCRIPTION: What does this image look like visually? Describe the
    color palette, typography character, mood, visual style, layout approach, and
    any distinctive design elements.
    ```
 
-2. Route based on the result:
-   - Answer is **YES** → delegate to `infographic-builder:diagram-beautifier`,
-     passing the full analysis result as context in your instruction so the
-     agent can use it as Step 1 ground truth
-   - Answer is **NO** → proceed to step 3 (style intent detection)
-
-3. **Style intent detection** (only when routing to infographic-builder):
-
-   Check the user's text prompt for explicit style intent signals:
+2. Check the user's text prompt for explicit style intent signals:
    - "feels like this"
    - "in the style of"
    - "make it look like"
@@ -97,15 +74,6 @@ Do NOT guess from keywords or filenames. Always analyze the image directly:
 
 **This analyze step takes ~10 seconds and happens before the aesthetic menu appears,
 so the user does not experience it as generation latency.**
-
-### All other input (natural language, data descriptions)
-
-Route to `infographic-builder:infographic-builder`.
-
-### Important
-
-Do NOT attempt to determine routing from the user's wording, the filename, or the
-folder name. For PNG files, the image analysis result is the only reliable signal.
 
 ## Prerequisites
 
