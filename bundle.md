@@ -13,8 +13,6 @@ includes:
 
 @infographic-builder:context/infographic-awareness.md
 
-@infographic-builder:context/diagram-beautifier-awareness.md
-
 ---
 
 @foundation:context/shared/common-system-base.md
