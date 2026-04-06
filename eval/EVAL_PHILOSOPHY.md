@@ -21,24 +21,13 @@ A scenario that does neither is dead weight.
 Every scenario sits at a point in a multi-dimensional space. Gaps in that
 space are coverage holes. Overcrowding in one region means redundant tests.
 
-### Dimension 1 — Product (separate recipes)
-
-| Value | Recipe | Scenarios |
-|-------|--------|-----------|
-| `infographic-builder` | `recipes/evaluate.yaml` | All scenarios in `eval/scenarios.yaml` |
-| `diagram-beautifier` | `recipes/evaluate-diagrams.yaml` | All files in `eval/diagrams/` |
-
-These are independent pipelines. Never mix them.
-
----
-
-### Dimension 2 — Prompt Weight (infographic-builder only)
+### Dimension 1 — Prompt Weight
 
 The single most important dimension. Determines how much creative work the
 agent has to do vs how much the prompt has already done.
 
 | Value | Definition | Example |
-|-------|-----------|---------|
+|-------|-----------|---------| 
 | `minimal` | Named aesthetic + topic only, ≤15 words. Agent decides layout, panel count, content structure, visual metaphors, everything. | `"Make a Claymation Studio infographic about how chocolate is made."` |
 | `natural` | Conversational, may hint at domain or rough style, but agent drives all visual decisions. | `"Explain how DNS works. Make it clear for a non-technical audience."` |
 | `specified` | Full visual spec — palette, panel count per panel, explicit layout, aesthetic named or described in detail. | Full 150-word prompt with color codes and per-panel content. |
@@ -52,7 +41,7 @@ scenario. The minimal column is the regression canary for creative quality.
 
 ---
 
-### Dimension 3 — Aesthetic (infographic-builder)
+### Dimension 2 — Aesthetic
 
 | Value | Description |
 |-------|-------------|
@@ -74,7 +63,7 @@ scenario. The minimal column is the regression canary for creative quality.
 
 ---
 
-### Dimension 4 — Panel Count (infographic-builder)
+### Dimension 3 — Panel Count
 
 | Range | Label | Notes |
 |-------|-------|-------|
@@ -87,7 +76,7 @@ scenario. The minimal column is the regression canary for creative quality.
 
 ---
 
-### Dimension 5 — Capability (infographic-builder)
+### Dimension 4 — Capability
 
 Optional tag on scenarios that exercise a specific feature path.
 
@@ -101,42 +90,9 @@ Optional tag on scenarios that exercise a specific feature path.
 
 ---
 
-### Dimension 6 — Input Format (diagram-beautifier only)
+## Coverage Matrix
 
-| Value | How it enters the pipeline |
-|-------|--------------------------|
-| `.dot` | Graphviz source → `dot -Tpng` render → topology manifest extract → 4 variants |
-| `.mmd` | Mermaid source → `mmdc` render → topology manifest extract → 4 variants |
-| `.png` | Existing diagram image → topology manifest extract (skip render) → 4 variants |
-
-**Coverage target:** At least 3 files per format. Diversity of Mermaid diagram
-types — `flowchart`, `sequenceDiagram`, `classDiagram`, `erDiagram`.
-
----
-
-### Dimension 7 — Diagram Complexity (diagram-beautifier only)
-
-Controls panel decomposition behavior in `diagram_beautifier/decompose.py`.
-
-| Range | Behavior |
-|-------|---------|
-| ≤10 nodes | 1 panel |
-| 11–25 nodes, multi-subgraph | Up to 3 panels |
-| 26–40 nodes | Up to 4 panels |
-| 41+ nodes | Up to 6 panels |
-
-Also controls Claymation sub-mode:
-- ≤12 nodes, sequential workflow → **Diorama mode** (characters in scene)
-- 13+ nodes, or architectural/hierarchical → **Normal Claymation**
-
-**Coverage target:** At least one diagram in each complexity band. Both
-diorama and normal Claymation must be triggered.
-
----
-
-## Coverage Matrix — Infographic Builder
-
-Current state (✓ = covered, ❌ = gap):
+Current state (✓ = covered, ✗ = gap):
 
 ### By Aesthetic × Prompt Weight
 
@@ -144,12 +100,12 @@ Current state (✓ = covered, ❌ = gap):
 |-----------|:-------:|:-------:|:---------:|
 | Clean Minimalist | ✓ | ✓ (agile, okr) | ✓ (4 scenarios) |
 | Dark Mode Tech | ✓ | ✓ (dns) | ✓ — ⚠️ over-represented (5) |
-| Bold Editorial | ✓ | ❌ | ✓ (surfing, star-wars) |
-| Sketchnote | ✓ | ❌ | ✓ (sleep-stages) |
-| Claymation | ✓ | ❌ | ✓ (devops, espresso) |
-| Lego | ✓ | ❌ | ✓ (solar-system) |
-| Freeform | ❌ | ✓ (campfire, photosynthesis) | ✓ (coffee-bean, 3D scenarios) |
-| Agent-selected | ❌ | ✓ (dns, engineering, repo) | — |
+| Bold Editorial | ✓ | ✗ | ✓ (surfing, star-wars) |
+| Sketchnote | ✓ | ✗ | ✓ (sleep-stages) |
+| Claymation | ✓ | ✗ | ✓ (devops, espresso) |
+| Lego | ✓ | ✗ | ✓ (solar-system) |
+| Freeform | ✗ | ✓ (campfire, photosynthesis) | ✓ (coffee-bean, 3D scenarios) |
+| Agent-selected | ✗ | ✓ (dns, engineering, repo) | — |
 
 ### By Image Input Mode
 
@@ -158,41 +114,6 @@ Current state (✓ = covered, ❌ = gap):
 | Style ref, single panel | specified | 1 | ✓ (amplifier-delegation, product-metrics) |
 | Style ref, multi-panel | specified | 3 | ✓ (reference-image-multi-panel) |
 | Content source | natural | 1 | ✓ (content-source-chart) |
-
----
-
-## Coverage Matrix — Diagram Beautifier
-
-### By Input Format
-
-| Format | Files | Mermaid Types |
-|--------|:-----:|--------------|
-| `.dot` | 9 | N/A |
-| `.mmd` | 6 | flowchart TD, sequenceDiagram, classDiagram, erDiagram |
-| `.png` | 6 | mixed AI workflow flowcharts |
-
-### By Diagram Complexity
-
-| Complexity | Node Range | Example | Claymation Sub-mode |
-|-----------|:----------:|---------|:------------------:|
-| Small | ≤10 nodes | conditional-workflow-v1 (9) | Diorama ✓ |
-| Medium | 11–25 | amplifier-module-types (11), recipe-validation (13) | Normal ✓ |
-| Large | 21+ | amplifier-session-loop (21, 2 subgraphs) | Normal ✓ |
-| Very large | 41+ | ❌ (no test for 4+ panel decomposition) | — |
-
-### Behavior Coverage
-
-| Behavior | Status |
-|---------|:------:|
-| `.dot` render → beautify | ✓ |
-| `.mmd` render → beautify | ✓ |
-| PNG direct → beautify | ✓ |
-| Diorama sub-mode | ✓ |
-| Normal Claymation | ✓ |
-| Multi-panel decomposition (3 panels) | ✓ |
-| Multi-panel decomposition (4+ panels) | ❌ |
-| 4 aesthetic variants generated | ✓ |
-| Topology manifest as quality ground truth | ✓ |
 
 ---
 
@@ -229,10 +150,7 @@ Run time: ~3–4 hours. Run before releases or after major architectural changes
 
 ---
 
-## Running Specific Slices
-
-The evaluate recipe accepts filter context variables. All filters are optional;
-empty string means "all".
+## Running the Eval
 
 ```bash
 # Always run — core regression set
@@ -246,9 +164,6 @@ amplifier run "execute recipes/evaluate.yaml with filter_prompt_weight=minimal"
 
 # Full eval
 amplifier run "execute recipes/evaluate.yaml"
-
-# Diagram beautifier (no filtering — always runs all)
-amplifier run "execute recipes/evaluate-diagrams.yaml"
 ```
 
 ---
@@ -274,7 +189,7 @@ Required fields on every scenario:
 - name: scenario-slug
   tier: core | extended
   prompt_weight: minimal | natural | specified
-  aesthetic: <value from Dimension 3>
+  aesthetic: <value from Dimension 2>
   capability: []          # omit if empty
   topic: "Human readable title"
   panels: N
@@ -325,5 +240,3 @@ print('Missing minimal coverage:', curated - minimal_covered)
 |-----|:--------:|-------|
 | Dark Mode Tech over-represented (5 specified) | Medium | Demote 2–3 to extended tier |
 | Bold Editorial, Sketchnote, Claymation, Lego: no natural scenarios | Medium | Add when extending natural tier |
-| Very large diagram (41+ nodes) for 4+ panel decomposition | Low | Add one `.dot` with 45+ nodes |
-| `.png` diagram content diversity (all flowcharts) | Low | Add ER or network diagram PNG |
