@@ -1,0 +1,57 @@
+name: style-audition
+version: "1.0.0"
+description: |
+  Audition candidate styles by generating a single-panel infographic for each
+  style against a test prompt. Outputs sample images for visual review.
+
+  Usage:
+    context:
+      styles: ["Blueprint / Schematic", "Cyberpunk / Neon", "Da Vinci Notebook"]
+      test_prompt: "How Large Language Models Work"
+      output_dir: "./style-audition"
+
+context:
+  styles:
+    - "Minecraft Voxel"
+    - "Comic Book / Graphic Novel"
+    - "Blueprint / Schematic"
+  test_prompt: "How Large Language Models Work"
+  output_dir: "./style-audition"
+
+steps:
+  - id: "generate-samples"
+    foreach: "{{styles}}"
+    as: "style"
+    parallel: true
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      Generate a single-panel infographic about: "{{test_prompt}}"
+
+      Use the {{style}} aesthetic. Apply it directly — do not present a style
+      selection menu. The style is already chosen.
+
+      Save the output image to: {{output_dir}}/{{style}}.png
+      Replace any spaces or special characters in the filename with hyphens.
+
+      Stop after generating the single panel. Do not stitch, do not ask about
+      multi-panel, do not continue to quality review.
+
+  - id: "build-gallery"
+    agent: "infographic-builder:infographic-builder"
+    prompt: |
+      Build an HTML comparison gallery for the style audition results.
+
+      Look in {{output_dir}}/ for all .png files generated in the previous step.
+      Create {{output_dir}}/gallery.html containing:
+
+      - A CSS grid of cards, 3 columns
+      - Each card shows the PNG image with the style name as a label
+      - Hovering a card shows the style name in a tooltip
+      - Clicking a card cycles through: unmarked → IN (green border) → CUT (red
+        border) → unmarked
+      - A sticky footer counts IN and CUT selections
+      - Title at top: "Style Audition: {{test_prompt}}"
+
+      Serve the gallery by opening {{output_dir}}/gallery.html in the browser.
+      Tell the user: "Open {{output_dir}}/gallery.html to review. Click once to
+      mark IN, twice to mark CUT."
