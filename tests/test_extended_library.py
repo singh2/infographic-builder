@@ -72,7 +72,6 @@ def test_agent_step2_outputs_content_types():
 # ── Agent: Step 3 style preview (Task 3) ─────────────────────────────────────
 
 
-@pytest.mark.xfail(reason="Task 3 not yet implemented")
 def test_agent_step3_has_style_preview():
     content = read_agent()
     assert "swap a style by name" in content

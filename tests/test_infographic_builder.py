@@ -108,9 +108,11 @@ def test_step_3_has_subpart_c():
 
 
 def test_step_3_has_subpart_d():
-    """Step 3 must contain sub-part d (load aesthetic template)."""
+    """Step 3 must contain sub-part 3d (style preview when no aesthetic specified)."""
     block = _get_step_3_block(read_agent())
-    assert "**d." in block or "**d. " in block, "Step 3 sub-part d missing"
+    assert "**3d." in block or "**d." in block or "**d. " in block, (
+        "Step 3 sub-part d missing"
+    )
 
 
 def test_step_3b_two_turn_shortcut():
@@ -314,22 +316,23 @@ def test_step_5_two_anchors_panel_1_and_image_path():
 
 
 # ---------------------------------------------------------------------------
-# Task 3: Step 3d defers aesthetic selection to multi-candidate presentation
+# Task 3: Step 3d shows style preview before generating
 # ---------------------------------------------------------------------------
 
 
 def test_step_3d_defers_to_multi_candidate():
     block = _get_step_3_block(read_agent())
     lower = block.lower()
-    assert "multi-candidate" in lower or "candidate" in lower
-    assert "step 5b" in lower or "step 5" in lower
+    assert "candidate" in lower
+    assert "step 4" in lower
 
 
-def test_step_3d_no_longer_halts():
+def test_step_3d_halts_for_style_preview():
     block = _get_step_3_block(read_agent())
-    # The old halt instruction should be removed from 3d
-    # Halt now lives in step 5b-iii instead
-    assert "stop and wait" not in block.lower() or "5b" in block.lower()
+    lower = block.lower()
+    # Step 3d now intentionally halts to show the style preview
+    assert "stop and wait" in lower
+    assert "swap a style by name" in lower
 
 
 # ---------------------------------------------------------------------------

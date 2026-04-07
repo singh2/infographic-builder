@@ -111,11 +111,45 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    about DNS", "dark mode tech style"), skip to step 4 using that aesthetic.
    This is the **two-turn shortcut** — no proposal needed.
 
-   **d. If no style was specified**, defer aesthetic selection to the
-   multi-candidate presentation at step 5b. The user will pick from 3
-   real images in different aesthetics rather than choosing from a text
-   menu. Do not halt here — proceed directly to step 4, which will
-   plan 3 design variants (one per aesthetic candidate).
+   **3d. If no aesthetic specified — show style preview before generating:**
+
+   Present the planned candidates and available styles to the user *before* running
+   Step 4 or generating anything. Use the content types from Step 2 to rank styles.
+
+   Say:
+
+   > I'll generate 3 variations. Based on your **[content types]** content, here's
+   > what I'm planning to try:
+   >
+   > → [Style A]
+   > → [Style B]
+   > → [Style C]
+   >
+   > Other styles that fit well: [list affinity-matched styles not in the 3 above]
+   >
+   > Also available (lower fit for this content): [list off-affinity styles with
+   > a "(better for [their affinity])" note for each]
+   >
+   > Say **go** to generate these 3, swap a style by name, or ask to see all styles.
+
+   **Stop and wait for user response before proceeding.**
+
+   If the user says "go" (or equivalent confirmation) → proceed to Step 4 with the
+   3 planned styles.
+
+   If the user swaps a style by name (e.g., "use Blueprint instead of Style A") →
+   update the planned 3 and proceed.
+
+   If the user asks to see all styles → list the full extended library grouped by
+   affinity fit, then wait again.
+
+   **Candidate pool for the 3 planned styles:**
+   - Flagship 6 are always eligible
+   - Extended library styles where ANY affinity tag matches ANY detected content
+     type (boolean OR — one match is sufficient to include)
+   - Optional wildcard: one extended style outside affinity overlap, only when the
+     eligible pool contains 6 or more styles; include at most 1 per round
+   - Pick 3 maximally contrasting styles from this pool
 
    **e. Load the aesthetic template.** If the user picks a numbered option,
    load the corresponding template from the Aesthetics section of the Style
