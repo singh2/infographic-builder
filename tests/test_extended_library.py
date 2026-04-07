@@ -64,7 +64,6 @@ def test_style_has_affinity_tags(style_name):
 # ── Agent: Step 2 content types (Task 2) ─────────────────────────────────────
 
 
-@pytest.mark.xfail(reason="Task 2 not yet implemented")
 def test_agent_step2_outputs_content_types():
     content = read_agent()
     assert "Content types:" in content

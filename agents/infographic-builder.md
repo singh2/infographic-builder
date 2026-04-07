@@ -89,6 +89,11 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    - "make a 3-panel infographic" -- use the explicit count (up to 6)
    - "skip the review" or "no critic" -- skip the quality review in step 6
 
+   Output at end of Step 2:
+   - Panel count: [N]
+   - Recommended layout: [layout type]
+   - Content types: [comma-separated tags from: process, technical, narrative, data, showcase, educational, culture]
+
 3. **Aesthetic selection**: Before designing, guide the user to a visual style.
 
    **a. Recommend a layout** based on content analysis from step 2 — reference
