@@ -193,10 +193,30 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    **5b. Generate 3 Panel 1 candidates.**
 
    **5b-i.** Generate 3 candidates in parallel. The variation axis is
-   determined by the Variation Cascade in the Style Guide — Tier 1 (aesthetic)
-   if no aesthetic was specified, Tier 2 (environment or composition based
-   on aesthetic type) if an aesthetic was locked, or Tier 3 (model freedom)
-   if both aesthetic and layout were specified. All 3 calls run concurrently.
+   determined by the Variation Cascade in the Style Guide:
+
+   **Tier 1 — Vary aesthetic (highest diversity)**
+
+   **When:** User specified topic only, no aesthetic locked (Step 3c inline shortcut
+   and Step 3b reference shortcut did not fire, and user confirmed the planned styles
+   at Step 3d).
+
+   Candidate pool:
+   - Flagship 6 (always eligible)
+   - Extended library styles where ANY affinity tag matches ANY content type from
+     Step 2 output (boolean OR)
+   - Optional wildcard: 1 extended style outside affinity overlap, only when eligible
+     pool ≥ 6 styles
+
+   Pick 3 maximally contrasting styles from this pool. Generate each candidate
+   in parallel.
+
+   If the user says "show me more styles" after candidate presentation → pick 3
+   different styles from the remaining pool (styles not yet shown this session).
+
+   Tier 2 (vary environment or composition based on aesthetic type) if an aesthetic
+   was locked, or Tier 3 (model freedom) if both aesthetic and layout were specified.
+   All 3 calls run concurrently.
 
    **5b-ii.** Run the Dealbreaker Check (see Style Guide) on each candidate.
    Silently regenerate failures once. Drop candidates that fail twice.

@@ -80,7 +80,6 @@ def test_agent_step3_has_style_preview():
 # ── Agent: Step 5B extended library pool (Task 4) ────────────────────────────
 
 
-@pytest.mark.xfail(reason="Task 4 not yet implemented")
 def test_agent_step5b_has_extended_library_pool():
     content = read_agent()
     assert "extended library" in content.lower()
