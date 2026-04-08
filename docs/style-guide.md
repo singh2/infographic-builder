@@ -343,16 +343,21 @@ After Panel 1 is generated, analyze it with nano-banana `analyze` using this
 prompt:
 
 ```
-Describe the exact visual style of this infographic panel:
-- Background: solid color, gradient, alternating bands, or textured? Describe the progression.
-- Section backgrounds: how do they differ from top to bottom?
+Describe the exact visual style of this infographic panel. Describe ONLY
+visual style properties -- never mention the specific topic, subject matter,
+heading text, label text, or any words/phrases rendered in the image.
+
+- Background: solid color, gradient, alternating bands, or textured? Describe the color progression.
+- Section backgrounds: how do they differ from top to bottom? Describe colors and textures only.
 - Step number circles: color, size, border style
 - Icon rendering: flat, outlined, two-tone, detailed? Color treatment?
-- Typography: header weight/size relative to body, color
+- Typography: header weight/size relative to body, color, font style (e.g. bold sans-serif). Do NOT quote any actual text.
 - Separators: lines, arrows, spacing? Style and color
-- Header area: layout, font treatment, any decorative elements
-- Footer area: layout, font treatment, any decorative elements
-Be specific -- these descriptions will be used to prompt-match subsequent panels.
+- Header area: layout structure, font treatment, decorative elements. Do NOT quote the heading text.
+- Footer area: layout structure, font treatment, decorative elements. Do NOT quote any text.
+- Overall texture/material: flat digital, 3D rendered, hand-drawn, clay, paper, etc.
+Be specific about visual properties -- these descriptions will be used to prompt-match subsequent panels.
+Strip all topic-specific content. The output must be reusable for ANY topic in this same style.
 ```
 
 **Replace your original style brief entirely with the reconciliation output.
