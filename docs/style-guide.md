@@ -443,12 +443,18 @@ Quick dealbreaker check — answer YES or NO for each question only.
 2. CORE CONTENT PRESENT: Is the core content present in the image (main topic,
    key data points, or central concept visibly represented)?
 
-3. AESTHETIC MATCH: Does the overall aesthetic of the image roughly match the
+3. FACTUAL PLAUSIBILITY: Are all visible numbers, dates, statistics, and
+   scientific facts plausible? (e.g., temperatures within real-world ranges,
+   percentages that could be real, dates that make sense). Answer NO if any
+   data point is obviously wrong or implausible.
+
+4. AESTHETIC MATCH: Does the overall aesthetic of the image roughly match the
    requested style (not a completely different visual genre)?
 
-Return exactly three lines:
+Return exactly four lines:
 TEXT_LEGIBLE: YES|NO
 CONTENT_PRESENT: YES|NO
+FACTUAL_PLAUSIBLE: YES|NO
 AESTHETIC_MATCH: YES|NO
 ```
 
