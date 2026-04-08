@@ -184,6 +184,10 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
    user's selection.** The user's pick is the final output — no further
    quality review.
 
+   After the user picks a candidate, open it with the system viewer:
+   `bash open "{output_path}"` (macOS). This lets the user see the result
+   immediately without hunting through Finder.
+
    **Multi-panel path** -- follow these sub-steps IN ORDER. Do not skip or
    reorder. Each sub-step must complete before the next begins.
 
@@ -317,6 +321,11 @@ style briefs, reference image chaining, evaluation criteria -- see the Style Gui
 
    Deliver both the individual panels and the combined image. Some users want
    pieces for slides; others want a single file to share.
+
+   After stitching, open the combined image with the system viewer:
+   `bash open "{combined_path}"` (macOS). Do not open individual panels --
+   only the combined image. The user sees it immediately without navigating
+   to the output folder.
 
 8. **Return results**: image path(s) + design rationale + quality review summary +
    suggestions for what the user could try next (different aesthetic, different layout,
