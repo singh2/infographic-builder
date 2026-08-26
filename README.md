@@ -29,11 +29,28 @@
 
 ## Get started
 
-infographic-builder runs inside [Amplifier](https://github.com/microsoft/amplifier) — an open-source AI agent runtime. Install Amplifier first, then add this bundle:
+infographic-builder runs inside [Amplifier](https://github.com/microsoft/amplifier) — an open-source AI agent runtime. Install Amplifier first, then add this bundle.
+
+**As an always-on addon** — available in every session, alongside whatever else you're running:
 
 ```bash
-amplifier bundle add git+https://github.com/singh2/infographic-builder@main --app
+amplifier bundle add \
+  git+https://github.com/singh2/infographic-builder@main#subdirectory=behaviors/infographic.yaml \
+  --app
 ```
+
+**As a standalone bundle** — a session dedicated to infographic work:
+
+```bash
+amplifier bundle add git+https://github.com/singh2/infographic-builder@main
+amplifier bundle use infographic-builder
+```
+
+> **When using `--app`, install the behavior, not the repo root.** An `--app` bundle is
+> composed onto every session *after* the bundle you actually selected, and a bundle that
+> carries an instruction replaces the host session's instruction. Pointing `--app` at
+> `#subdirectory=behaviors/infographic.yaml` contributes the tool, the agent, and the
+> awareness context without touching the host.
 
 Set your Google API key (powers the image generation):
 
