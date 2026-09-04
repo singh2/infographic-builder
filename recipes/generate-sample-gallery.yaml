@@ -18,6 +18,13 @@
 # CHANGELOG
 # =============================================================================
 #
+# v1.1.0 (2026-09-04):
+#   - PORTABILITY: Declared `schema_version: 2` and a `dependencies` block so
+#     the recipe resolves infographic-builder:infographic-builder from a pinned
+#     source instead of inheriting it from whatever bundle the caller happens
+#     to be running. Runs from any session bundle now.
+#     * No step, prompt, or scenario changed
+#
 # v1.0.0 (2026-03-19):
 #   - NEW FEATURE: Initial recipe — 14 scenarios across 1-6 panels
 #     * Bash step creates ./samples/ directory
@@ -26,9 +33,28 @@
 #
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# Dependency manifest (recipe schema v2)
+# -----------------------------------------------------------------------------
+# Declares where this recipe's agents come from, so the recipe runs from ANY
+# session bundle -- not only one that already ships infographic-builder.
+#
+# The entry is self-referential on purpose: the runner never infers a source
+# from a namespace prefix, so a bundle that ships both the recipe and the agent
+# must still name itself. Pinned to the origin/main commit that contains
+# agents/infographic-builder.md.
+# -----------------------------------------------------------------------------
+schema_version: 2
+
+dependencies:
+  - source: "git+https://github.com/singh2/infographic-builder@8cde0a336601218736ea223d67ea589e1307c4eb"
+    kind: bundle
+    required_agents:
+      - "infographic-builder:infographic-builder"
+
 name: "generate-sample-gallery"
 description: "Generate a gallery of 14 sample infographics covering panel counts 1-6, diverse layouts, and mixed audiences"
-version: "1.0.0"
+version: "1.1.0"
 tags: ["infographic", "gallery", "samples", "batch"]
 
 context:
