@@ -55,9 +55,13 @@ def test_recipe_name() -> None:
 
 
 def test_recipe_version() -> None:
-    """Recipe version must be '2.0.0'."""
+    """Recipe version must be '2.1.0'.
+
+    Bumped from 2.0.0 when the recipe declared its schema-v2 dependency
+    manifest; no step or prompt changed.
+    """
     recipe = load_recipe()
-    assert recipe.get("version") == "2.0.0"
+    assert recipe.get("version") == "2.1.0"
 
 
 def test_recipe_tags() -> None:

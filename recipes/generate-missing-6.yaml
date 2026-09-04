@@ -1,6 +1,38 @@
+# =============================================================================
+# CHANGELOG
+# =============================================================================
+#
+# v1.2.0 (2026-09-04):
+#   - PORTABILITY: Declared `schema_version: 2` and a `dependencies` block so
+#     the recipe resolves infographic-builder:infographic-builder from a pinned
+#     source instead of inheriting it from whatever bundle the caller happens
+#     to be running. Runs from any session bundle now.
+#     * No step, prompt, or scenario changed
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Dependency manifest (recipe schema v2)
+# -----------------------------------------------------------------------------
+# Declares where this recipe's agents come from, so the recipe runs from ANY
+# session bundle -- not only one that already ships infographic-builder.
+#
+# The entry is self-referential on purpose: the runner never infers a source
+# from a namespace prefix, so a bundle that ships both the recipe and the agent
+# must still name itself. Pinned to the origin/main commit that contains
+# agents/infographic-builder.md.
+# -----------------------------------------------------------------------------
+schema_version: 2
+
+dependencies:
+  - source: "git+https://github.com/singh2/infographic-builder@8cde0a336601218736ea223d67ea589e1307c4eb"
+    kind: bundle
+    required_agents:
+      - "infographic-builder:infographic-builder"
+
 name: "generate-missing-6"
 description: "Generate the 6 missing eval scenarios using foreach/agent pattern identical to generate-sample-gallery"
-version: "1.1.0"
+version: "1.2.0"
 tags: ["infographic", "gallery", "samples", "batch"]
 
 context:
