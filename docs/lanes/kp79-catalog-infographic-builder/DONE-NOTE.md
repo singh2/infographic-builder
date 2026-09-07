@@ -239,9 +239,9 @@ renders — the activities the `$0` authority explicitly names. No eval run was 
 3. **This PR will not be merged by us.** `singh2/infographic-builder` is a personal fork;
    we have no admin. The PR is opened, marked ready, and left for the maintainer.
 4. **Item custody.** `work_claim(model_performance-kp79)` was refused — the item was
-   already held by a sibling lane (`agent-spark-1-2776455`). `kp79` is a **single item
-   fanned out across ~12 repo lanes**, one per bundle; only one lane can hold it. See
-   "Goal defect" below.
+   already held by a sibling lane (`agent-spark-1-2776455`), which subsequently resolved
+   it. `kp79` is a **single item fanned out across ~12 repo lanes**, one per bundle; only
+   one lane can hold it. Resolved via `work_erratum` — see "Goal defect" below.
 
 ## Goal defect reported (not absorbed)
 
@@ -262,10 +262,35 @@ contract, not a blocker in this lane — reported here per the goal's own instru
 report rather than absorb. The remedy is one item per repo lane, or an explicit
 shared-item clause.
 
-**Terminal state chosen once: OUTCOME A on deliverables** (all DONE, shipped as a draft PR
-marked ready — the landing stage is the maintainer's). The item's own `work_resolve` is
-left to the lane that holds it; this lane never held it and therefore cannot resolve or
-release it. No `BLOCKED.md` is written, because nothing here is blocked.
+### The missing fourth state — and it exists
+
+The other three fanned-out lanes (android-tester, browser-tester, reality-check,
+dot-graph) reached this same conclusion independently and recorded that *all three*
+outcome branches are unsatisfiable for a non-holding lane: A and B both require
+`work_resolve`, C requires `work_release`, and a lane that never held the item can call
+neither.
+
+**There is a fourth state, and this lane used it: `work_erratum`.** It requires **no
+claim**, mutates no `status` / `closed_at` / holder, is append-only, and is idempotent on
+byte-identical text. It is the sanctioned, non-destructive channel for exactly this
+situation — a fanned-out lane that finished real work against an item someone else closed.
+`work_resolve` refuses on differing text, `work_release` needs custody, and `work_reopen`
+would clear `closed_at` and move every throughput roll-up by one item. **The goal template
+should name `work_erratum` as the fourth terminal state.**
+
+Erratum appended 2026-09-07T17:05:03Z (`agent-spark-1-3131713`) — the fourth on this item,
+correcting the record's claim that `amplifier-bundle-infographic-builder` was *"NOT FOUND
+under microsoft/"*. It was found, as the personal fork the item's own guidance anticipated,
+and it is swept.
+
+> Operational caveat: `work_erratum` **refuses while the item is momentarily `held`**
+> (a sibling reopen/reclaim race), with *"status is 'held', not 'resolved'"*. That is
+> transient, not terminal — wait and retry rather than treating it as a blocker. It took
+> one retry here.
+
+**Terminal state chosen once: OUTCOME A on deliverables** — all DONE, shipped as a PR
+marked ready; the merge is the maintainer's stage, not this branch's. No `BLOCKED.md` is
+written, because nothing here is blocked.
 
 ## Reproduce
 
