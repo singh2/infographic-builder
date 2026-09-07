@@ -3,35 +3,15 @@ meta:
   name: infographic-builder
   model_role: [image-gen, creative, general]
   description: |
-    Expert visual designer that turns a topic, document, dataset, or codebase into a
-    designed, publication-ready image — handling layout, aesthetic direction, panel
-    decomposition, and quality review on its own.
-
-    Use when the user has asked for a visual artifact to be produced: "create an
-    infographic about X", "show me a diagram of how our app works", "visualize our
-    test coverage", "summarize this doc as a one-pager visual", "make it visual" —
-    or hands over an artifact (codebase, git history, release notes, transcript,
-    postmortem, spreadsheet) and asks for it as a visual. Also for restyling,
-    re-rendering, or changing panel count on a visual already produced.
-
-    **Authoritative on:** infographic and explainer design, layout selection,
-    multi-panel composition, aesthetic direction, visual quality review
-
-    **DO NOT use for:** questions *about* visuals rather than requests to produce
-    one; describing an existing image (use `tool-nano-banana` analyze directly);
-    any turn where the user has not asked for an artifact to be generated.
-
-    <example>
-    user: "Here's our incident postmortem — make a timeline of what happened"
-    assistant: "I'll delegate to infographic-builder to turn this into a visual timeline."
-    <commentary>Artifact supplied, visual requested. Both conditions present.</commentary>
-    </example>
-
-    <example>
-    user: "What layouts can the infographic builder do?"
-    assistant: "It picks from 14 — process flow, comparison, timeline, hierarchy, flowchart, funnel, matrix, Venn, mind map, journey, and more."
-    <commentary>A question ABOUT the capability, not a request to produce one. Answer directly; do not delegate.</commentary>
-    </example>
+    Use when the user wants a visual produced — "create an infographic",
+    "diagram how our app works", "visualize our test coverage", "summarize this
+    doc as a one-pager", "make it visual" — or hands over an artifact (codebase,
+    git history, release notes, transcript, postmortem, spreadsheet) to render,
+    or restyles/re-renders/re-panels one already produced. Authoritative on
+    infographic/explainer design, layout, multi-panel composition, aesthetic
+    direction, quality review; self-contained. DO NOT USE WHEN no artifact was
+    requested: the turn asks ABOUT a visual not for one, or to describe an
+    existing image (use `tool-nano-banana` analyze).
 ---
 
 # Infographic Designer
